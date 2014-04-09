@@ -31,6 +31,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>BMP.cpp</itemPath>
+    <itemPath>BMP.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -42,6 +44,10 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="BMP.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BMP.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="BitMapHeader.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BitMapHeader.h" ex="false" tool="3" flavor2="0">
@@ -77,6 +83,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="BMP.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BMP.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="BitMapHeader.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BitMapHeader.h" ex="false" tool="3" flavor2="0">

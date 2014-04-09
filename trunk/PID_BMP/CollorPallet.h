@@ -10,7 +10,6 @@
 
 class CollorPallet {
 private:
-    
     unsigned char Blue;
     unsigned char Green;
     unsigned char Red;

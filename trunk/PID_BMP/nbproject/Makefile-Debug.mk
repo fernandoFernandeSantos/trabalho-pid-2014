@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/BMP.o \
 	${OBJECTDIR}/BitMapHeader.o \
 	${OBJECTDIR}/CollorPallet.o \
 	${OBJECTDIR}/Header.o \
@@ -64,6 +65,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pid_bmp: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pid_bmp ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/BMP.o: BMP.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/BMP.o BMP.cpp
 
 ${OBJECTDIR}/BitMapHeader.o: BitMapHeader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
