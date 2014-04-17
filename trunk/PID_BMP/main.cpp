@@ -18,11 +18,11 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    char* FILENAM = "CanMan.bmp";
+    const char* FILENAM = "CanMan.bmp";
     
     BMP arquivo;
-    ifstream* input;
-    arquivo.read(FILENAM, input);
+    ifstream input(FILENAM, ios::binary);
+    arquivo.read(&input);
     arquivo.printInfo();
     
     /*
