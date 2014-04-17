@@ -18,7 +18,7 @@ private:
     unsigned int BiHeigth; //Altura em pixels
     unsigned short BiPlanes; //Nudero de planos, sempre 1
     unsigned short BiBitCount; //Bits por pixel-indica, indiretamente, ainda  o número máximo de cores, que é 2
-    unsigned int BiCompress; /*Compressãousada. Pode ser:
+    unsigned int BiCompress; /*Compressão  usada. Pode ser:
                                                 0 = BI_RGB _ sem compressão
                                                 1 = BI_RLE8 – compressão RLE 8 bits
                                                 2 = BI_RLE4 – compressão RLE 4 bits*/
