@@ -8,6 +8,8 @@
 #include "BMP.h"
 #include <cmath>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
 
 BMP::BMP() {
 }
@@ -57,3 +59,38 @@ Pixel** BMP::GetMatrizPixels() const {
 void BMP::SetMatrizPixels(Pixel** matrizPixels) {
     this->matrizPixels = matrizPixels;
 }
+
+void BMP::read(char * nomeArquivo, std::ifstream* input) {
+    input->open(nomeArquivo);
+    this->cabecalhoImagem.read(input);
+    this->cabecalhoBitMap.read(input);
+    //verifica se tem mapa de cores 
+    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
+
+    if ((numeroCores == 16) || (numeroCores == 256)) { //tem mapa de cores
+        this->paletaCores = new CollorPallet[(int) numeroCores];
+        //lê a paleta de cores
+        unsigned char r, g, b, t;
+        for (int i = 0; i < (4 * numeroCores); i++) {
+            input->read((char*) & t, sizeof (unsigned char));
+            input->read((char*) & b, sizeof (unsigned char));
+            input->read((char*) & g, sizeof (unsigned char));
+            input->read((char*) & r, sizeof (unsigned char));
+            this->paletaCores->setCor(r, g, b, t);
+        }
+    }
+}
+
+void BMP::printInfo() {
+    this->cabecalhoImagem.print();
+    this->cabecalhoBitMap.print();
+    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
+    if (numeroCores == 16 || numeroCores == 256)
+        for (int i = 0; i < numeroCores; i++) {
+            std::cout << this->paletaCores[i].GetBlue() << " " << this->paletaCores[i].GetRed() << " "
+                    << this->paletaCores[i].GetGreen() << "\n";
+        }
+}
+
+
+
