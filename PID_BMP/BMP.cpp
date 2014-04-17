@@ -6,6 +6,8 @@
  */
 
 #include "BMP.h"
+#include <cmath>
+#include <stdlib.h>
 
 BMP::BMP() {
 }
@@ -14,6 +16,14 @@ BMP::BMP(const BMP& orig) {
 }
 
 BMP::~BMP() {
+    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
+    for (int i = 0; i < numeroCores; i++) {
+        this->paletaCores[i].~CollorPallet();
+    }
+    free(this->paletaCores);
+    this->cabecalhoImagem.~Header();
+    this->cabecalhoBitMap.~BitMapHeader();
+    
 }
 
 BitMapHeader BMP::GetCabecalhoBitMap() const {
@@ -24,12 +34,12 @@ void BMP::SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap) {
     this->cabecalhoBitMap = cabecalhoBitMap;
 }
 
-Header BMP::GetCabecalhoImagen() const {
-    return cabecalhoImagen;
+Header BMP::GetCabecalhoImagem() const {
+    return cabecalhoImagem;
 }
 
-void BMP::SetCabecalhoImagen(Header cabecalhoImagen) {
-    this->cabecalhoImagen = cabecalhoImagen;
+void BMP::SetCabecalhoImagen(Header cabecalhoImagem) {
+    this->cabecalhoImagem = cabecalhoImagem;
 }
 
 CollorPallet* BMP::GetPaletaCores() const {

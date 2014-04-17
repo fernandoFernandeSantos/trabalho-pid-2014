@@ -18,16 +18,16 @@ public:
     BMP(const BMP& orig);
     virtual ~BMP();
     BitMapHeader GetCabecalhoBitMap() const;
-    SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap);
-    GetCabecalhoImagen() const;
+    void SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap);
+    Header GetCabecalhoImagem() const;
     void SetCabecalhoImagen(Header cabecalhoImagen);
     CollorPallet* GetPaletaCores() const;
-    void BMP::SetPaletaCores(CollorPallet* paletaCores);
+    void SetPaletaCores(CollorPallet* paletaCores);
 
 private:
     CollorPallet *paletaCores;
     BitMapHeader cabecalhoBitMap;
-    Header cabecalhoImagen;
+    Header cabecalhoImagem;
 };
 
 
