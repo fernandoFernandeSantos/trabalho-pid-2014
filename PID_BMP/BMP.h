@@ -26,7 +26,7 @@ public:
     void SetPaletaCores(CollorPallet* paletaCores);
     Pixel **GetMatrizPixels() const;
     void SetMatrizPixels(Pixel** matrizPixels);
-    void read(char * nomeArquivo, std::ifstream *input);
+    void read(std::ifstream *input);
     void printInfo();
 
 

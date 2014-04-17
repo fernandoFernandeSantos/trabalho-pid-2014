@@ -21,6 +21,8 @@ public:
     void SetB(unsigned char T);
     void SetR(unsigned char T);
     void SetG(unsigned char T);
+    void setRGB(unsigned char r, unsigned char g, unsigned char b, 
+                        unsigned char t);
 
 private:
     unsigned char R; // representante da cor vermelha
