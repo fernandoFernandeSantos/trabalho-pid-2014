@@ -23,7 +23,7 @@ BMP::~BMP() {
     free(this->paletaCores);
     this->cabecalhoImagem.~Header();
     this->cabecalhoBitMap.~BitMapHeader();
-    
+
 }
 
 BitMapHeader BMP::GetCabecalhoBitMap() const {
@@ -48,4 +48,12 @@ CollorPallet* BMP::GetPaletaCores() const {
 
 void BMP::SetPaletaCores(CollorPallet* paletaCores) {
     this->paletaCores = paletaCores;
+}
+
+Pixel** BMP::GetMatrizPixels() const {
+    return matrizPixels;
+}
+
+void BMP::SetMatrizPixels(Pixel** matrizPixels) {
+    this->matrizPixels = matrizPixels;
 }
