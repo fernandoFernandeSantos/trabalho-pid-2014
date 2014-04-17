@@ -28,6 +28,8 @@ public:
     void SetGreen(unsigned char Green) ;
     void SetRed(unsigned char Red);
     void SetReservado(unsigned char Reservado);
+    void setCor(unsigned char r, unsigned char g,
+                unsigned char b, unsigned char reservado);
 
 };
 

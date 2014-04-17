@@ -47,3 +47,11 @@ unsigned char CollorPallet::GetReservado() const {
 void CollorPallet::SetReservado(unsigned char Reservado) {
     this->Reservado = Reservado;
 }
+
+void CollorPallet::setCor(unsigned char r, unsigned char g,
+        unsigned char b, unsigned char reservado){
+    this->Reservado = reservado;
+    this->Red = r;
+    this->Blue = b;
+    this->Green = g;
+}

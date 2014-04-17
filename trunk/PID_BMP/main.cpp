@@ -9,6 +9,7 @@
 #include <fstream>
 #include "Header.h"
 #include "BitMapHeader.h"
+#include "BMP.h"
 
 using namespace std;
 
@@ -17,7 +18,14 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    const char* FILENAM = "CanMan.bmp";
+    char* FILENAM = "CanMan.bmp";
+    
+    BMP arquivo;
+    ifstream* input;
+    arquivo.read(FILENAM, input);
+    arquivo.printInfo();
+    
+    /*
     ifstream o(FILENAM,ios::binary);
 
     Header h;
@@ -32,7 +40,7 @@ int main(int argc, char** argv) {
     bmh.read(&o);
     bmh.print();
     
-    o.close();
+    o.close();*/
     //
 //    short readNumber;
 //    o.read((char*)&readNumber,sizeof(readNumber));
