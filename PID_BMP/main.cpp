@@ -18,7 +18,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    const char* FILENAM = "CanMan.bmp";
+    const char* FILENAM = "Flores.bmp";
 //    const char* FILENAM = "CanMan.bmp";
     cout << "asd";
    
