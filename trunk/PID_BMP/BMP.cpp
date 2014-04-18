@@ -70,7 +70,6 @@ void BMP::SetMatrizPixels(Pixel** matrizPixels) {
 }
 
 void BMP::read(std::ifstream* input) {
-    std::cout << "lalala";
     this->cabecalhoImagem.read(input);
     this->cabecalhoBitMap.read(input);
     //verifica se tem mapa de cores
@@ -147,12 +146,17 @@ void BMP::printInfo() {
     this->cabecalhoImagem.print();
     this->cabecalhoBitMap.print();
     int numeroCores = this->cabecalhoBitMap.GetBiCrlUsed();
-    if (numeroCores == 16 || numeroCores == 256)
-        for (int i = 0; i < numeroCores; i++) {
-            std::cout << "Cor " << i << " Azul " << this->paletaCores[i].GetBlue() << " Vermelho " << this->paletaCores[i].GetRed() 
-                    << " Verde "  << this->paletaCores[i].GetGreen() << "\n" << " T = " << this->paletaCores[i].GetReservado() << "\n";
-            
-        }
+    double* resultado = this->valorMedio();
+    for (int i = 0; i < 3; i++) {
+        std::cout << resultado[i] << "\n";
+
+    }
+//    if (numeroCores == 16 || numeroCores == 256)
+//        for (int i = 0; i < numeroCores; i++) {
+//            std::cout << "Cor " << i << " Azul " << this->paletaCores[i].GetBlue() << " Vermelho " << this->paletaCores[i].GetRed() 
+//                    << " Verde "  << this->paletaCores[i].GetGreen() << "\n" << " T = " << this->paletaCores[i].GetReservado() << "\n";
+//            
+//        }
 //    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
 //        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
 //            std::cout << "Cor Azul = " << this->matrizPixels[i][j].GetB();
@@ -160,6 +164,29 @@ void BMP::printInfo() {
 //            std::cout << " Cor Vermelho = " << this->matrizPixels[i][j].GetR() << "\n";
 //        }
 //    }
+}
+
+double* BMP::valorMedio() {
+    long double somaR = 0;
+    long double somaG = 0;
+    long double somaB = 0;
+    int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
+    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
+        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
+            somaR += (int)(this->matrizPixels[i][j].GetR());
+            somaG += (int)(this->matrizPixels[i][j].GetG());
+            somaB += (int)(this->matrizPixels[i][j].GetB());
+        }
+    }
+    double *valores;
+    valores =  new double[3];
+    valores[0] = somaR / divisor;
+    
+    valores[1] = somaG / divisor;
+    
+    valores[2] = somaB / divisor;    
+    
+    return valores;
 }
 
 

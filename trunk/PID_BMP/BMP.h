@@ -28,6 +28,7 @@ public:
     void SetMatrizPixels(Pixel** matrizPixels);
     void read(std::ifstream *input);
     void printInfo();
+    double* valorMedio();
 
 
 private:
