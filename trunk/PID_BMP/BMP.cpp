@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <exception>
 
 BMP::BMP() {
 }
@@ -18,11 +19,20 @@ BMP::BMP(const BMP& orig) {
 }
 
 BMP::~BMP() {
-    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
-    for (int i = 0; i < numeroCores; i++) {
-        this->paletaCores[i].~CollorPallet();
+    //deletar paleta de cores
+    if ((this->cabecalhoBitMap.GetBiCrlUsed() <= 256) && (this->cabecalhoBitMap.GetBiCrlUsed())) {
+        delete this->paletaCores;
+        this->paletaCores = NULL;
     }
-    free(this->paletaCores);
+    //deletar a matriz de pixels
+
+    for (int i = 0; i < this->cabecalhoBitMap.GetBiWidth(); i++) {
+        delete this->matrizPixels[i];
+        this->matrizPixels[i] = NULL;
+    }
+    delete this->matrizPixels;
+    this->matrizPixels = NULL;
+
     this->cabecalhoImagem.~Header();
     this->cabecalhoBitMap.~BitMapHeader();
 
@@ -63,14 +73,13 @@ void BMP::SetMatrizPixels(Pixel** matrizPixels) {
 void BMP::read(std::ifstream* input) {
     this->cabecalhoImagem.read(input);
     this->cabecalhoBitMap.read(input);
-    //verifica se tem mapa de cores 
-    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
+    //verifica se tem mapa de cores
 
-    if (numeroCores <= 256) { //tem mapa de cores
-        this->paletaCores = new CollorPallet[(int) numeroCores];
+    if (this->cabecalhoBitMap.GetBiCrlUsed() <= 256 && this->cabecalhoBitMap.GetBiCrlUsed()) { //tem mapa de cores
+        this->paletaCores = new CollorPallet[(int) this->cabecalhoBitMap.GetBiCrlUsed()];
         //lê a paleta de cores
         unsigned char r, g, b, t;
-        for (int i = 0; i < (4 * numeroCores); i++) {
+        for (int i = 0; i < (4 * this->cabecalhoBitMap.GetBiCrlUsed()); i++) {
             input->read((char*) & t, sizeof (unsigned char));
             input->read((char*) & b, sizeof (unsigned char));
             input->read((char*) & g, sizeof (unsigned char));
@@ -79,11 +88,14 @@ void BMP::read(std::ifstream* input) {
         }
     }
     //leitura dos dados (fazer aqui)
-    if(this->cabecalhoBitMap.GetBiBitCount() == 1){} //1bit
-    if(this->cabecalhoBitMap.GetBiBitCount() == 4){} //4 bits
-    if(this->cabecalhoBitMap.GetBiBitCount() == 8){} //8 bits
-    
-    if(this->cabecalhoBitMap.GetBiBitCount() == 24){ //24 bits
+    if (this->cabecalhoBitMap.GetBiBitCount() == 1) {
+    } //1bit
+    if (this->cabecalhoBitMap.GetBiBitCount() == 4) {
+    } //4 bits
+    if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
+    } //8 bits
+
+    if (this->cabecalhoBitMap.GetBiBitCount() == 24) { //24 bits
         //aloca matriz de pixels
         this->matrizPixels = new Pixel*[this->cabecalhoBitMap.GetBiWidth()];
         for (int i = 0; i < this->cabecalhoBitMap.GetBiWidth(); i++) {
@@ -91,41 +103,39 @@ void BMP::read(std::ifstream* input) {
         }
         unsigned char r, g, b;
         int linha = 0, coluna = 0;
-        while(input->eof()){
+        while (!input->eof()) {
             input->read((char*) & b, sizeof (unsigned char));
             input->read((char*) & g, sizeof (unsigned char));
             input->read((char*) & r, sizeof (unsigned char));
-            this->matrizPixels[linha][coluna].setRGB(r,g,b,NULL);
+            this->matrizPixels[linha][coluna].setRGB(r, g, b);
             coluna++;
-            if(coluna == this->cabecalhoBitMap.GetBiWidth()){
+            if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                 linha++;
                 coluna = 0;
             }
-            
+
         }
-        
-         
     }
-    if(this->cabecalhoBitMap.GetBiBitCount() == 32){ //32 bits
-                //aloca matriz de pixels
+    if (this->cabecalhoBitMap.GetBiBitCount() == 32) { //32 bits
+        //aloca matriz de pixels
         this->matrizPixels = new Pixel*[this->cabecalhoBitMap.GetBiWidth()];
         for (int i = 0; i < this->cabecalhoBitMap.GetBiWidth(); i++) {
             this->matrizPixels[i] = new Pixel[this->cabecalhoBitMap.GetBiHeigth()];
         }
-        unsigned char r, g, b,t;
+        unsigned char r, g, b, t;
         int linha = 0, coluna = 0;
-        while(input->eof()){
+        while (!input->eof()) {
             input->read((char*) & t, sizeof (unsigned char));
             input->read((char*) & b, sizeof (unsigned char));
             input->read((char*) & g, sizeof (unsigned char));
             input->read((char*) & r, sizeof (unsigned char));
-            this->matrizPixels[linha][coluna].setRGB(r,g,b,t);
+            this->matrizPixels[linha][coluna].setRGB(r, g, b, t);
             coluna++;
-            if(coluna == this->cabecalhoBitMap.GetBiWidth()){
+            if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                 linha++;
                 coluna = 0;
             }
-            
+
         }
     }
 }
@@ -133,7 +143,7 @@ void BMP::read(std::ifstream* input) {
 void BMP::printInfo() {
     this->cabecalhoImagem.print();
     this->cabecalhoBitMap.print();
-    double numeroCores = pow(2, this->cabecalhoBitMap.GetBiBitCount());
+    int numeroCores = this->cabecalhoBitMap.GetBiCrlUsed();
     if (numeroCores == 16 || numeroCores == 256)
         for (int i = 0; i < numeroCores; i++) {
             std::cout << this->paletaCores[i].GetBlue() << " " << this->paletaCores[i].GetRed() << " "

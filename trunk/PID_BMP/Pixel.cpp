@@ -54,3 +54,8 @@ void Pixel::setRGB(unsigned char r, unsigned char g, unsigned char b, unsigned c
     this->B = b;
     this->G = g;
 }
+void Pixel::setRGB(unsigned char r, unsigned char g, unsigned char b){
+    this->R = r;
+    this->B = b;
+    this->G = g;
+}
