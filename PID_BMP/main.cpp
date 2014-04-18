@@ -18,14 +18,14 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    const char* FILENAM = "Flores.bmp";
+    const char* FILENAM = "CanMan.bmp";
 //    const char* FILENAM = "CanMan.bmp";
     cout << "asd";
    
     BMP arquivo;
     ifstream input(FILENAM, ios::binary);
     arquivo.read(&input);
-//    arquivo.printInfo();
+    arquivo.printInfo();
     input.close();
     
     /*
