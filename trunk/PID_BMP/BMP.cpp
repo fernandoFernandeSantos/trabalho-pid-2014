@@ -151,19 +151,19 @@ void BMP::printInfo() {
         std::cout << resultado[i] << "\n";
 
     }
-//    if (numeroCores == 16 || numeroCores == 256)
-//        for (int i = 0; i < numeroCores; i++) {
-//            std::cout << "Cor " << i << " Azul " << this->paletaCores[i].GetBlue() << " Vermelho " << this->paletaCores[i].GetRed() 
-//                    << " Verde "  << this->paletaCores[i].GetGreen() << "\n" << " T = " << this->paletaCores[i].GetReservado() << "\n";
-//            
-//        }
-//    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
-//        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
-//            std::cout << "Cor Azul = " << this->matrizPixels[i][j].GetB();
-//            std::cout << " Cor Verde = " << this->matrizPixels[i][j].GetG();
-//            std::cout << " Cor Vermelho = " << this->matrizPixels[i][j].GetR() << "\n";
-//        }
-//    }
+    //    if (numeroCores == 16 || numeroCores == 256)
+    //        for (int i = 0; i < numeroCores; i++) {
+    //            std::cout << "Cor " << i << " Azul " << this->paletaCores[i].GetBlue() << " Vermelho " << this->paletaCores[i].GetRed() 
+    //                    << " Verde "  << this->paletaCores[i].GetGreen() << "\n" << " T = " << this->paletaCores[i].GetReservado() << "\n";
+    //            
+    //        }
+    //    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
+    //        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
+    //            std::cout << "Cor Azul = " << this->matrizPixels[i][j].GetB();
+    //            std::cout << " Cor Verde = " << this->matrizPixels[i][j].GetG();
+    //            std::cout << " Cor Vermelho = " << this->matrizPixels[i][j].GetR() << "\n";
+    //        }
+    //    }
 }
 
 double* BMP::valorMedio() {
@@ -173,21 +173,149 @@ double* BMP::valorMedio() {
     int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
-            somaR += (int)(this->matrizPixels[i][j].GetR());
-            somaG += (int)(this->matrizPixels[i][j].GetG());
-            somaB += (int)(this->matrizPixels[i][j].GetB());
+            somaR += (int) (this->matrizPixels[i][j].GetR());
+            somaG += (int) (this->matrizPixels[i][j].GetG());
+            somaB += (int) (this->matrizPixels[i][j].GetB());
         }
     }
     double *valores;
-    valores =  new double[3];
+    valores = new double[3];
     valores[0] = somaR / divisor;
-    
+
     valores[1] = somaG / divisor;
-    
-    valores[2] = somaB / divisor;    
-    
+
+    valores[2] = somaB / divisor;
+
     return valores;
 }
 
+bool BMP::salvar(const char* nomeArquivo) {
+    try {
+        std::ofstream arquivoSaida(nomeArquivo, std::ios::out);
+
+        //verifica se pode ser aberto ou não
+        if (arquivoSaida.is_open() && arquivoSaida.good()) {
+            //grava o header
+            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfType(),
+                    sizeof (char) * 2);
+            arquivoSaida.write((char*)  this->cabecalhoImagem.GetBfSize(),
+                    sizeof (this->cabecalhoImagem.GetBfSize()));
+            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfReser1(),
+                    sizeof (this->cabecalhoImagem.GetBfReser1()));
+            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfReser2(),
+                    sizeof (this->cabecalhoImagem.GetBfReser2()));
+            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfOffSetBits(),
+                    sizeof (this->cabecalhoImagem.GetBfOffSetBits()));
+
+            //grava o cabeçalho da imagem
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiSize(),
+                    sizeof (this->cabecalhoBitMap.GetBiSize()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiWidth(),
+                    sizeof (this->cabecalhoBitMap.GetBiWidth()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiHeigth(),
+                    sizeof (this->cabecalhoBitMap.GetBiHeigth()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiPlanes(),
+                    sizeof (this->cabecalhoBitMap.GetBiPlanes()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiBitCount(),
+                    sizeof (this->cabecalhoBitMap.GetBiBitCount()));
+
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiCompress(),
+                    sizeof (this->cabecalhoBitMap.GetBiCompress()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiSizeImage(),
+                    sizeof (this->cabecalhoBitMap.GetBiSizeImage()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiXPPMeter(),
+                    sizeof (this->cabecalhoBitMap.GetBiXPPMeter()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiYPPMeter(),
+                    sizeof (this->cabecalhoBitMap.GetBiYPPMeter()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiCrlUsed(),
+                    sizeof (this->cabecalhoBitMap.GetBiCrlUsed()));
+            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiClrImport(),
+                    sizeof (this->cabecalhoBitMap.GetBiClrImport()));
+
+
+            //se tem paleta de cores grava a paleta e a matriz
+            if (this->paletaCores != NULL) {
+                unsigned char r, g, b, t;
+                for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+                    b = this->paletaCores[i].GetBlue();
+                    g = this->paletaCores[i].GetGreen();
+                    r = this->paletaCores[i].GetRed();
+                    t = this->paletaCores[i].GetReservado();
+                    arquivoSaida.write((char*) & b, sizeof (unsigned char));
+                    arquivoSaida.write((char*) & g, sizeof (unsigned char));
+                    arquivoSaida.write((char*) & r, sizeof (unsigned char));
+                    arquivoSaida.write((char*) & t, sizeof (unsigned char));
+                }
+
+                //grava a matriz para 8 bits
+                unsigned char elemento;
+                int linha = 0, coluna = 0;
+                while (true) {
+                    try {
+                        int indice = this->findIndex(this->matrizPixels[linha][coluna].GetR(),
+                                this->matrizPixels[linha][coluna].GetG(),
+                                this->matrizPixels[linha][coluna].GetB());
+                        char* hex;
+                        std::sprintf(hex, "%x", indice);
+                        arquivoSaida.write(hex, sizeof (hex));
+                        coluna++;
+                        if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
+                            linha++;
+                            coluna = 0;
+                            if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
+                                break;
+                            }
+                        }
+                    } catch (std::exception& ex) {
+                        std::cout << "Pau na gravação";
+                        break;
+                    }
+                }
+            }
+            //grava para 24 bits
+            if (this->cabecalhoBitMap.GetBiBitCount() == 24) {
+                unsigned char r, g, b;
+                int linha = 0, coluna = 0;
+                while (true) {
+                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetB(),
+                            sizeof (unsigned char));
+                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetG(),
+                            sizeof (unsigned char));
+                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetR(),
+                            sizeof (unsigned char));
+
+                    coluna++;
+                    if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
+                        linha++;
+                        coluna = 0;
+                        if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
+                            break;
+                        }
+                    }
+
+                }
+            }
+            arquivoSaida.close();
+        } else {
+            std::cout << "Não foi possível abrir este arquivo\n";
+            return false;
+        }
+    } catch (std::exception& e) {
+        std::cout << "Pau em algum lugar\n";
+        return false;
+    }
+    return true;
+}
+
+int BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
+    for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+        if ((r == this->paletaCores[i].GetRed())
+                && (g == this->paletaCores[i].GetGreen())
+                && (b == this->paletaCores[i].GetBlue())) {
+            return i;
+        }
+    }
+    return 0;
+}
 
 

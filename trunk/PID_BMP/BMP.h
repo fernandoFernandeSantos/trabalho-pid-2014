@@ -6,12 +6,13 @@
  */
 
 #ifndef BMP_H
-#define	BMP_H
 
 #include "CollorPallet.h"
 #include "BitMapHeader.h"
 #include "Header.h"
 #include "Pixel.h"
+#define	BMP_H
+
 
 class BMP {
 public:
@@ -29,7 +30,8 @@ public:
     void read(std::ifstream *input);
     void printInfo();
     double* valorMedio();
-
+    bool salvar(const char* nomeArquivo);
+    int findIndex(unsigned char r, unsigned char g, unsigned char b);
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
