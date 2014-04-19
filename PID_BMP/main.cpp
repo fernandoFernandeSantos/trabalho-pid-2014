@@ -4,9 +4,6 @@
  *
  * Created on 8 de Abril de 2014, 13:35
  */
-
-#include <iostream>
-#include <fstream>
 #include "Header.h"
 #include "BitMapHeader.h"
 #include "BMP.h"
@@ -26,6 +23,7 @@ int main(int argc, char** argv) {
     ifstream input(FILENAM, ios::binary);
     arquivo.read(&input);
     arquivo.printInfo();
+    arquivo.salvar("NovoArquivo.bmp");
     input.close();
     
     /*
