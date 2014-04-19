@@ -151,25 +151,12 @@ void BMP::printInfo() {
         std::cout << resultado[i] << "\n";
 
     }
-    //    if (numeroCores == 16 || numeroCores == 256)
-    //        for (int i = 0; i < numeroCores; i++) {
-    //            std::cout << "Cor " << i << " Azul " << this->paletaCores[i].GetBlue() << " Vermelho " << this->paletaCores[i].GetRed() 
-    //                    << " Verde "  << this->paletaCores[i].GetGreen() << "\n" << " T = " << this->paletaCores[i].GetReservado() << "\n";
-    //            
-    //        }
-    //    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
-    //        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
-    //            std::cout << "Cor Azul = " << this->matrizPixels[i][j].GetB();
-    //            std::cout << " Cor Verde = " << this->matrizPixels[i][j].GetG();
-    //            std::cout << " Cor Vermelho = " << this->matrizPixels[i][j].GetR() << "\n";
-    //        }
-    //    }
 }
 
 double* BMP::valorMedio() {
-    long double somaR = 0;
-    long double somaG = 0;
-    long double somaB = 0;
+    unsigned long long int somaR = 0;
+    unsigned long long int somaG = 0;
+    unsigned long long int somaB = 0;
     int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
@@ -192,49 +179,49 @@ double* BMP::valorMedio() {
 bool BMP::salvar(const char* nomeArquivo) {
     try {
         std::ofstream arquivoSaida(nomeArquivo, std::ios::out);
-
         //verifica se pode ser aberto ou não
         if (arquivoSaida.is_open() && arquivoSaida.good()) {
+            //como em c só grava endereço tem que por para variavéis
+            unsigned int BfSize = this->cabecalhoImagem.GetBfSize();
+            unsigned short BfReser1 = this->cabecalhoImagem.GetBfReser1();
+            unsigned short BfReser2 = this->cabecalhoImagem.GetBfReser2();
+            unsigned int BfOffSetBits = this->cabecalhoImagem.GetBfOffSetBits();
+            unsigned int BiSize = this->cabecalhoBitMap.GetBiSize();
+            unsigned int BiWidth = this->cabecalhoBitMap.GetBiWidth();
+            unsigned int BiHeigth = this->cabecalhoBitMap.GetBiHeigth();
+            unsigned short BiPlanes = this->cabecalhoBitMap.GetBiPlanes();
+            unsigned short BiBitCount = this->cabecalhoBitMap.GetBiBitCount();
+            unsigned int BiCompress = this->cabecalhoBitMap.GetBiCompress();
+            unsigned int BiSizeImage = this->cabecalhoBitMap.GetBiSizeImage();
+            unsigned int BiXPPMeter = this->cabecalhoBitMap.GetBiXPPMeter();
+            unsigned int BiYPPMeter = this->cabecalhoBitMap.GetBiYPPMeter();
+            unsigned int BiCrlUsed = this->cabecalhoBitMap.GetBiCrlUsed();
+            unsigned int BiClrImport = this->cabecalhoBitMap.GetBiClrImport();
+
             //grava o header
             arquivoSaida.write((char*) this->cabecalhoImagem.GetBfType(),
                     sizeof (char) * 2);
-            arquivoSaida.write((char*)  this->cabecalhoImagem.GetBfSize(),
-                    sizeof (this->cabecalhoImagem.GetBfSize()));
-            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfReser1(),
-                    sizeof (this->cabecalhoImagem.GetBfReser1()));
-            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfReser2(),
-                    sizeof (this->cabecalhoImagem.GetBfReser2()));
-            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfOffSetBits(),
-                    sizeof (this->cabecalhoImagem.GetBfOffSetBits()));
+            arquivoSaida.write((char*) & BfSize, sizeof (BfSize));
+            arquivoSaida.write((char*) & BfReser1, sizeof (BfReser1));
+            arquivoSaida.write((char*) & BfReser2, sizeof (BfReser2));
+            arquivoSaida.write((char*) & BfOffSetBits, sizeof (BfOffSetBits));
 
             //grava o cabeçalho da imagem
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiSize(),
-                    sizeof (this->cabecalhoBitMap.GetBiSize()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiWidth(),
-                    sizeof (this->cabecalhoBitMap.GetBiWidth()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiHeigth(),
-                    sizeof (this->cabecalhoBitMap.GetBiHeigth()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiPlanes(),
-                    sizeof (this->cabecalhoBitMap.GetBiPlanes()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiBitCount(),
-                    sizeof (this->cabecalhoBitMap.GetBiBitCount()));
-
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiCompress(),
-                    sizeof (this->cabecalhoBitMap.GetBiCompress()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiSizeImage(),
-                    sizeof (this->cabecalhoBitMap.GetBiSizeImage()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiXPPMeter(),
-                    sizeof (this->cabecalhoBitMap.GetBiXPPMeter()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiYPPMeter(),
-                    sizeof (this->cabecalhoBitMap.GetBiYPPMeter()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiCrlUsed(),
-                    sizeof (this->cabecalhoBitMap.GetBiCrlUsed()));
-            arquivoSaida.write((char*) this->cabecalhoBitMap.GetBiClrImport(),
-                    sizeof (this->cabecalhoBitMap.GetBiClrImport()));
+            arquivoSaida.write((char*) & BiSize,sizeof (BiSize));
+            arquivoSaida.write((char*) & BiWidth,sizeof (BiWidth));
+            arquivoSaida.write((char*) & BiHeigth,sizeof (BiHeigth));
+            arquivoSaida.write((char*) & BiPlanes,sizeof (BiPlanes));
+            arquivoSaida.write((char*) & BiBitCount,sizeof (BiBitCount));
+            arquivoSaida.write((char*) & BiCompress,sizeof (BiCompress));
+            arquivoSaida.write((char*) & BiSizeImage,sizeof (BiSizeImage));
+            arquivoSaida.write((char*) & BiXPPMeter,sizeof (BiXPPMeter));
+            arquivoSaida.write((char*) & BiYPPMeter,sizeof (BiYPPMeter));
+            arquivoSaida.write((char*) & BiCrlUsed,sizeof (BiCrlUsed));
+            arquivoSaida.write((char*) & BiClrImport,sizeof (BiClrImport));
 
 
             //se tem paleta de cores grava a paleta e a matriz
-            if (this->paletaCores != NULL) {
+            if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
                 unsigned char r, g, b, t;
                 for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
                     b = this->paletaCores[i].GetBlue();
@@ -248,7 +235,6 @@ bool BMP::salvar(const char* nomeArquivo) {
                 }
 
                 //grava a matriz para 8 bits
-                unsigned char elemento;
                 int linha = 0, coluna = 0;
                 while (true) {
                     try {
@@ -277,13 +263,12 @@ bool BMP::salvar(const char* nomeArquivo) {
                 unsigned char r, g, b;
                 int linha = 0, coluna = 0;
                 while (true) {
-                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetB(),
-                            sizeof (unsigned char));
-                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetG(),
-                            sizeof (unsigned char));
-                    arquivoSaida.write((char*) this->matrizPixels[linha][coluna].GetR(),
-                            sizeof (unsigned char));
-
+                    r = this->matrizPixels[linha][coluna].GetR();
+                    g = this->matrizPixels[linha][coluna].GetG();
+                    b = this->matrizPixels[linha][coluna].GetB();
+                    arquivoSaida.write((char*) & b,sizeof (unsigned char));
+                    arquivoSaida.write((char*) & g,sizeof (unsigned char));
+                    arquivoSaida.write((char*) & r,sizeof (unsigned char));
                     coluna++;
                     if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                         linha++;
