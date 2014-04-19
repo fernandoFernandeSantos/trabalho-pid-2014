@@ -32,6 +32,9 @@ public:
     double* valorMedio();
     bool salvar(const char* nomeArquivo);
     int findIndex(unsigned char r, unsigned char g, unsigned char b);
+    long double * variancia(double * valorMedio);
+    double * covariancia();
+    
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
