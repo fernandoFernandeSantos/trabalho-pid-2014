@@ -146,7 +146,7 @@ void BMP::printInfo() {
     this->cabecalhoImagem.print();
     this->cabecalhoBitMap.print();
     int numeroCores = this->cabecalhoBitMap.GetBiCrlUsed();
-    double* resultado = this->valorMedio();
+    long double* resultado = this->variancia(this->valorMedio());
     for (int i = 0; i < 3; i++) {
         std::cout << resultado[i] << "\n";
 
@@ -157,7 +157,7 @@ double* BMP::valorMedio() {
     unsigned long long int somaR = 0;
     unsigned long long int somaG = 0;
     unsigned long long int somaB = 0;
-    int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
+    unsigned long long int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
             somaR += (int) (this->matrizPixels[i][j].GetR());
@@ -303,4 +303,30 @@ int BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
     return 0;
 }
 
+long double * BMP::variancia(double * valorMedio){
+    unsigned long long int somaR = 0;
+    unsigned long long int somaG = 0;
+    unsigned long long int somaB = 0;
+    unsigned long long int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
+    for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
+        for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
+            somaR += pow(((int)(this->matrizPixels[i][j].GetR()) - valorMedio[0]), 2);
+            somaG += pow(((int)(this->matrizPixels[i][j].GetG()) - valorMedio[1]), 2);
+            somaB += pow(((int)(this->matrizPixels[i][j].GetB()) - valorMedio[2]), 2);
+        }
+    }
+    long double *valores;
+    valores = new long double[3];
+    valores[0] = somaR / divisor;
 
+    valores[1] = somaG / divisor;
+
+    valores[2] = somaB / divisor;
+
+    return valores;
+    
+}
+
+double * BMP::covariancia(){
+    
+}
