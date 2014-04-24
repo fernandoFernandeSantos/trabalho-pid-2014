@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
     const char* FILENAM = "CanMan.bmp";
 //    const char* FILENAM = "CanMan.bmp";
-    cout << "asd";
+//    cout << "asd";
    
     BMP arquivo;
     ifstream input(FILENAM, ios::binary);
