@@ -142,8 +142,25 @@ void BMP::read(std::ifstream* input) {
 }
 
 void BMP::printInfo() {
+    std::cout << "\nHeader\n-------------" << std::endl;
     this->cabecalhoImagem.print();
+    std::cout << "\nBitMapHeader\n-------------" << std::endl;
     this->cabecalhoBitMap.print();
+    if(this->GetPaletaCores() != NULL){
+        std::cout << "\nPaleta de Cores\n-------------" << std::endl;
+        CollorPallet *paleta =this->GetPaletaCores();
+//        std::cout << "cores usadas" << this->cabecalhoBitMap.GetBiCrlUsed() << std::endl; 
+        for(int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed();i++){
+            std::cout << "R:" << (int)paleta[i].GetRed() << std::endl;
+            std::cout << "G:" << (int)paleta[i].GetGreen() << std::endl;
+            std::cout << "B:" << (int)paleta[i].GetBlue() << std::endl;
+            std::cout << "T:" << (int)paleta[i].GetReservado() << std::endl;
+            std::cout << "-------------" << std::endl;
+        }
+        
+    }
+    
+    std::cout << "\nResto\n-------------" << std::endl;
     int numeroCores = this->cabecalhoBitMap.GetBiCrlUsed();
     long double* resultado = this->variancia(this->valorMedio());
     for (int i = 0; i < 3; i++) {
