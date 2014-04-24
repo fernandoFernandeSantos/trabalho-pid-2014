@@ -15,7 +15,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    const char* FILENAM = "Flores.bmp";
+    const char* FILENAM = "CanMan.bmp";
 //    const char* FILENAM = "CanMan.bmp";
     cout << "asd";
    
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     ifstream input(FILENAM, ios::binary);
     arquivo.read(&input);
     arquivo.printInfo();
-    //arquivo.salvar("NovoArquivo.bmp");
+    arquivo.salvar("NovoArquivo.bmp");
     input.close();
     
     /*

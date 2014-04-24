@@ -11,6 +11,7 @@
 #include "BitMapHeader.h"
 #include "Header.h"
 #include "Pixel.h"
+#include "Matriz.h"
 #define	BMP_H
 
 
@@ -31,7 +32,7 @@ public:
     void printInfo();
     double* valorMedio();
     bool salvar(const char* nomeArquivo);
-    int findIndex(unsigned char r, unsigned char g, unsigned char b);
+    unsigned char findIndex(unsigned char r, unsigned char g, unsigned char b);
     long double * variancia(double * valorMedio);
     double * covariancia();
     
@@ -41,6 +42,7 @@ private:
     BitMapHeader cabecalhoBitMap; //cabeçalho do mapa de bits
     Header cabecalhoImagem; //cabeçalho do arquivo
     Pixel **matrizPixels; //armazena os dados do bmp
+    //Matriz<Pixel> matrizPixels2;
 
 
 };
