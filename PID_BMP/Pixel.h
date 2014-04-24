@@ -11,26 +11,22 @@
 class Pixel {
 public:
     Pixel();
+    Pixel(unsigned char r, unsigned char g, unsigned char b);
     Pixel(const Pixel& orig);
     virtual ~Pixel();
     unsigned char GetB() const;
     unsigned char GetG() const;
-    unsigned char GetT() const;
     unsigned char GetR() const;
-    void SetT(unsigned char T);
     void SetB(unsigned char T);
     void SetR(unsigned char T);
     void SetG(unsigned char T);
-    void setRGB(unsigned char r, unsigned char g, unsigned char b, 
-                        unsigned char t);
     void setRGB(unsigned char r, unsigned char g, unsigned char b);
+    
 
 private:
     unsigned char R; // representante da cor vermelha
     unsigned char G; // representante da cor verde
     unsigned char B; // representante da cor azul
-    unsigned char T; // representante da transparência em BMPs com 32 bits
-
 };
 
 #endif	/* PIXEL_H */
