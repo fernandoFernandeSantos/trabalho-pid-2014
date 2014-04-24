@@ -10,6 +10,12 @@
 Pixel::Pixel() {
 }
 
+Pixel::Pixel(unsigned char r, unsigned char g, unsigned char b){
+    this->R = r;
+    this->B = b;
+    this->G = g;
+}
+
 Pixel::Pixel(const Pixel& orig) {
 }
 
@@ -40,20 +46,6 @@ void Pixel::SetR(unsigned char R) {
     this->R = R;
 }
 
-unsigned char Pixel::GetT() const {
-    return T;
-}
-
-void Pixel::SetT(unsigned char T) {
-    this->T = T;
-}
-
-void Pixel::setRGB(unsigned char r, unsigned char g, unsigned char b, unsigned char t){
-    this->T = t;
-    this->R = r;
-    this->B = b;
-    this->G = g;
-}
 void Pixel::setRGB(unsigned char r, unsigned char g, unsigned char b){
     this->R = r;
     this->B = b;

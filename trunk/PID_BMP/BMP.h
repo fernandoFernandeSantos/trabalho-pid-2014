@@ -26,8 +26,8 @@ public:
     void SetCabecalhoImagen(Header cabecalhoImagen);
     CollorPallet* GetPaletaCores() const;
     void SetPaletaCores(CollorPallet* paletaCores);
-    Pixel **GetMatrizPixels() const;
-    void SetMatrizPixels(Pixel** matrizPixels);
+    Matriz<Pixel> GetMatrizPixels() const;
+    void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
     void printInfo();
     double* valorMedio();
@@ -41,8 +41,8 @@ private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
     BitMapHeader cabecalhoBitMap; //cabeçalho do mapa de bits
     Header cabecalhoImagem; //cabeçalho do arquivo
-    Pixel **matrizPixels; //armazena os dados do bmp
-    //Matriz<Pixel> matrizPixels2;
+    //armazena os dados do bmp
+    Matriz<Pixel> matrizPixels;
 
 
 };

@@ -18,7 +18,6 @@
       <itemPath>BitMapHeader.cpp</itemPath>
       <itemPath>CollorPallet.cpp</itemPath>
       <itemPath>Header.cpp</itemPath>
-      <itemPath>Matriz.cpp</itemPath>
       <itemPath>Pixel.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -64,8 +63,6 @@
       </item>
       <item path="Header.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Matriz.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="Matriz.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Pixel.cpp" ex="false" tool="1" flavor2="0">
@@ -110,8 +107,6 @@
       <item path="Header.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Header.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Matriz.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Matriz.h" ex="false" tool="3" flavor2="0">
       </item>

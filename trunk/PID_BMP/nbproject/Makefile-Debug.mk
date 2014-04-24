@@ -39,7 +39,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/BitMapHeader.o \
 	${OBJECTDIR}/CollorPallet.o \
 	${OBJECTDIR}/Header.o \
-	${OBJECTDIR}/Matriz.o \
 	${OBJECTDIR}/Pixel.o \
 	${OBJECTDIR}/main.o
 
@@ -87,11 +86,6 @@ ${OBJECTDIR}/Header.o: Header.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Header.o Header.cpp
-
-${OBJECTDIR}/Matriz.o: Matriz.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Matriz.o Matriz.cpp
 
 ${OBJECTDIR}/Pixel.o: Pixel.cpp 
 	${MKDIR} -p ${OBJECTDIR}
