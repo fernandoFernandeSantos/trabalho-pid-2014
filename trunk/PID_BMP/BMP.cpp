@@ -100,8 +100,7 @@ void BMP::read(std::ifstream* input) {
         while (true) {
             input->read((char*) & elemento, sizeof (unsigned char));
             try {
-                char* elementoTrans = new char(elemento);
-                int posicao = (int) strtol(elementoTrans, NULL, 16);
+                unsigned char posicao =  elemento;
                 this->matrizPixels[linha][coluna].setRGB(
                         this->paletaCores[posicao].GetRed(),
                         this->paletaCores[posicao].GetGreen(),
@@ -238,12 +237,10 @@ bool BMP::salvar(const char* nomeArquivo) {
                 int linha = 0, coluna = 0;
                 while (true) {
                     try {
-                        int indice = this->findIndex(this->matrizPixels[linha][coluna].GetR(),
+                        unsigned char indice = this->findIndex(this->matrizPixels[linha][coluna].GetR(),
                                 this->matrizPixels[linha][coluna].GetG(),
                                 this->matrizPixels[linha][coluna].GetB());
-                        char* hex;
-                        std::sprintf(hex, "%x", indice);
-                        arquivoSaida.write(hex, sizeof (hex));
+                        arquivoSaida.write((char*) & indice, sizeof (unsigned char));
                         coluna++;
                         if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                             linha++;
@@ -292,8 +289,8 @@ bool BMP::salvar(const char* nomeArquivo) {
     return true;
 }
 
-int BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
-    for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+unsigned  char BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
+    for (unsigned char i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
         if ((r == this->paletaCores[i].GetRed())
                 && (g == this->paletaCores[i].GetGreen())
                 && (b == this->paletaCores[i].GetBlue())) {
