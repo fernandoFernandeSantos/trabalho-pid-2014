@@ -64,46 +64,52 @@ void BMP::read(std::ifstream* input) {
     this->cabecalhoBitMap.read(input);
     //verifica se tem mapa de cores
 
-    if (this->cabecalhoBitMap.GetBiCrlUsed() <= 256 && this->cabecalhoBitMap.GetBiCrlUsed()) { //tem mapa de cores
-        this->paletaCores = new CollorPallet[(int) this->cabecalhoBitMap.GetBiCrlUsed()];
+    if (this->cabecalhoBitMap.GetBiBitCount() == 8) { //tem mapa de cores
+        int tamanho = (int) pow(2, this->cabecalhoBitMap.GetBiBitCount());
+        this->paletaCores = new CollorPallet[tamanho];
         //lê a paleta de cores
         unsigned char r, g, b, t;
-        for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+        for (int i = 0; i < tamanho; i++) {
             input->read((char*) & b, sizeof (unsigned char));
             input->read((char*) & g, sizeof (unsigned char));
             input->read((char*) & r, sizeof (unsigned char));
             input->read((char*) & t, sizeof (unsigned char));
+
             this->paletaCores[i].setCor(r, g, b, t);
+
+
         }
     }
 
     //aloca matriz de pixels
     this->matrizPixels.mAlloc(this->cabecalhoBitMap.GetBiHeigth(), this->cabecalhoBitMap.GetBiWidth());
-
+    //tamanho imagem
+    unsigned int lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
+    unsigned char aux;
     //lê o arquivo para 8 bits
     if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
         unsigned char elemento;
         int linha = 0, coluna = 0;
+        int aux = 0;
         while (true) {
             input->read((char*) & elemento, sizeof (unsigned char));
-            try {
-                unsigned char posicao =  elemento;
-                this->matrizPixels.set(linha,coluna, Pixel(this->paletaCores[posicao].GetRed(), 
-                                                        this->paletaCores[posicao].GetGreen(),
-                                                        this->paletaCores[posicao].GetBlue()));
-                coluna++;
-                if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
-                    linha++;
-                    coluna = 0;
-                    if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
-                        break;
-                    }
+            Pixel p(this->paletaCores[elemento].GetRed(),
+                    this->paletaCores[elemento].GetGreen(),
+                    this->paletaCores[elemento].GetBlue());
+            this->matrizPixels.set(linha, coluna, p);
+            coluna++;
+            if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
+                for (int i = 0; i < lixo * 3; i++) {
+                    input->read((char*) &aux, sizeof (unsigned char));
                 }
-            } catch (std::exception& ex) {
-                std::cout << "Pau na conversão";
-                break;
+                linha++;
+                coluna = 0;
+                if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
+                    break;
+                }
             }
         }
+        cout << aux;
     }
     //lê o arquivo para 24 bits
     if (this->cabecalhoBitMap.GetBiBitCount() == 24) {
@@ -113,16 +119,21 @@ void BMP::read(std::ifstream* input) {
             input->read((char*) & b, sizeof (unsigned char));
             input->read((char*) & g, sizeof (unsigned char));
             input->read((char*) & r, sizeof (unsigned char));
-            this->matrizPixels.set(linha,coluna, Pixel(r,g, b));
+            Pixel p(r, g, b);
+            this->matrizPixels.set(linha, coluna, p);
             coluna++;
+
             if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
+                for (int i = 0; i < lixo; i++) {
+                    input->read((char*) &aux, sizeof (unsigned char));
+
+                }
                 linha++;
                 coluna = 0;
                 if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
                     break;
                 }
             }
-
         }
     }
 }
@@ -132,23 +143,7 @@ void BMP::printInfo() {
     this->cabecalhoImagem.print();
     std::cout << "\nBitMapHeader\n-------------" << std::endl;
     this->cabecalhoBitMap.print();
-    if(this->GetPaletaCores() != NULL){
-        std::cout << "\nPaleta de Cores\n-------------" << std::endl;
-        CollorPallet *paleta =this->GetPaletaCores();
-//        std::cout << "cores usadas" << this->cabecalhoBitMap.GetBiCrlUsed() << std::endl; 
-        for(int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed();i++){
-            std::cout << "R:" << (int)paleta[i].GetRed() << std::endl;
-            std::cout << "G:" << (int)paleta[i].GetGreen() << std::endl;
-            std::cout << "B:" << (int)paleta[i].GetBlue() << std::endl;
-            std::cout << "T:" << (int)paleta[i].GetReservado() << std::endl;
-            std::cout << "-------------" << std::endl;
-        }
-        
-    }
-    
-    std::cout << "\nResto\n-------------" << std::endl;
-    int numeroCores = this->cabecalhoBitMap.GetBiCrlUsed();
-    long double* resultado = this->variancia(this->valorMedio());
+    double* resultado = this->valorMedio();
     for (int i = 0; i < 3; i++) {
         std::cout << resultado[i] << "\n";
 
@@ -159,12 +154,18 @@ double* BMP::valorMedio() {
     unsigned long long int somaR = 0;
     unsigned long long int somaG = 0;
     unsigned long long int somaB = 0;
-    unsigned long long int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
+    unsigned int altura = this->cabecalhoBitMap.GetBiHeigth();
+    unsigned int largura = this->cabecalhoBitMap.GetBiWidth();
+    unsigned long long int divisor = altura * largura;
+    unsigned char r, g, b;
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
-            somaR += (int) (this->matrizPixels.get(i,j).GetR());
-            somaG += (int) (this->matrizPixels.get(i,j).GetG());
-            somaB += (int) (this->matrizPixels.get(i,j).GetB());
+            r = (this->matrizPixels.get(i, j).GetR());
+            g = (this->matrizPixels.get(i, j).GetG());
+            b = (this->matrizPixels.get(i, j).GetB());
+            somaR += r;
+            somaG += g;
+            somaB += b;
         }
     }
     double *valores;
@@ -209,23 +210,25 @@ bool BMP::salvar(const char* nomeArquivo) {
             arquivoSaida.write((char*) & BfOffSetBits, sizeof (BfOffSetBits));
 
             //grava o cabeçalho da imagem
-            arquivoSaida.write((char*) & BiSize,sizeof (BiSize));
-            arquivoSaida.write((char*) & BiWidth,sizeof (BiWidth));
-            arquivoSaida.write((char*) & BiHeigth,sizeof (BiHeigth));
-            arquivoSaida.write((char*) & BiPlanes,sizeof (BiPlanes));
-            arquivoSaida.write((char*) & BiBitCount,sizeof (BiBitCount));
-            arquivoSaida.write((char*) & BiCompress,sizeof (BiCompress));
-            arquivoSaida.write((char*) & BiSizeImage,sizeof (BiSizeImage));
-            arquivoSaida.write((char*) & BiXPPMeter,sizeof (BiXPPMeter));
-            arquivoSaida.write((char*) & BiYPPMeter,sizeof (BiYPPMeter));
-            arquivoSaida.write((char*) & BiCrlUsed,sizeof (BiCrlUsed));
-            arquivoSaida.write((char*) & BiClrImport,sizeof (BiClrImport));
+            arquivoSaida.write((char*) & BiSize, sizeof (BiSize));
+            arquivoSaida.write((char*) & BiWidth, sizeof (BiWidth));
+            arquivoSaida.write((char*) & BiHeigth, sizeof (BiHeigth));
+            arquivoSaida.write((char*) & BiPlanes, sizeof (BiPlanes));
+            arquivoSaida.write((char*) & BiBitCount, sizeof (BiBitCount));
+            arquivoSaida.write((char*) & BiCompress, sizeof (BiCompress));
+            arquivoSaida.write((char*) & BiSizeImage, sizeof (BiSizeImage));
+            arquivoSaida.write((char*) & BiXPPMeter, sizeof (BiXPPMeter));
+            arquivoSaida.write((char*) & BiYPPMeter, sizeof (BiYPPMeter));
+            arquivoSaida.write((char*) & BiCrlUsed, sizeof (BiCrlUsed));
+            arquivoSaida.write((char*) & BiClrImport, sizeof (BiClrImport));
 
-
+            unsigned int lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
+            unsigned char aux;
             //se tem paleta de cores grava a paleta e a matriz
             if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
                 unsigned char r, g, b, t;
-                for (int i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+                int tamanho = (int) pow(2, this->cabecalhoBitMap.GetBiBitCount());
+                for (int i = 0; i < tamanho; i++) {
                     b = this->paletaCores[i].GetBlue();
                     g = this->paletaCores[i].GetGreen();
                     r = this->paletaCores[i].GetRed();
@@ -240,13 +243,17 @@ bool BMP::salvar(const char* nomeArquivo) {
                 int linha = 0, coluna = 0;
                 while (true) {
                     try {
-                        unsigned char indice = this->findIndex(this->matrizPixels.get(linha,coluna).GetR(),
-                                this->matrizPixels.get(linha,coluna).GetG(),
-                                this->matrizPixels.get(linha,coluna).GetB());
+                        unsigned char indice = this->findIndex(this->matrizPixels.get(linha, coluna).GetR(),
+                                this->matrizPixels.get(linha, coluna).GetG(),
+                                this->matrizPixels.get(linha, coluna).GetB());
                         arquivoSaida.write((char*) & indice, sizeof (unsigned char));
                         coluna++;
                         if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                             linha++;
+                            for (int i = 0; i < lixo * 3; i++) {
+                                arquivoSaida.write((char*) & aux, sizeof (unsigned char));
+
+                            }
                             coluna = 0;
                             if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
                                 break;
@@ -263,15 +270,19 @@ bool BMP::salvar(const char* nomeArquivo) {
                 unsigned char r, g, b;
                 int linha = 0, coluna = 0;
                 while (true) {
-                    r = this->matrizPixels.get(linha,coluna).GetR();
-                    g = this->matrizPixels.get(linha,coluna).GetG();
-                    b = this->matrizPixels.get(linha,coluna).GetB();
-                    arquivoSaida.write((char*) & b,sizeof (unsigned char));
-                    arquivoSaida.write((char*) & g,sizeof (unsigned char));
-                    arquivoSaida.write((char*) & r,sizeof (unsigned char));
+                    r = this->matrizPixels.get(linha, coluna).GetR();
+                    g = this->matrizPixels.get(linha, coluna).GetG();
+                    b = this->matrizPixels.get(linha, coluna).GetB();
+                    arquivoSaida.write((char*) & b, sizeof (unsigned char));
+                    arquivoSaida.write((char*) & g, sizeof (unsigned char));
+                    arquivoSaida.write((char*) & r, sizeof (unsigned char));
                     coluna++;
                     if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                         linha++;
+                        for (int i = 0; i < lixo; i++) {
+                            arquivoSaida.write((char*) & aux, sizeof (unsigned char));
+
+                        }
                         coluna = 0;
                         if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
                             break;
@@ -292,8 +303,9 @@ bool BMP::salvar(const char* nomeArquivo) {
     return true;
 }
 
-unsigned  char BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
-    for (unsigned char i = 0; i < this->cabecalhoBitMap.GetBiCrlUsed(); i++) {
+unsigned char BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) {
+    int tamanho = (int) pow(2, this->cabecalhoBitMap.GetBiBitCount());
+    for (unsigned char i = 0; i < tamanho; i++) {
         if ((r == this->paletaCores[i].GetRed())
                 && (g == this->paletaCores[i].GetGreen())
                 && (b == this->paletaCores[i].GetBlue())) {
@@ -303,16 +315,16 @@ unsigned  char BMP::findIndex(unsigned char r, unsigned char g, unsigned char b)
     return 0;
 }
 
-long double * BMP::variancia(double * valorMedio){
+long double * BMP::variancia(double * valorMedio) {
     unsigned long long int somaR = 0;
     unsigned long long int somaG = 0;
     unsigned long long int somaB = 0;
     unsigned long long int divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
-            somaR += pow(((int)(this->matrizPixels.get(i,j).GetR()) - valorMedio[0]), 2);
-            somaG += pow(((int)(this->matrizPixels.get(i,j).GetG()) - valorMedio[1]), 2);
-            somaB += pow(((int)(this->matrizPixels.get(i,j).GetB()) - valorMedio[2]), 2);
+            somaR += pow(((int) (this->matrizPixels.get(i, j).GetR()) - valorMedio[0]), 2);
+            somaG += pow(((int) (this->matrizPixels.get(i, j).GetG()) - valorMedio[1]), 2);
+            somaB += pow(((int) (this->matrizPixels.get(i, j).GetB()) - valorMedio[2]), 2);
         }
     }
     long double *valores;
@@ -324,9 +336,9 @@ long double * BMP::variancia(double * valorMedio){
     valores[2] = somaB / divisor;
 
     return valores;
-    
+
 }
 
-double * BMP::covariancia(){
-    
+double * BMP::covariancia() {
+
 }
