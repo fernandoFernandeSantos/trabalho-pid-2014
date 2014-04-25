@@ -17,6 +17,9 @@ Pixel::Pixel(unsigned char r, unsigned char g, unsigned char b){
 }
 
 Pixel::Pixel(const Pixel& orig) {
+    this->R = orig.R;
+    this->G = orig.G;
+    this->B = orig.B;
 }
 
 Pixel::~Pixel() {
