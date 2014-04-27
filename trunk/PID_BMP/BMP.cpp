@@ -138,25 +138,13 @@ void BMP::read(std::ifstream* input) {
     }
 }
 
-void BMP::printInfo() {
-    std::cout << "\nHeader\n-------------" << std::endl;
-    this->cabecalhoImagem.print();
-    std::cout << "\nBitMapHeader\n-------------" << std::endl;
-    this->cabecalhoBitMap.print();
-    double* resultado = this->valorMedio();
-    for (int i = 0; i < 3; i++) {
-        std::cout << resultado[i] << "\n";
-
-    }
-}
-
-double* BMP::valorMedio() {
+long double* BMP::valorMedio() {
     unsigned long long int somaR = 0;
     unsigned long long int somaG = 0;
     unsigned long long int somaB = 0;
     unsigned int altura = this->cabecalhoBitMap.GetBiHeigth();
     unsigned int largura = this->cabecalhoBitMap.GetBiWidth();
-    unsigned long long int divisor = altura * largura;
+    long double divisor = altura * largura;
     unsigned char r, g, b;
     for (int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
         for (int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
@@ -168,8 +156,8 @@ double* BMP::valorMedio() {
             somaB += b;
         }
     }
-    double *valores;
-    valores = new double[3];
+    long double *valores;
+    valores = new long double[3];
     valores[0] = somaR / divisor;
 
     valores[1] = somaG / divisor;
@@ -315,7 +303,7 @@ unsigned char BMP::findIndex(unsigned char r, unsigned char g, unsigned char b) 
     return 0;
 }
 
-long double * BMP::variancia(double * valorMedio) {
+long double * BMP::variancia(long double * valorMedio) {
     unsigned long long int somaR = 0;
     unsigned long long int somaG = 0;
     unsigned long long int somaB = 0;
@@ -339,6 +327,45 @@ long double * BMP::variancia(double * valorMedio) {
 
 }
 
-double * BMP::covariancia() {
+long double * BMP::covariancia(BMP g2) {
+    unsigned char rThis, gThis, bThis;
+    unsigned char rG2, gG2, bG2;
+    long long int somaR = 0;
+    long long int somaG = 0;
+    long long int somaB = 0;
+    //vou pegar as dimensões da menor imagem
+    unsigned long int altura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
+            this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
+    unsigned long int largura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
+            this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
+    //pega as médias
+    long double *valorMedioThis = this->valorMedio();
+    long double *valorMedioG2 = g2.valorMedio();
 
+    long long int divisor = altura * largura;
+    for (int i = 0; i < altura; i++) {
+        for (int j = 0; j < largura; j++) {
+            rThis = (this->matrizPixels.get(i, j).GetR());
+            gThis = (this->matrizPixels.get(i, j).GetG());
+            bThis = (this->matrizPixels.get(i, j).GetB());
+
+            rG2 = g2.matrizPixels.get(i, j).GetR();
+            gG2 = g2.matrizPixels.get(i, j).GetG();
+            bG2 = g2.matrizPixels.get(i, j).GetB();
+
+            somaR += rThis * rG2;
+            somaG += gThis * gG2;
+            somaB += bThis * bG2;
+        }
+
+    }
+    long double *valores;
+    valores = new long double[3];
+    valores[0] = somaR / divisor;
+
+    valores[1] = somaG / divisor;
+
+    valores[2] = somaB / divisor;
+
+    return valores;
 }
