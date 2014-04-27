@@ -14,7 +14,6 @@
 #include "Matriz.h"
 #define	BMP_H
 
-
 class BMP {
 public:
     BMP();
@@ -29,13 +28,14 @@ public:
     Matriz<Pixel> GetMatrizPixels() const;
     void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
-    void printInfo();
-    double* valorMedio();
     bool salvar(const char* nomeArquivo);
     unsigned char findIndex(unsigned char r, unsigned char g, unsigned char b);
-    long double * variancia(double * valorMedio);
-    double * covariancia();
     
+    //operações
+    long double * variancia(long double * valorMedio);
+    long double * covariancia(BMP g2);
+    long double* valorMedio();
+
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
