@@ -96,7 +96,7 @@ void BitMapHeader::SetBiYPPMeter(unsigned int BiYPPMeter) {
     this->BiYPPMeter = BiYPPMeter;
 }
 
-unsigned int BitMapHeader::GetBiSizeImage() const {
+unsigned int BitMapHeader::GetBiSizeImage() const{
     return this->BiSizeImage;
 }
 
@@ -115,12 +115,15 @@ void BitMapHeader::read(std::ifstream *input){
     input->read((char*)&this->BiYPPMeter,sizeof(this->BiYPPMeter)); 
     input->read((char*)&this->BiCrlUsed,sizeof(this->BiCrlUsed)); 
     input->read((char*)&this->BiClrImport,sizeof(this->BiClrImport)); 
+    
 }
 
 void BitMapHeader::print(){
-    std::cout << "BiSize     :" << this->GetBiSize() << std::endl;
+    std::cout << "BiSize     :" << this->GetBiSize() << std::endl;    
+    
+    unsigned int a =  this->GetBiHeigth();
     std::cout << "BiWidth    :" << this->GetBiWidth() << std::endl;
-    std::cout << "BiHeigth   :" << this->GetBiHeigth() << std::endl;
+    std::cout << "BiHeigth   :" << a << std::endl;
     std::cout << "BiPlanes   :" << this->GetBiPlanes() << std::endl;
     std::cout << "BiBitCount :" << this->GetBiBitCount() << std::endl;
     std::cout << "BiCompress :" << this->GetBiCompress() << std::endl;

@@ -71,5 +71,5 @@ void Header::print() {
     std::cout << "BfSize       : " << this->GetBfSize() << std::endl;
     std::cout << "BfRezer1     : " << this->GetBfReser1() << std::endl;
     std::cout << "BfRezer2     : " << this->GetBfReser1() << std::endl;
-    std::cout << "BfOffSetBits: " << this->GetBfOffSetBits() << std::endl;
+    std::cout << "BfOffSetBits : " << this->GetBfOffSetBits() << std::endl;
 }

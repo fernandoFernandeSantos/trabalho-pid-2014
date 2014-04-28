@@ -6,6 +6,16 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/BMP.h</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/Header.cpp</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/main.cpp</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/CollorPallet.h</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/BitMapHeader.cpp</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/BMP.cpp</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/Header.h</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/CollorPallet.cpp</file>
+            <file>file:/home/marcelo/Dropbox/PID/PID_BMP/BitMapHeader.h</file>
+        </group>
     </open-files>
 </project-private>
