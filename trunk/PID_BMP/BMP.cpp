@@ -17,6 +17,10 @@ BMP::BMP() {
 }
 
 BMP::BMP(const BMP& orig) {
+    this->cabecalhoBitMap = orig.cabecalhoBitMap;
+    this->cabecalhoImagem = orig.cabecalhoImagem;
+    this->matrizPixels = orig.matrizPixels;
+    this->paletaCores = orig.paletaCores;
 }
 
 BMP::~BMP() {
@@ -336,8 +340,8 @@ long double * BMP::covariancia(BMP g2) {
     //vou pegar as dimensões da menor imagem
     unsigned long int altura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
             this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
-    unsigned long int largura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
-            this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
+    unsigned long int largura = (this->cabecalhoBitMap.GetBiWidth() < g2.cabecalhoBitMap.GetBiWidth()) ?
+            this->cabecalhoBitMap.GetBiWidth() : g2.cabecalhoBitMap.GetBiWidth();
     //pega as médias
     long double *valorMedioThis = this->valorMedio();
     long double *valorMedioG2 = g2.valorMedio();
@@ -345,13 +349,13 @@ long double * BMP::covariancia(BMP g2) {
     long long int divisor = altura * largura;
     for (int i = 0; i < altura; i++) {
         for (int j = 0; j < largura; j++) {
-            rThis = (this->matrizPixels.get(i, j).GetR());
-            gThis = (this->matrizPixels.get(i, j).GetG());
-            bThis = (this->matrizPixels.get(i, j).GetB());
+            rThis = (this->matrizPixels.get(i, j).GetR() - valorMedioThis[0]);
+            gThis = (this->matrizPixels.get(i, j).GetG() - valorMedioThis[1]);
+            bThis = (this->matrizPixels.get(i, j).GetB() - valorMedioThis[2]);
 
-            rG2 = g2.matrizPixels.get(i, j).GetR();
-            gG2 = g2.matrizPixels.get(i, j).GetG();
-            bG2 = g2.matrizPixels.get(i, j).GetB();
+            rG2 = g2.matrizPixels.get(i, j).GetR() - valorMedioG2[0];
+            gG2 = g2.matrizPixels.get(i, j).GetG() - valorMedioG2[1];
+            bG2 = g2.matrizPixels.get(i, j).GetB() - valorMedioG2[2];
 
             somaR += rThis * rG2;
             somaG += gThis * gG2;
