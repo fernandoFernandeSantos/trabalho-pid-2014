@@ -13,7 +13,7 @@ static void opcoes() {
     system("clear");
     cout << "\n************************************************\n" <<
             "*                Trabalho de PID               *\n" <<
-            "*                by Japa and Bordoada            *\n" <<
+            "*                by Japa and Bordoada          *\n" <<
             "************************************************\n\n";
     cout << " [1] Abrir arquivo\n" <<
             " [2] Salvar arquivo\n" <<
@@ -96,7 +96,7 @@ int main(void) {
                     continua();
                     break;
                 }
-                arquivo.GetCabecalhoImagem().print();
+                arquivo.printCabecalhoArquivo();
                 continua();
 
                 break;
@@ -108,7 +108,7 @@ int main(void) {
                     continua();
                     break;
                 }
-                arquivo.GetCabecalhoBitMap().print();
+                arquivo.printCabecalhoImagem();
 
                 continua();
                 break;

@@ -35,6 +35,8 @@ public:
     long double * variancia(long double * valorMedio);
     long double * covariancia(BMP g2);
     long double* valorMedio();
+    void printCabecalhoArquivo();
+    void printCabecalhoImagem();
 
 
 private:

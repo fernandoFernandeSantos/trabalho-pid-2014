@@ -369,3 +369,11 @@ long double * BMP::covariancia(BMP g2) {
 
     return valores;
 }
+
+void BMP::printCabecalhoArquivo(){
+    this->cabecalhoImagem.print();
+}
+
+void BMP::printCabecalhoImagem(){
+    this->cabecalhoBitMap.print();
+}
