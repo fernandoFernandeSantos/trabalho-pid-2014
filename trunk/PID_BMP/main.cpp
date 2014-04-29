@@ -51,6 +51,9 @@ int main(void) {
                 if (s == 'n')
                     break;
                 cout << "\nEntre com o nome do arquivo(maxímo 100 caracteres): ";
+                cout << "\n*Caso esteja no diretório do projeto: NomeImagem.bmp\n ";
+                cout << "\n*Caso esteja fora do diretório do projeto: /MeuDiretorio/NomeImagem.bmp\n ";
+                cout << "\nNome:";
                 cin >> nome;
                 try {
                     input.open(nome, ios::binary);
@@ -149,7 +152,10 @@ int main(void) {
                     continua();
                     break;
                 }
-                cout << "\nEntre com o nome do segundo arquivo(maxímo 100 caracteres): ";
+                cout << "\nEntre com o nome do segundo arquivo(maxímo 100 caracteres) ";
+                cout << "\n*Caso esteja no diretório do projeto: NomeImagem.bmp\n ";
+                cout << "\n*Caso esteja fora do diretório do projeto: /MeuDiretorio/NomeImagem.bmp\n ";
+                cout << "\nNome:";
                 cin >> nome;
                 try {
                     inputCovariancia.open(nome, ios::binary);

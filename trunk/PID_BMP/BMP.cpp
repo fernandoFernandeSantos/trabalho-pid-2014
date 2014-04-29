@@ -25,7 +25,7 @@ BMP::BMP(const BMP& orig) {
 
 BMP::~BMP() {
     //deletar paleta de cores
-    if (this->cabecalhoBitMap.GetBiCrlUsed() <= 256 && this->cabecalhoBitMap.GetBiCrlUsed()) {
+    if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
         delete[] this->paletaCores;
         this->paletaCores = NULL;
     }
