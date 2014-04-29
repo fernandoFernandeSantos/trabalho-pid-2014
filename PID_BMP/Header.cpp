@@ -4,6 +4,15 @@ Header::Header() {
     this->BfType = NULL;
 }
 
+Header::Header(const Header & orig){
+    this->BfOffSetBits = orig.BfOffSetBits;
+    this->BfReser1 = orig.BfReser1;
+    this->BfReser2 = orig.BfReser2;
+    this->BfSize = orig.BfSize;
+    this->BfType = new unsigned char[3];
+    strcpy((char*)BfType,(char*)orig.BfType);
+}
+
 Header::~Header() {
     if (this->BfType != NULL) {
         delete[] this->BfType;

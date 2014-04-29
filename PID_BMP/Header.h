@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstring> 
 
 class Header {
 private:
@@ -21,6 +22,7 @@ private:
     //se usa paleta, então 14+40+(4 x NumeroDeCores), senão, 54
 public:
     Header();
+    Header(const Header & orig);
     ~Header();
     unsigned int GetBfOffSetBits() const;
     unsigned short GetBfReser1() const;
