@@ -21,7 +21,7 @@ static void opcoes() {
             " [4] Mostrar cabeçalho da imagem\n" <<
             " [5] Calcular valor médio dos pixels\n" <<
             " [6] Calcular variância\n" <<
-            " [7] Calcular covariância\n" <<
+            " [7] Calcular covariância(50%)\n" <<
             " [0] Sair\n\n" <<
             "Opção:";
 }
