@@ -177,6 +177,8 @@ bool BMP::salvar(const char* nomeArquivo) {
         //verifica se pode ser aberto ou não
         if (arquivoSaida.is_open() && arquivoSaida.good()) {
             //como em c só grava endereço tem que por para variavéis
+            char BfType1 = this->cabecalhoImagem.GetBfType()[0];
+            char BfType2 = this->cabecalhoImagem.GetBfType()[1];
             unsigned int BfSize = this->cabecalhoImagem.GetBfSize();
             unsigned short BfReser1 = this->cabecalhoImagem.GetBfReser1();
             unsigned short BfReser2 = this->cabecalhoImagem.GetBfReser2();
@@ -194,8 +196,8 @@ bool BMP::salvar(const char* nomeArquivo) {
             unsigned int BiClrImport = this->cabecalhoBitMap.GetBiClrImport();
 
             //grava o header
-            arquivoSaida.write((char*) this->cabecalhoImagem.GetBfType(),
-                    sizeof (char) * 2);
+            arquivoSaida.write((char*) & BfType1, sizeof (BfType1));
+            arquivoSaida.write((char*) & BfType2, sizeof (BfType2));
             arquivoSaida.write((char*) & BfSize, sizeof (BfSize));
             arquivoSaida.write((char*) & BfReser1, sizeof (BfReser1));
             arquivoSaida.write((char*) & BfReser2, sizeof (BfReser2));
