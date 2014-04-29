@@ -6,7 +6,8 @@ Header::Header() {
 
 Header::~Header() {
     if (this->BfType != NULL) {
-        delete this->BfType;
+        delete[] this->BfType;
+        this->BfType = NULL;
     }
 }
 
