@@ -50,6 +50,8 @@ int main(void) {
                 }
                 if (s == 'n')
                     break;
+                else 
+                    input.close();
                 cout << "\nEntre com o nome do arquivo(maxímo 100 caracteres): ";
                 cout << "\n*Caso esteja no diretório do projeto: NomeImagem.bmp\n ";
                 cout << "\n*Caso esteja fora do diretório do projeto: /MeuDiretorio/NomeImagem.bmp\n ";
