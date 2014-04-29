@@ -170,7 +170,8 @@ int main(void) {
                     cout << "A covariancia de R das duas imagems: " << covariancia[0] << endl;
                     cout << "A covariancia de G das duas imagems: " << covariancia[1] << endl;
                     cout << "A covariancia de B das duas imagems: " << covariancia[2] << endl;
-                    continua();
+
+                            continua();
 
                 } catch (ifstream::failure e) {
                     cout << "Exception opening/reading/closing file\n";
