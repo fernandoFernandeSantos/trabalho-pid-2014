@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -25,28 +26,47 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
-    QMenuBar *menuBar;
-    QToolBar *mainToolBar;
+    QAction *actionAbrir;
+    QAction *actionSalvar;
+    QAction *actionSair;
     QWidget *centralWidget;
+    QMenuBar *menuBar;
+    QMenu *menuArquivo;
     QStatusBar *statusBar;
+    QToolBar *mainToolBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(400, 300);
-        menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        MainWindow->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(MainWindow);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        MainWindow->addToolBar(mainToolBar);
+        MainWindow->resize(283, 299);
+        actionAbrir = new QAction(MainWindow);
+        actionAbrir->setObjectName(QStringLiteral("actionAbrir"));
+        actionSalvar = new QAction(MainWindow);
+        actionSalvar->setObjectName(QStringLiteral("actionSalvar"));
+        actionSair = new QAction(MainWindow);
+        actionSair->setObjectName(QStringLiteral("actionSair"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
+        menuBar = new QMenuBar(MainWindow);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 283, 25));
+        menuArquivo = new QMenu(menuBar);
+        menuArquivo->setObjectName(QStringLiteral("menuArquivo"));
+        MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
+        mainToolBar = new QToolBar(MainWindow);
+        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        MainWindow->insertToolBarBreak(mainToolBar);
+
+        menuBar->addAction(menuArquivo->menuAction());
+        menuArquivo->addAction(actionAbrir);
+        menuArquivo->addAction(actionSalvar);
+        menuArquivo->addAction(actionSair);
 
         retranslateUi(MainWindow);
 
@@ -56,6 +76,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        actionAbrir->setText(QApplication::translate("MainWindow", "Abrir", 0));
+        actionSalvar->setText(QApplication::translate("MainWindow", "Salvar", 0));
+        actionSair->setText(QApplication::translate("MainWindow", "Sair", 0));
+        menuArquivo->setTitle(QApplication::translate("MainWindow", "Arquivo", 0));
     } // retranslateUi
 
 };

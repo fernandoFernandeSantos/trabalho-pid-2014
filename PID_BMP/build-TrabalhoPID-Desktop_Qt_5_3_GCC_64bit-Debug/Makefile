@@ -12,13 +12,13 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I../../PID_BMP -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -I. -I. -I.
+INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I../../PID_BMP -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtPrintSupport -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -I. -I. -I.
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/opt/Qt/5.3/gcc_64 -Wl,-rpath,/opt/Qt/5.3/gcc_64/lib
-LIBS          = $(SUBLIBS) -L/opt/Qt/5.3/gcc_64/lib -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/opt/Qt/5.3/gcc_64/lib -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /opt/Qt/5.3/gcc_64/bin/qmake
@@ -314,6 +314,7 @@ Makefile: ../TrabalhoPID.pro /opt/Qt/5.3/gcc_64/mkspecs/linux-g++/qmake.conf /op
 		/opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
 		../TrabalhoPID.pro \
+		/opt/Qt/5.3/gcc_64/lib/libQt5PrintSupport.prl \
 		/opt/Qt/5.3/gcc_64/lib/libQt5Widgets.prl \
 		/opt/Qt/5.3/gcc_64/lib/libQt5Gui.prl \
 		/opt/Qt/5.3/gcc_64/lib/libQt5Core.prl
@@ -426,6 +427,7 @@ Makefile: ../TrabalhoPID.pro /opt/Qt/5.3/gcc_64/mkspecs/linux-g++/qmake.conf /op
 /opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf:
 /opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf:
 ../TrabalhoPID.pro:
+/opt/Qt/5.3/gcc_64/lib/libQt5PrintSupport.prl:
 /opt/Qt/5.3/gcc_64/lib/libQt5Widgets.prl:
 /opt/Qt/5.3/gcc_64/lib/libQt5Gui.prl:
 /opt/Qt/5.3/gcc_64/lib/libQt5Core.prl:
@@ -436,7 +438,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/TrabalhoPID1.0.0 || mkdir -p .tmp/TrabalhoPID1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.h ../BitMapHeader.h ../BMP.h ../CollorPallet.h ../Header.h ../main.cpp.save ../Matriz.h ../Pixel.h .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../BitMapHeader.cpp ../BMP.cpp ../CollorPallet.cpp ../Header.cpp ../Pixel.cpp .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.ui .tmp/TrabalhoPID1.0.0/ && (cd `dirname .tmp/TrabalhoPID1.0.0` && $(TAR) TrabalhoPID1.0.0.tar TrabalhoPID1.0.0 && $(COMPRESS) TrabalhoPID1.0.0.tar) && $(MOVE) `dirname .tmp/TrabalhoPID1.0.0`/TrabalhoPID1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/TrabalhoPID1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.h ../BitMapHeader.h ../BMP.h ../CollorPallet.h ../Header.h ../Matriz.h ../Pixel.h .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../BitMapHeader.cpp ../BMP.cpp ../CollorPallet.cpp ../Header.cpp ../Pixel.cpp .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.ui .tmp/TrabalhoPID1.0.0/ && (cd `dirname .tmp/TrabalhoPID1.0.0` && $(TAR) TrabalhoPID1.0.0.tar TrabalhoPID1.0.0 && $(COMPRESS) TrabalhoPID1.0.0.tar) && $(MOVE) `dirname .tmp/TrabalhoPID1.0.0`/TrabalhoPID1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/TrabalhoPID1.0.0
 
 
 clean:compiler_clean 
@@ -566,7 +568,7 @@ moc_mainwindow.cpp: /opt/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qicon.h \
 		../mainwindow.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/fernandofernandes/NetBeansProjects/PID_BMP -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -I. ../mainwindow.h -o moc_mainwindow.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/fernandofernandes/NetBeansProjects/PID_BMP -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtPrintSupport -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -I. ../mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -803,7 +805,52 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QVariant \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QAction \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QButtonGroup \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QHeaderView \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qstyleoption.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/opt/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qslider.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractslider.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qstyle.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qtabbar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QMenu \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QMenuBar \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qtoolbar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
+		../BMP.h \
+		../CollorPallet.h \
+		../BitMapHeader.h \
+		../Header.h \
+		../Pixel.h \
+		../Matriz.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 BitMapHeader.o: ../BitMapHeader.cpp ../BitMapHeader.h
