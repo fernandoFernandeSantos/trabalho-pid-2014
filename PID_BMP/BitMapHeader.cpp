@@ -11,6 +11,17 @@ BitMapHeader::BitMapHeader() {
 }
 
 BitMapHeader::BitMapHeader(const BitMapHeader& orig) {
+    this->BiBitCount = orig.GetBiBitCount();
+    this->BiClrImport = orig.GetBiClrImport();
+    this->BiCompress = orig.GetBiCompress();
+    this->BiCrlUsed = orig.GetBiCrlUsed();
+    this->BiHeigth = orig.GetBiHeigth();
+    this->BiPlanes = orig.GetBiPlanes();
+    this->BiSize =  orig.GetBiSize();
+    this->BiSizeImage  = orig.GetBiSizeImage();
+    this->BiWidth = orig.GetBiWidth();
+    this->BiXPPMeter = orig.GetBiXPPMeter();
+    this->BiYPPMeter = orig.GetBiYPPMeter();
 }
 
 BitMapHeader::~BitMapHeader() {

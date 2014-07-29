@@ -11,6 +11,10 @@ CollorPallet::CollorPallet() {
 }
 
 CollorPallet::CollorPallet(const CollorPallet& orig) {
+    this->Blue = orig.GetBlue();
+    this->Green = orig.GetGreen();
+    this->Red = orig.GetRed();
+    this->Reservado = orig.GetReservado();
 }
 
 CollorPallet::~CollorPallet() {

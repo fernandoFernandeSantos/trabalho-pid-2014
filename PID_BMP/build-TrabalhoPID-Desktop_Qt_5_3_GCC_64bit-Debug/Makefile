@@ -850,7 +850,14 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../BitMapHeader.h \
 		../Header.h \
 		../Pixel.h \
-		../Matriz.h
+		../Matriz.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QMessageBox \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qmessagebox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 BitMapHeader.o: ../BitMapHeader.cpp ../BitMapHeader.h

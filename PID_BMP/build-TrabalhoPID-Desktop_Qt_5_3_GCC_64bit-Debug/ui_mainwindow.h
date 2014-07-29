@@ -17,6 +17,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -30,6 +31,7 @@ public:
     QAction *actionSalvar;
     QAction *actionSair;
     QWidget *centralWidget;
+    QPushButton *pushButton;
     QMenuBar *menuBar;
     QMenu *menuArquivo;
     QStatusBar *statusBar;
@@ -48,6 +50,9 @@ public:
         actionSair->setObjectName(QStringLiteral("actionSair"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setGeometry(QRect(20, 50, 99, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -61,7 +66,6 @@ public:
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
-        MainWindow->insertToolBarBreak(mainToolBar);
 
         menuBar->addAction(menuArquivo->menuAction());
         menuArquivo->addAction(actionAbrir);
@@ -79,6 +83,7 @@ public:
         actionAbrir->setText(QApplication::translate("MainWindow", "Abrir", 0));
         actionSalvar->setText(QApplication::translate("MainWindow", "Salvar", 0));
         actionSair->setText(QApplication::translate("MainWindow", "Sair", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
         menuArquivo->setTitle(QApplication::translate("MainWindow", "Arquivo", 0));
     } // retranslateUi
 

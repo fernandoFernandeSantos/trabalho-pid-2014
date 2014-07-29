@@ -26,10 +26,13 @@ public:
     CollorPallet* GetPaletaCores() const;
     void SetPaletaCores(CollorPallet* paletaCores);
     Matriz<Pixel> GetMatrizPixels() const;
+    Matriz<int> GetHistogram() const;
     void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
     bool salvar(const char* nomeArquivo);
-    unsigned char findIndex(unsigned char r, unsigned char g, unsigned char b);
+    u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
+    //aloca o histograma de acordo com a imagem
+    void mallocHistogram();
     
     //operações
     long double * variancia(long double * valorMedio);
@@ -37,6 +40,9 @@ public:
     long double* valorMedio();
     void printCabecalhoArquivo();
     void printCabecalhoImagem();
+    bool makeHistogram();
+
+
 
 
 private:
@@ -45,6 +51,7 @@ private:
     Header cabecalhoImagem; //cabeçalho do arquivo
     //armazena os dados do bmp
     Matriz<Pixel> matrizPixels;
+    Matriz<int> Histograma;
 
 
 };
