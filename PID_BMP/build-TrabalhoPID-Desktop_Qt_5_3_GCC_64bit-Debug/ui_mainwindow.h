@@ -36,6 +36,7 @@ public:
     QMenu *menuArquivo;
     QStatusBar *statusBar;
     QToolBar *mainToolBar;
+    QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -52,7 +53,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(20, 50, 99, 27));
+        pushButton->setGeometry(QRect(60, 50, 99, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -66,6 +67,9 @@ public:
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        toolBar = new QToolBar(MainWindow);
+        toolBar->setObjectName(QStringLiteral("toolBar"));
+        MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
 
         menuBar->addAction(menuArquivo->menuAction());
         menuArquivo->addAction(actionAbrir);
@@ -85,6 +89,7 @@ public:
         actionSair->setText(QApplication::translate("MainWindow", "Sair", 0));
         pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
         menuArquivo->setTitle(QApplication::translate("MainWindow", "Arquivo", 0));
+        toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
     } // retranslateUi
 
 };

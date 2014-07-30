@@ -41,6 +41,7 @@ public:
     void printCabecalhoArquivo();
     void printCabecalhoImagem();
     bool makeHistogram();
+    void limiarImagem(u_int32_t fator = 127);
 
 
 
