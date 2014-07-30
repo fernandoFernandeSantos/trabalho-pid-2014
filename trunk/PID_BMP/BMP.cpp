@@ -1,7 +1,7 @@
 /* 
  * File:   BMP.cpp
  * Author: fernandofernandes
- * 
+ *
  * Created on 9 de Abril de 2014, 18:19
  */
 
@@ -148,8 +148,9 @@ void BMP::read(std::ifstream* input) {
 
 void BMP::mallocHistogram(){
     //aloca a variavel Histograma
-    //////index 0 = R, 1 = G, 2 = B
-    this->Histograma.mAlloc(3, this->GetCabecalhoBitMap().GetBiCrlUsed());
+    //index 0 = R, 1 = G, 2 = B
+    this->Histograma.mAlloc(3, (this->GetCabecalhoBitMap().GetBiCrlUsed() == 0)
+                            ? 256 : this->GetCabecalhoBitMap().GetBiCrlUsed());
     this->Histograma.fill(0);
 }
 
@@ -157,22 +158,22 @@ bool BMP::makeHistogram(){
     if(this->matrizPixels.isEmpty()){
         return false;
     }else{
-      mallocHistogram();
-      u_char r, g, b;
-      Matriz<Pixel> aux = this->GetMatrizPixels();
-      for (uint i = 0; i < aux.getLinha(); i++) {
-          for (uint j = 0; j < aux.getColuna();j++) {
-             r = aux.get(i, j).GetR();
-             g = aux.get(i, j).GetG();
-             b = aux.get(i, j).GetB();
-             this->Histograma.set(0, r, this->Histograma.get(0, r) + 1);
-             this->Histograma.set(1, g, this->Histograma.get(1, g) + 1);
-             this->Histograma.set(2, b, this->Histograma.get(2, b) + 1);
-          }
+        mallocHistogram();
+        u_char r, g, b;
+        Matriz<Pixel> aux(this->GetMatrizPixels());
+        for (uint i = 0; i < aux.getLinha(); i++) {
+            for (uint j = 0; j < aux.getColuna();j++) {
+                r = aux.get(i, j).GetR();
+                g = aux.get(i, j).GetG();
+                b = aux.get(i, j).GetB();
+                this->Histograma.set(0, r, this->Histograma.get(0, r) + 1);
+                this->Histograma.set(1, g, this->Histograma.get(1, g) + 1);
+                this->Histograma.set(2, b, this->Histograma.get(2, b) + 1);
+            }
 
-      }
+        }
     }
-return true;
+    return true;
 }
 
 
@@ -272,8 +273,8 @@ bool BMP::salvar(const char* nomeArquivo) {
                 while (true) {
                     try {
                         u_char indice = this->findIndex(this->matrizPixels.get(linha, coluna).GetR(),
-                                this->matrizPixels.get(linha, coluna).GetG(),
-                                this->matrizPixels.get(linha, coluna).GetB());
+                                                        this->matrizPixels.get(linha, coluna).GetG(),
+                                                        this->matrizPixels.get(linha, coluna).GetB());
                         arquivoSaida.write((char*) & indice, sizeof (u_char));
                         coluna++;
                         if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
@@ -375,9 +376,9 @@ long double * BMP::covariancia(BMP g2) {
     int64_t somaB = 0;
     //vou pegar as dimensões da menor imagem
     unsigned long int altura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
-            this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
+                this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
     unsigned long int largura = (this->cabecalhoBitMap.GetBiWidth() < g2.cabecalhoBitMap.GetBiWidth()) ?
-            this->cabecalhoBitMap.GetBiWidth() : g2.cabecalhoBitMap.GetBiWidth();
+                this->cabecalhoBitMap.GetBiWidth() : g2.cabecalhoBitMap.GetBiWidth();
     //pega as médias
     long double *valorMedioThis = this->valorMedio();
     long double *valorMedioG2 = g2.valorMedio();
@@ -416,4 +417,26 @@ void BMP::printCabecalhoArquivo(){
 
 void BMP::printCabecalhoImagem(){
     this->cabecalhoBitMap.print();
+}
+
+void BMP::limiarImagem(u_int32_t fator){
+    u_int32_t k = 0;
+    uint lin = this->matrizPixels.getLinha();
+    uint col = this->matrizPixels.getColuna();
+    Pixel p;
+    for (uint i = 0; i < lin; i++) {
+        for (uint j = 0; j < col; j++) {
+            k = this->matrizPixels.get(i , j).GetB() +
+                    this->matrizPixels.get(i , j).GetG() +
+                    this->matrizPixels.get(i , j).GetR();
+            k /=3;
+            if(k > fator){
+                p.setRGB(255,255,255);
+                this->matrizPixels.set(i, j,p );
+            }else{
+                p.setRGB(0,0,0);
+                this->matrizPixels.set(i, j,p );
+            }
+        }
+    }
 }

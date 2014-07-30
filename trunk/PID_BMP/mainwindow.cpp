@@ -36,13 +36,14 @@ void MainWindow::on_pushButton_clicked()
 {
     BMP arquivo; //arquivo de entrada
     ifstream input;
-    input.open("Imagens/Gaviao.bmp", ios::binary);
+    input.open("../Imagens/Flores.bmp", ios::binary);
     if (!(input.good() && input.is_open())) {
         return;
     }
-    cout << "Passou aqui \n";
     arquivo.read(&input);
-    arquivo.makeHistogram();
-    cout << arquivo.GetHistogram();
-
+    arquivo.limiarImagem();
+    BMP novo(arquivo);
+    novo.salvar("gaviaoLimi.bmp");
+    input.close();
+    return;
 }
