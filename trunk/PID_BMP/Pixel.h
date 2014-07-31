@@ -21,7 +21,20 @@ public:
     void SetR(unsigned char T);
     void SetG(unsigned char T);
     void setRGB(unsigned char r, unsigned char g, unsigned char b);
-    
+    // Operador de atribuicao
+    Pixel &operator =(const Pixel &B);
+
+    // Operador de soma
+    Pixel operator +(const Pixel &B);
+
+    // Operador de subtracao
+    Pixel operator -(const Pixel &B);
+
+    //Operador de ou
+    Pixel operator |(const Pixel &B);
+
+    //operador de &
+    Pixel operator &(const Pixel &B);
 
 private:
     unsigned char R; // representante da cor vermelha

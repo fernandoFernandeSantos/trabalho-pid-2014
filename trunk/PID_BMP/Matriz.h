@@ -40,7 +40,7 @@ public:
     friend ostream &operator <<(ostream &output, const Matriz<Ta> &B);
 
     // Operador de atribuicao
-   // Matriz<T> &operator =(const Matriz<T> &B);
+    Matriz<T> &operator =(const Matriz<T> &B);
 
     // Operador de soma
     Matriz<T> operator +(const Matriz<T> &B);
@@ -56,7 +56,7 @@ public:
 template <class T>
 void Matriz<T>::mAlloc(uint l, uint c)
 {
-   // cout << "Executando construtor default inicializavel.\n";
+    // cout << "Executando construtor default inicializavel.\n";
     this->lin = l;
     this->col = c;
     if ((l == 0) || (c == 0))
@@ -100,7 +100,7 @@ Matriz<T>::Matriz(uint l, uint c)
 template<class T>
 Matriz<T>::Matriz(const Matriz &A)
 {
-   // cout << "Executando construtor de copia.\n";
+    // cout << "Executando construtor de copia.\n";
     this->lin = A.lin;
     this->col = A.col;
     this->mat = new T*[this->lin];
@@ -220,7 +220,7 @@ ostream &operator <<(ostream &output, const Matriz<Ta> &B)
 }
 
 //-------------------------------------------------------------------------
-/*
+
 // Operador de atribuicao
 template <class T>
 Matriz<T> &Matriz<T>::operator =(const Matriz<T> &B)
@@ -250,7 +250,7 @@ Matriz<T> &Matriz<T>::operator =(const Matriz<T> &B)
                 this->mat[i][j] = B.mat[i][j];
     }
     return (*this);
-}*/
+}
 
 //-------------------------------------------------------------------------
 
