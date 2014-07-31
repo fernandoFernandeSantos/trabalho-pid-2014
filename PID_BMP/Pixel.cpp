@@ -1,7 +1,7 @@
 /* 
  * File:   Pixel.cpp
  * Author: root
- * 
+ *
  * Created on 17 de Abril de 2014, 18:10
  */
 
@@ -53,4 +53,61 @@ void Pixel::setRGB(unsigned char r, unsigned char g, unsigned char b){
     this->R = r;
     this->B = b;
     this->G = g;
+}
+
+// Operador de atribuicao
+Pixel &Pixel::operator =(const Pixel &B)
+{
+    // verifica a auto-atribuicao
+    if (this != &B)
+    {
+        this->R = B.GetR();
+        this->G = B.GetG();
+        this->B = B.GetB();
+    }
+    return (*this);
+}
+
+//-------------------------------------------------------------------------
+
+// Operador +
+Pixel Pixel::operator +(const Pixel &B)
+{
+    unsigned char a = this->GetR() + B.GetR();
+    unsigned char b =  this->GetG() + B.GetG();
+    unsigned char c = this->GetB() + B.GetB();
+    Pixel soma(a, b, c);
+    return soma;
+}
+
+//-------------------------------------------------------------------------
+
+// Operador -
+Pixel Pixel::operator -(const Pixel &B)
+{
+    unsigned char a = this->GetR() - B.GetR();
+    unsigned char b =  this->GetG() - B.GetG();
+    unsigned char c = this->GetB() - B.GetB();
+    Pixel dif(a, b, c);
+    return dif;
+}
+//-------------------------------------------------------------------------
+
+//Operador |
+Pixel Pixel::operator |(const Pixel &B){
+    unsigned char a = this->GetR() | B.GetR();
+    unsigned char b =  this->GetG() | B.GetG();
+    unsigned char c = this->GetB() | B.GetB();
+    Pixel ors(a, b, c);
+    return ors;
+}
+
+//-------------------------------------------------------------------------
+//operador &
+Pixel Pixel::operator &(const Pixel &B){
+    unsigned char a = this->GetR() & B.GetR();
+    unsigned char b =  this->GetG() & B.GetG();
+    unsigned char c = this->GetB() & B.GetB();
+    Pixel ands(a, b, c);
+    return ands;
 }

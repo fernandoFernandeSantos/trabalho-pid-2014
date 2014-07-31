@@ -440,3 +440,71 @@ void BMP::limiarImagem(u_int32_t fator){
         }
     }
 }
+//1 = &; 2 = |, 3 = +, 4 = -
+bool BMP::operations(const BMP& g2, u_char operacao){
+    uint lin = this->matrizPixels.getLinha();
+    uint col = this->matrizPixels.getColuna();
+    if(g2.GetCabecalhoBitMap().GetBiHeigth() != lin || g2.GetCabecalhoBitMap().GetBiWidth() != col)
+        return false;
+
+    Matriz<Pixel> matAux(g2.GetMatrizPixels());
+    Pixel p, b;
+    if(operacao == 1){ // &
+        for (uint i = 0; i < lin; i++) {
+            for (uint j = 0; j < col; j++) {
+                p = this->matrizPixels.get(i,j);
+                b = matAux.get(i,j);
+                p = p & b;
+                this->matrizPixels.set(i, j, p);
+            }
+        }
+    }
+    if(operacao == 2){ // |
+        for (uint i = 0; i < lin; i++) {
+            for (uint j = 0; j < col; j++) {
+                p = this->matrizPixels.get(i,j);
+                b = matAux.get(i,j);
+                p = p | b;
+                this->matrizPixels.set(i, j, p);
+            }
+        }
+    }
+    if(operacao == 3){ // +
+        for (uint i = 0; i < lin; i++) {
+            for (uint j = 0; j < col; j++) {
+                p = this->matrizPixels.get(i,j);
+                b = matAux.get(i,j);
+                p = p + b;
+                this->matrizPixels.set(i, j, p);
+            }
+        }
+    }
+    if(operacao == 4){ //-
+        for (uint i = 0; i < lin; i++) {
+            for (uint j = 0; j < col; j++) {
+                p = this->matrizPixels.get(i,j);
+                b = matAux.get(i,j);
+                p = p - b;
+                this->matrizPixels.set(i, j, p);
+            }
+        }
+    }
+   return true;
+}
+
+void BMP::notOperation(){
+    uint lin = this->matrizPixels.getLinha();
+    uint col = this->matrizPixels.getColuna();
+    Pixel p;
+    u_char R,G,B;
+    for (uint i = 0; i < lin; i++) {
+        for (uint j = 0; j < col; j++) {
+            p = this->matrizPixels.get(i,j);
+            R = p.GetR();
+            G = p.GetG();
+            B = p.GetB();
+            p.setRGB(~R, ~G, ~B);
+            this->matrizPixels.set(i, j, p);
+        }
+    }
+}
