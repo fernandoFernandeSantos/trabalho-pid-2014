@@ -38,22 +38,24 @@ void MainWindow::on_pushButton_clicked()
     BMP novo;
     ifstream input, input2;
     input.open("../Imagens/Flores.bmp", ios::binary);
-    input2.open("../Imagens/FloresT.bmp", ios::binary);
+    //input2.open("../Imagens/CanMan.bmp", ios::binary);
 
     if (!(input.good() && input.is_open())) {
         return;
     }
-    if (!(input2.good() && input2.is_open())) {
-        return;
-    }
+    //if (!(input2.good() && input2.is_open())) {
+     //   return;
+    //}
     try{
         arquivo.read(&input);
-        novo.read(&input2);
+        //novo.read(&input2);
 
-        arquivo.notOperation();
+        arquivo.imageToGray();
         arquivo.salvar("teste.bmp");
+        arquivo.printCabecalhoArquivo();
+        arquivo.printCabecalhoImagem();
         input.close();
-        input2.close();
+        //input2.close();
     }catch(ifstream::failure e){
         cout << "Exception opening/reading/closing file\n";
         cout << e.what() << endl;

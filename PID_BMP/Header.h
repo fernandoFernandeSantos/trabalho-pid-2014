@@ -37,6 +37,7 @@ public:
     
     unsigned char* GetBfType() ;
     void SetBfType(unsigned char* BfType);
+    Header operator =(const Header &orig);
 
     void read(std::ifstream *input);
     void print();

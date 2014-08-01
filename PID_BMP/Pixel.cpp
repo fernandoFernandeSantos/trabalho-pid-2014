@@ -111,3 +111,29 @@ Pixel Pixel::operator &(const Pixel &B){
     Pixel ands(a, b, c);
     return ands;
 }
+
+void Pixel::operator ~(){
+    unsigned char a = ~this->GetR();
+    unsigned char b =  ~this->GetG();
+    unsigned char c = ~this->GetB();
+    this->setRGB(a, b, c);
+}
+
+Pixel Pixel::operator /(const Pixel &B){
+    unsigned char a = this->GetR() / B.GetR();
+    unsigned char b = this->GetG() / B.GetG();
+    unsigned char c = this->GetB() / B.GetB();
+    Pixel div(a,b,c);
+    return div;
+}
+
+Pixel Pixel::operator /(const unsigned int divisor){
+    unsigned char a = this->GetR();
+    unsigned char b = this->GetG();
+    unsigned char c = this->GetB();
+    unsigned int temp = a + b + c;
+    temp /=divisor;
+    a = temp;
+    Pixel div(a,a,a);
+    return div;
+}

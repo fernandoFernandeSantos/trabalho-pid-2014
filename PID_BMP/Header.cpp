@@ -83,3 +83,16 @@ void Header::print() {
     std::cout << "BfRezer2     : " << this->GetBfReser1() << std::endl;
     std::cout << "BfOffSetBits : " << this->GetBfOffSetBits() << std::endl;
 }
+
+Header Header::operator =(const Header &orig){
+    Header ret;
+    ret.SetBfOffSetBits(orig.BfOffSetBits);
+    ret.SetBfReser1(orig.BfReser1);
+    ret.SetBfReser2(orig.BfReser2);
+    ret.SetBfSize(orig.BfSize);
+    unsigned char* bft = new unsigned char[3];
+
+    strcpy((char*)bft,(char*)orig.GetBfType());
+    ret.SetBfType(bft);
+    return ret;
+}

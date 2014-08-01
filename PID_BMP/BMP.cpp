@@ -440,7 +440,7 @@ void BMP::limiarImagem(u_int32_t fator){
         }
     }
 }
-//1 = &; 2 = |, 3 = +, 4 = -
+//1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
 bool BMP::operations(const BMP& g2, u_char operacao){
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
@@ -489,22 +489,43 @@ bool BMP::operations(const BMP& g2, u_char operacao){
             }
         }
     }
-   return true;
+    if(operacao == 5){ //~
+        for (uint i = 0; i < lin; i++) {
+            for (uint j = 0; j < col; j++) {
+                p = this->matrizPixels.get(i,j);
+                ~p;
+                this->matrizPixels.set(i, j, p);
+            }
+        }
+    }
+    return true;
 }
 
-void BMP::notOperation(){
+void BMP::imageToGray(){
+    //mudando as configurações do header
+    Header he(this->GetCabecalhoImagem());
+    he.SetBfOffSetBits(1078);
+    this->SetCabecalhoImagen(he);
+
+    //mudando as configurações do bimapheader
+    BitMapHeader bitMH(this->GetCabecalhoBitMap());
+    bitMH.SetBiBitCount(8);
+    bitMH.SetBiCrlUsed(256);
+    this->SetCabecalhoBitMap(bitMH);
+
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Pixel p;
-    u_char R,G,B;
+    this->paletaCores = new CollorPallet[256];
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
             p = this->matrizPixels.get(i,j);
-            R = p.GetR();
-            G = p.GetG();
-            B = p.GetB();
-            p.setRGB(~R, ~G, ~B);
+            p = p / 3;
             this->matrizPixels.set(i, j, p);
+            this->paletaCores[p.GetB()].setCor(p.GetR(), p.GetG(),
+                                               p.GetB(), 0);
         }
+
     }
 }
+
