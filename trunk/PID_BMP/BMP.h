@@ -42,8 +42,9 @@ public:
     void printCabecalhoImagem();
     bool makeHistogram();
     void limiarImagem(u_int32_t fator = 127);
-    bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 3 = -
-    void notOperation();
+    bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
+    void imageToGray();
+
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores

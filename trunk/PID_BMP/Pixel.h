@@ -36,6 +36,15 @@ public:
     //operador de &
     Pixel operator &(const Pixel &B);
 
+    //operador de ~
+    void operator ~();
+
+    //operador de /
+    Pixel operator /(const Pixel &B);
+
+    //sobrecarga de /
+    Pixel operator /(const unsigned int divisor);
+
 private:
     unsigned char R; // representante da cor vermelha
     unsigned char G; // representante da cor verde

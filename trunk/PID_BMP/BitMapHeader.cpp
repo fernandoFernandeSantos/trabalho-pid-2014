@@ -1,7 +1,7 @@
 /* 
  * File:   BitMapHeader.cpp
  * Author: marcelo-note
- * 
+ *
  * Created on 8 de Abril de 2014, 14:45
  */
 
@@ -116,21 +116,21 @@ void BitMapHeader::SetBiSizeImage(unsigned int BiSizeImage) {
 }
 void BitMapHeader::read(std::ifstream *input){
     input->read((char*)&this->BiSize,sizeof(this->BiSize));
-    input->read((char*)&this->BiWidth,sizeof(this->BiWidth)); 
+    input->read((char*)&this->BiWidth,sizeof(this->BiWidth));
     input->read((char*)&this->BiHeigth,sizeof(this->BiHeigth));
-    input->read((char*)&this->BiPlanes,sizeof(this->BiPlanes)); 
-    input->read((char*)&this->BiBitCount,sizeof(this->BiBitCount)); 
-    input->read((char*)&this->BiCompress,sizeof(this->BiCompress)); 
-    input->read((char*)&this->BiSizeImage,sizeof(this->BiSizeImage)); 
-    input->read((char*)&this->BiXPPMeter,sizeof(this->BiXPPMeter)); 
-    input->read((char*)&this->BiYPPMeter,sizeof(this->BiYPPMeter)); 
-    input->read((char*)&this->BiCrlUsed,sizeof(this->BiCrlUsed)); 
-    input->read((char*)&this->BiClrImport,sizeof(this->BiClrImport)); 
+    input->read((char*)&this->BiPlanes,sizeof(this->BiPlanes));
+    input->read((char*)&this->BiBitCount,sizeof(this->BiBitCount));
+    input->read((char*)&this->BiCompress,sizeof(this->BiCompress));
+    input->read((char*)&this->BiSizeImage,sizeof(this->BiSizeImage));
+    input->read((char*)&this->BiXPPMeter,sizeof(this->BiXPPMeter));
+    input->read((char*)&this->BiYPPMeter,sizeof(this->BiYPPMeter));
+    input->read((char*)&this->BiCrlUsed,sizeof(this->BiCrlUsed));
+    input->read((char*)&this->BiClrImport,sizeof(this->BiClrImport));
     
 }
 
 void BitMapHeader::print(){
-    std::cout << "BiSize     :" << this->GetBiSize() << std::endl;    
+    std::cout << "BiSize     :" << this->GetBiSize() << std::endl;
     
     unsigned int a =  this->GetBiHeigth();
     std::cout << "BiWidth    :" << this->GetBiWidth() << std::endl;
@@ -143,4 +143,20 @@ void BitMapHeader::print(){
     std::cout << "BiYPPMeter :" << this->GetBiYPPMeter() << std::endl;
     std::cout << "BiCrlUsed  :" << this->GetBiCrlUsed() << std::endl;
     std::cout << "BiCrlImport:" << this->GetBiClrImport() << std::endl;
+}
+
+BitMapHeader BitMapHeader::operator =(const BitMapHeader &ori){
+    BitMapHeader ret;
+    ret.SetBiBitCount(ori.GetBiBitCount());
+    ret.SetBiClrImport(ori.GetBiClrImport());
+    ret.SetBiCompress(ori.GetBiCompress());
+    ret.SetBiCrlUsed(ori.GetBiCrlUsed());
+    ret.SetBiHeigth(ori.GetBiHeigth());
+    ret.SetBiPlanes(ori.GetBiPlanes());
+    ret.SetBiSize(ori.GetBiSize());
+    ret.SetBiSizeImage (ori.GetBiSizeImage());
+    ret.SetBiWidth(ori.GetBiWidth());
+    ret.SetBiXPPMeter(ori.GetBiXPPMeter());
+    ret.SetBiYPPMeter(ori.GetBiYPPMeter());
+    return ret;
 }

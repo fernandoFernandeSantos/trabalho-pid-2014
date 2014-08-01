@@ -62,6 +62,8 @@ public:
     void SetBiXPPMeter(unsigned int BiXPPMeter);
     void SetBiYPPMeter(unsigned int BiYPPMeter);
     void SetBiSizeImage(unsigned int BiZizeImage);
+
+    BitMapHeader operator =(const BitMapHeader &ori);
     
     void read(std::ifstream *input);
     void print();
