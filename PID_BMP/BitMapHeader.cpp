@@ -145,18 +145,17 @@ void BitMapHeader::print(){
     std::cout << "BiCrlImport:" << this->GetBiClrImport() << std::endl;
 }
 
-BitMapHeader BitMapHeader::operator =(const BitMapHeader &ori){
-    BitMapHeader ret;
-    ret.SetBiBitCount(ori.GetBiBitCount());
-    ret.SetBiClrImport(ori.GetBiClrImport());
-    ret.SetBiCompress(ori.GetBiCompress());
-    ret.SetBiCrlUsed(ori.GetBiCrlUsed());
-    ret.SetBiHeigth(ori.GetBiHeigth());
-    ret.SetBiPlanes(ori.GetBiPlanes());
-    ret.SetBiSize(ori.GetBiSize());
-    ret.SetBiSizeImage (ori.GetBiSizeImage());
-    ret.SetBiWidth(ori.GetBiWidth());
-    ret.SetBiXPPMeter(ori.GetBiXPPMeter());
-    ret.SetBiYPPMeter(ori.GetBiYPPMeter());
-    return ret;
+BitMapHeader &BitMapHeader::operator =(const BitMapHeader &ori){
+    this->SetBiBitCount(ori.GetBiBitCount());
+    this->SetBiClrImport(ori.GetBiClrImport());
+    this->SetBiCompress(ori.GetBiCompress());
+    this->SetBiCrlUsed(ori.GetBiCrlUsed());
+    this->SetBiHeigth(ori.GetBiHeigth());
+    this->SetBiPlanes(ori.GetBiPlanes());
+    this->SetBiSize(ori.GetBiSize());
+    this->SetBiSizeImage (ori.GetBiSizeImage());
+    this->SetBiWidth(ori.GetBiWidth());
+    this->SetBiXPPMeter(ori.GetBiXPPMeter());
+    this->SetBiYPPMeter(ori.GetBiYPPMeter());
+    return (*this);
 }

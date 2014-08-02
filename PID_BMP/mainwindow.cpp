@@ -37,7 +37,7 @@ void MainWindow::on_pushButton_clicked()
     BMP arquivo; //arquivo de entrada
     BMP novo;
     ifstream input, input2;
-    input.open("../Imagens/Flores.bmp", ios::binary);
+    input.open("/home/familia/NetBeansProjects/trunk/PID_BMP/Imagens/Flores.bmp", ios::binary);
     //input2.open("../Imagens/CanMan.bmp", ios::binary);
 
     if (!(input.good() && input.is_open())) {
@@ -49,9 +49,12 @@ void MainWindow::on_pushButton_clicked()
     try{
         arquivo.read(&input);
         //novo.read(&input2);
-
+        cout << "antes\n";
+                arquivo.printCabecalhoArquivo();
+                arquivo.printCabecalhoImagem();
         arquivo.imageToGray();
         arquivo.salvar("teste.bmp");
+        cout << "\nDepoi\n";
         arquivo.printCabecalhoArquivo();
         arquivo.printCabecalhoImagem();
         input.close();
