@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * File:   BMP.cpp
  * Author: fernandofernandes
  *
@@ -12,6 +12,7 @@
 #include <fstream>
 #include <exception>
 #include <cstdio>
+#define SATURATION(a,b) ((a < 0) ? b = 0:((a > 255) ? b = 255:b = a))
 
 BMP::BMP() {
 }
@@ -504,11 +505,20 @@ bool BMP::operations(const BMP& g2, u_char operacao){
 void BMP::imageToGray(){
     //mudando as configurações do header
     Header he(this->GetCabecalhoImagem());
+    BitMapHeader bitMH(this->GetCabecalhoBitMap());
+
+    if(he.GetBfOffSetBits() == 1078){
+        he.SetBfSize(((he.GetBfSize() - 1078) / 3) + 1078);
+    }else{
+        he.SetBfSize(((he.GetBfSize() - 54) / 3) + 1078);
+        this->paletaCores = new CollorPallet[256];
+    }
+
     he.SetBfOffSetBits(1078);
     this->SetCabecalhoImagen(he);
 
     //mudando as configurações do bimapheader
-    BitMapHeader bitMH(this->GetCabecalhoBitMap());
+
     bitMH.SetBiBitCount(8);
     bitMH.SetBiCrlUsed(256);
     this->SetCabecalhoBitMap(bitMH);
@@ -516,7 +526,6 @@ void BMP::imageToGray(){
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Pixel p;
-    this->paletaCores = new CollorPallet[256];
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
             p = this->matrizPixels.get(i,j);
@@ -528,4 +537,77 @@ void BMP::imageToGray(){
 
     }
 }
+
+///convolução da imagem
+/// recebe mascara de floats
+void BMP::convolution(Matriz<int> mask){
+    Matriz<Pixel>  tempMat(this->GetMatrizPixels());
+    long int maskCenterX, maskCenterY,
+            maskRows, maskCols, rows, cols,ii, jj;
+    long int nn, mm;
+
+    maskCols = mask.getColuna();
+    maskRows = mask.getLinha();
+    rows = tempMat.getLinha();
+    cols = tempMat.getColuna();
+
+    Matriz<int> outRed(rows, cols);
+    Matriz<int> outGre(rows, cols);
+    Matriz<int> outBlu(rows, cols);
+
+    outRed.fill(0);
+    outBlu.fill(0);
+    outGre.fill(0);
+
+    maskCenterX = maskCols / 2;
+    maskCenterY = maskRows / 2;
+
+    int r = 0, g = 0, b = 0;
+    Pixel p;
+    for(long int i=0; i < rows; ++i)              // rows
+    {
+        for(long int j=0; j < cols; ++j)          // columns
+        {
+            for(long int m=0; m < maskRows; ++m)     // kernel rows
+            {
+                mm = maskRows - 1 - m;      // row index of flipped kernel
+
+                for(long int n=0; n < maskCols; ++n) // kernel columns
+                {
+                    nn = maskCols - 1 - n;  // column index of flipped kernel
+
+                    // index of input signal, used for checking boundary
+                    ii = i + (m - maskCenterY);
+                    jj = j + (n - maskCenterX);
+
+                    // ignore input samples which are out of bound
+
+                    if( ii >= 0 && ii < rows && jj >= 0 && jj < cols ){
+                        //matriz original
+                        p =  tempMat.get(ii,jj);
+                        r = p.GetR() * mask.get(mm, nn);
+                        g = p.GetG() * mask.get(mm, nn);
+                        b = p.GetG() * mask.get(mm, nn);
+
+                        outRed.set(i, j, (outRed.get(i,j) + r));
+                        outGre.set(i, j, (outGre.get(i,j) + g));
+                        outBlu.set(i, j, (outBlu.get(i,j) + b));
+                    }
+                }
+            }
+        }
+    }
+    //junto os resultados
+    for(long int i = 0; i < rows; i++)
+        for(long int j = 0; j < cols; j++){
+            SATURATION(outRed.get(i,j),r);
+            SATURATION(outGre.get(i,j), g);
+            SATURATION(outBlu.get(i,j), b);
+            p.setRGB(r,g,b);
+            tempMat.set(i,j, p);
+        }
+    this->matrizPixels = tempMat;
+}
+
+
 

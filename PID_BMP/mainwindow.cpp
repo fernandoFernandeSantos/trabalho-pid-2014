@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+QString fileName;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,9 +20,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionAbrir_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
+    fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open File"), QDir::currentPath());
-
+    /*
     if (!fileName.isEmpty()) {
         QImage image(fileName);
         if (image.isNull()) {
@@ -29,7 +31,7 @@ void MainWindow::on_actionAbrir_triggered()
             return;
         }
 
-    }
+    }*/
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -37,7 +39,8 @@ void MainWindow::on_pushButton_clicked()
     BMP arquivo; //arquivo de entrada
     BMP novo;
     ifstream input, input2;
-    input.open("/home/familia/NetBeansProjects/trunk/PID_BMP/Imagens/Flores.bmp", ios::binary);
+    std::string aux = fileName.toStdString();
+    input.open(aux.c_str(), ios::binary);
     //input2.open("../Imagens/CanMan.bmp", ios::binary);
 
     if (!(input.good() && input.is_open())) {
@@ -52,7 +55,14 @@ void MainWindow::on_pushButton_clicked()
         cout << "antes\n";
                 arquivo.printCabecalhoArquivo();
                 arquivo.printCabecalhoImagem();
-        arquivo.imageToGray();
+       // arquivo.imageToGray();
+       //{{2,1,0},{1, 1,-1},{0,-1,-2}};
+        Matriz<int> aux(3,3);
+        aux.set(0,0, 2); aux.set(0,1, 1); aux.set(0, 2, 0);
+        aux.set(1,0, 1); aux.set(1,1, 1); aux.set(1,2, -1);
+        aux.set(2,0, 0); aux.set(2,1, -1); aux.set(2,2, -2);
+
+        arquivo.convolution(aux);
         arquivo.salvar("teste.bmp");
         cout << "\nDepoi\n";
         arquivo.printCabecalhoArquivo();
