@@ -20,6 +20,7 @@ private:
 public:
     Matriz(uint l = 0, uint c = 0); // Construtor default inicializavel
     Matriz(const Matriz &A);	    // Construtor de copia
+    Matriz(T **m, int ml, int mc);
     ~Matriz();		    // destruidor
     void fill(T valor);	    // preenche a matriz com um valor
     T get(uint i, uint j);	    // retorna o elemento mat[i][j]
@@ -112,6 +113,16 @@ Matriz<T>::Matriz(const Matriz &A)
         for (uint j = 0; j < this->col; j++)
             this->mat[i][j] = A.mat[i][j];
     return;
+}
+
+template<class T>
+Matriz<T>::Matriz(T **m , int ml, int nc){
+    if(this->mat == NULL || m == NULL || ml != this->lin || nc != this->col){
+        return;
+    }
+    for (uint i = 0; i < this->lin; i++)
+        for (uint j = 0; j < this->col; j++)
+            this->mat[i][j] = m[i][j];
 }
 
 ////-------------------------------------------------------------------------

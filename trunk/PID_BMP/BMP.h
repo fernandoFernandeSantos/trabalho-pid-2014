@@ -30,9 +30,7 @@ public:
     void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
     bool salvar(const char* nomeArquivo);
-    u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
-    //aloca o histograma de acordo com a imagem
-    void mallocHistogram();
+
     
     //operações
     long double * variancia(long double * valorMedio);
@@ -44,6 +42,7 @@ public:
     void limiarImagem(u_int32_t fator = 127);
     bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
     void imageToGray();
+    void convolution(Matriz<int> mask);
 
 
 private:
@@ -53,6 +52,12 @@ private:
     //armazena os dados do bmp
     Matriz<Pixel> matrizPixels;
     Matriz<int> Histograma;
+
+    //métodos privados
+    u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
+    //aloca o histograma de acordo com a imagem
+    void mallocHistogram();
+
 
 
 };
