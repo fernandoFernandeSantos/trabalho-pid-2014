@@ -31,6 +31,9 @@ public:
     void setCor(unsigned char r, unsigned char g,
                 unsigned char b, unsigned char reservado);
 
+
+    CollorPallet &operator =(const CollorPallet &orig);
+
 };
 
 #endif	/* COLLORPALLET_H */

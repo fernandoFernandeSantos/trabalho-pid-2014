@@ -502,45 +502,52 @@ bool BMP::operations(const BMP& g2, u_char operacao){
     return true;
 }
 
-void BMP::imageToGray(){
+void BMP::imageToGray(char * newName){
     //mudando as configurações do header
-    Header he(this->GetCabecalhoImagem());
-    BitMapHeader bitMH(this->GetCabecalhoBitMap());
+    BMP novo(*this);
+
+    Header he = novo.GetCabecalhoImagem();
+    BitMapHeader bitMH = novo.GetCabecalhoBitMap();
+    novo.SetPaletaCores(new CollorPallet[256]);
+
 
     if(he.GetBfOffSetBits() == 1078){
         he.SetBfSize(((he.GetBfSize() - 1078) / 3) + 1078);
     }else{
         he.SetBfSize(((he.GetBfSize() - 54) / 3) + 1078);
-        this->paletaCores = new CollorPallet[256];
     }
 
     he.SetBfOffSetBits(1078);
-    this->SetCabecalhoImagen(he);
+    novo.SetCabecalhoImagen(he);
 
     //mudando as configurações do bimapheader
 
     bitMH.SetBiBitCount(8);
     bitMH.SetBiCrlUsed(256);
-    this->SetCabecalhoBitMap(bitMH);
+    novo.SetCabecalhoBitMap(bitMH);
 
-    uint lin = this->matrizPixels.getLinha();
-    uint col = this->matrizPixels.getColuna();
+    uint lin = novo.GetMatrizPixels().getLinha();
+    uint col = novo.GetMatrizPixels().getColuna();
+    Matriz<Pixel> mat = novo.GetMatrizPixels();
+    CollorPallet *palc = new CollorPallet[256];
     Pixel p;
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
-            p = this->matrizPixels.get(i,j);
+            p = mat.get(i,j);
             p = p / 3;
-            this->matrizPixels.set(i, j, p);
-            this->paletaCores[p.GetB()].setCor(p.GetR(), p.GetG(),
-                                               p.GetB(), 0);
+            mat.set(i, j, p);
+            palc[p.GetB()].setCor(p.GetR(), p.GetG(), p.GetB(), 0);
         }
-
     }
+    novo.SetMatrizPixels(mat);
+    novo.SetPaletaCores(palc);
+    novo.salvar(newName);
+
 }
 
 ///convolução da imagem
 /// recebe mascara de floats
-void BMP::convolution(Matriz<int> mask){
+void BMP::convolution(Matriz<float> &mask){
     Matriz<Pixel>  tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
             maskRows, maskCols, rows, cols,ii, jj;
@@ -551,9 +558,9 @@ void BMP::convolution(Matriz<int> mask){
     rows = tempMat.getLinha();
     cols = tempMat.getColuna();
 
-    Matriz<int> outRed(rows, cols);
-    Matriz<int> outGre(rows, cols);
-    Matriz<int> outBlu(rows, cols);
+    Matriz<float> outRed(rows, cols);
+    Matriz<float> outGre(rows, cols);
+    Matriz<float> outBlu(rows, cols);
 
     outRed.fill(0);
     outBlu.fill(0);
@@ -562,7 +569,7 @@ void BMP::convolution(Matriz<int> mask){
     maskCenterX = maskCols / 2;
     maskCenterY = maskRows / 2;
 
-    int r = 0, g = 0, b = 0;
+    float r = 0, g = 0, b = 0;
     Pixel p;
     for(long int i=0; i < rows; ++i)              // rows
     {
@@ -609,5 +616,43 @@ void BMP::convolution(Matriz<int> mask){
     this->matrizPixels = tempMat;
 }
 
+void BMP::convolucao(Matriz<float> &orig){
+    this->convolution(orig);
+}
 
+void BMP::sobel(bool pos){
+    Matriz<float> aux(3,3);
+    if(pos){ //verdadeiro vertical, falso horizontal
+        aux.set(0,0, 1.0/4.0); aux.set(0,1, 0); aux.set(0, 2, -1.0/4.0);
+        aux.set(1,0, 2.0/4.0); aux.set(1,1, 0); aux.set(1,2, -2.0/4.0);
+        aux.set(2,0, 1.0/4.0); aux.set(2,1, 0); aux.set(2,2, -1.0/4.0);
+    }else{
+        aux.set(0,0, -1.0/4); aux.set(0,1, -2.0/4.0); aux.set(0, 2, -1.0/4.0);
+        aux.set(1,0, 0); aux.set(1,1, 0); aux.set(1,2, 0);
+        aux.set(2,0, 1.0/4.0); aux.set(2,1, 2.0/4.0); aux.set(2,2, 1.0/4.0);
+    }
+    this->convolution(aux);
+}
+
+void BMP::media(uint ordem){
+    Matriz<float> aux(ordem, ordem);
+    aux.fill(1/ordem);
+    this->convolution(aux);
+}
+
+void BMP::mediana(){
+
+}
+
+void BMP::roberts(bool pos){
+    Matriz<float> aux(3,3);
+    if(pos){ //verdadeiro vertical, falso horizontal
+        aux.fill(0);
+        aux.set(1,1, 1); aux.set(0,2, -1);
+    }else{
+        aux.fill(0);
+        aux.set(1,1, 1); aux.set(0,0, -1);
+    }
+    this->convolution(aux);
+}
 
