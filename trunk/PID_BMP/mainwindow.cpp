@@ -55,15 +55,7 @@ void MainWindow::on_pushButton_clicked()
         cout << "antes\n";
                 arquivo.printCabecalhoArquivo();
                 arquivo.printCabecalhoImagem();
-       // arquivo.imageToGray();
-       //{{2,1,0},{1, 1,-1},{0,-1,-2}};
-        Matriz<int> aux(3,3);
-        aux.set(0,0, 2); aux.set(0,1, 1); aux.set(0, 2, 0);
-        aux.set(1,0, 1); aux.set(1,1, 1); aux.set(1,2, -1);
-        aux.set(2,0, 0); aux.set(2,1, -1); aux.set(2,2, -2);
-
-        arquivo.convolution(aux);
-        arquivo.salvar("teste.bmp");
+        arquivo.imageToGray("teste.bmp");
         cout << "\nDepoi\n";
         arquivo.printCabecalhoArquivo();
         arquivo.printCabecalhoImagem();
