@@ -508,23 +508,23 @@ void BMP::imageToGray(char * newName){
 
     Header he = novo.GetCabecalhoImagem();
     BitMapHeader bitMH = novo.GetCabecalhoBitMap();
-    novo.SetPaletaCores(new CollorPallet[256]);
+   // novo.SetPaletaCores(new CollorPallet[256]);
 
-
+/*
     if(he.GetBfOffSetBits() == 1078){
         he.SetBfSize(((he.GetBfSize() - 1078) / 3) + 1078);
     }else{
         he.SetBfSize(((he.GetBfSize() - 54) / 3) + 1078);
     }
 
-    he.SetBfOffSetBits(1078);
+    he.SetBfOffSetBits(1078);*/
     novo.SetCabecalhoImagen(he);
-
+/*
     //mudando as configurações do bimapheader
 
     bitMH.SetBiBitCount(8);
     bitMH.SetBiCrlUsed(256);
-    novo.SetCabecalhoBitMap(bitMH);
+    */novo.SetCabecalhoBitMap(bitMH);
 
     uint lin = novo.GetMatrizPixels().getLinha();
     uint col = novo.GetMatrizPixels().getColuna();
@@ -542,7 +542,7 @@ void BMP::imageToGray(char * newName){
    // cout << "Matriz de imagem\n";
    // cout << mat;
     novo.SetMatrizPixels(mat);
-    novo.SetPaletaCores(palc);
+   // novo.SetPaletaCores(palc);
     novo.salvar(newName);
     novo.printCabecalhoArquivo();
     novo.printCabecalhoImagem();
