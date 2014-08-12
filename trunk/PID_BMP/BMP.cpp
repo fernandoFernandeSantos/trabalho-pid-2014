@@ -528,7 +528,7 @@ void BMP::imageToGray(char * newName){
 
     uint lin = novo.GetMatrizPixels().getLinha();
     uint col = novo.GetMatrizPixels().getColuna();
-    Matriz<Pixel> mat = novo.GetMatrizPixels();
+    Matriz<Pixel> mat(novo.GetMatrizPixels());
     CollorPallet *palc = new CollorPallet[256];
     Pixel p;
     for (uint i = 0; i < lin; i++) {
@@ -539,9 +539,13 @@ void BMP::imageToGray(char * newName){
             palc[p.GetB()].setCor(p.GetR(), p.GetG(), p.GetB(), 0);
         }
     }
+   // cout << "Matriz de imagem\n";
+   // cout << mat;
     novo.SetMatrizPixels(mat);
     novo.SetPaletaCores(palc);
     novo.salvar(newName);
+    novo.printCabecalhoArquivo();
+    novo.printCabecalhoImagem();
 
 }
 

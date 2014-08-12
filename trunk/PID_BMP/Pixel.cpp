@@ -137,3 +137,12 @@ Pixel Pixel::operator /(const unsigned int divisor){
     Pixel div(a,a,a);
     return div;
 }
+
+//-------------------------------------------------------------------------
+// Operador <<
+ostream &operator <<(ostream &output, const Pixel &B)
+{
+    output << "[" << B.GetR() << "]" << "[" << B.GetG() << "]" <<
+              "[" << B.GetB() << "]";
+    return output;
+}
