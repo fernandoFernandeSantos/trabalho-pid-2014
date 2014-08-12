@@ -57,8 +57,7 @@ void MainWindow::on_pushButton_clicked()
                 arquivo.printCabecalhoImagem();
         arquivo.imageToGray("teste.bmp");
         cout << "\nDepoi\n";
-        arquivo.printCabecalhoArquivo();
-        arquivo.printCabecalhoImagem();
+
         input.close();
         //input2.close();
     }catch(ifstream::failure e){

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <iostream>
 using namespace std;
-
+#include <exception>
 template <class T>
 class Matriz
 {
@@ -242,12 +242,18 @@ Matriz<T> &Matriz<T>::operator =(const Matriz<T> &B)
         // Verifica se a matriz recebedora ja existe e limpa-a.
         if (this->mat)
         {
-            // a matriz existe. limpe-a
-            for (uint i = 0; i< this->lin; i++)
-            {
-                delete this->mat[i];
+            try{
+                // a matriz existe. limpe-a
+                for (uint i = 0; i< this->lin; i++)
+                {
+                    if(mat[i] != NULL)
+                        delete [] this->mat[i];
+                }
+                if(this->mat != NULL)
+                    delete this->mat;
+            }catch(std::exception &e){
+                cout << e.what();
             }
-            delete this->mat;
         }
         this->lin = B.lin;
         this->col = B.col;

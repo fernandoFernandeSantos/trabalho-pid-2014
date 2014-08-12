@@ -8,6 +8,10 @@
 #ifndef PIXEL_H
 #define	PIXEL_H
 
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
 class Pixel {
 public:
     Pixel();
@@ -21,6 +25,10 @@ public:
     void SetR(unsigned char T);
     void SetG(unsigned char T);
     void setRGB(unsigned char r, unsigned char g, unsigned char b);
+    //saida
+    friend ostream &operator <<(ostream &output, const Pixel &B);
+
+
     // Operador de atribuicao
     Pixel &operator =(const Pixel &B);
 
