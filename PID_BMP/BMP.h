@@ -47,6 +47,7 @@ public:
     void media(uint ordem);
     void mediana();
     void roberts(bool pos);
+    bool histogramEqualizer();
 
 
 private:
@@ -62,6 +63,7 @@ private:
     //aloca o histograma de acordo com a imagem
     void mallocHistogram();
     void convolution(Matriz<float> &mask);
+    Matriz<uint> transformationFunction();
 
 
 

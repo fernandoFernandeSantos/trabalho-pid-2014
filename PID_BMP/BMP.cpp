@@ -540,8 +540,8 @@ void BMP::imageToGray(char * newName){
             palc[p.GetB()].setCor(p.GetR(), p.GetG(), p.GetB(), 0);
         }
     }
-   // cout << "Matriz de imagem\n";
-   // cout << mat;
+    // cout << "Matriz de imagem\n";
+    // cout << mat;
     novo.SetMatrizPixels(mat);
     novo.SetPaletaCores(palc);
     novo.salvar(newName);
@@ -661,3 +661,49 @@ void BMP::roberts(bool pos){
     this->convolution(aux);
 }
 
+Matriz<uint> BMP::transformationFunction(){
+    if(!this->makeHistogram())
+        return NULL;
+    Matriz<uint> soma(this->Histograma.getLinha(), this->Histograma.getColuna());
+
+    soma.fill(0);
+    long long int acumuladorR = 0;
+    long long int acumuladorG = 0;
+    long long int acumuladorB = 0;
+
+    //escala
+    float scale = 255.0f / (float) (this->matrizPixels.getColuna() * this->matrizPixels.getLinha());
+
+    for (uint i = 0; i < this->Histograma.getColuna(); ++i) {
+        acumuladorR += this->Histograma.get(0, i);
+        acumuladorG += this->Histograma.get(1, i);
+        acumuladorB += this->Histograma.get(2, i);
+        //coloca na matriz soma a função de probabilidades
+        soma.set(0, i, (uint) (acumuladorR * scale));
+        soma.set(1, i, (uint) (acumuladorG * scale));
+        soma.set(2, i, (uint) (acumuladorB * scale));
+    }
+    return soma;
+}
+
+bool BMP::histogramEqualizer(){
+    Matriz<uint> tabelaConsulta = this->transformationFunction();
+    if(tabelaConsulta.isEmpty())
+        return false;
+    Matriz<Pixel> resultado;
+    uint tempR = 0;
+    uint tempG = 0;
+    uint tempB = 0;
+    Pixel p;
+    for (uint i = 0; i < this->matrizPixels.getLinha(); ++i) {
+        for (uint j = 0; j < this->matrizPixels.getColuna(); ++j) {
+            p = this->matrizPixels.get(i,j);
+            tempR = tabelaConsulta.get(0, p.GetR());
+            tempG = tabelaConsulta.get(1, p.GetG());
+            tempB = tabelaConsulta.get(2, p.GetB());
+            p.setRGB(tempR, tempG, tempB);
+            resultado.set(i, j, p);
+        }
+    }
+    return true;
+}
