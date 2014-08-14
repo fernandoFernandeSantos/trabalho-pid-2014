@@ -55,8 +55,9 @@ void MainWindow::on_pushButton_clicked()
         cout << "antes\n";
                 arquivo.printCabecalhoArquivo();
                 arquivo.printCabecalhoImagem();
-        arquivo.imageToGray("teste.bmp");
+     //   arquivo.imageToGray("teste.bmp");
       //  arquivo.salvar("testeSalvo.bmp");
+        arquivo.histogramEqualizer();
         cout << "\nDepoi\n";
 
         input.close();
