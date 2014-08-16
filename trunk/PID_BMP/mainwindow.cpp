@@ -43,6 +43,7 @@ void MainWindow::on_pushButton_clicked()
     input.open(aux.c_str(), ios::binary);
     //input2.open("../Imagens/CanMan.bmp", ios::binary);
 
+    /*
     if (!(input.good() && input.is_open())) {
         return;
     }
@@ -58,6 +59,7 @@ void MainWindow::on_pushButton_clicked()
      //   arquivo.imageToGray("teste.bmp");
       //  arquivo.salvar("testeSalvo.bmp");
         arquivo.histogramEqualizer();
+        arquivo.salvar("teste.bmp");
         cout << "\nDepoi\n";
 
         input.close();
@@ -65,6 +67,6 @@ void MainWindow::on_pushButton_clicked()
     }catch(ifstream::failure e){
         cout << "Exception opening/reading/closing file\n";
         cout << e.what() << endl;
-    }
-    return;
+    }*/
+    //return;
 }

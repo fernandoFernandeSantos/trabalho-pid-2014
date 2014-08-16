@@ -27,7 +27,8 @@ HEADERS  += mainwindow.h \
     CollorPallet.h \
     Header.h \
     Matriz.h \
-    Pixel.h
+    Pixel.h \
+    Vetor.h
 
 FORMS    += mainwindow.ui
 

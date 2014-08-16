@@ -438,7 +438,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/TrabalhoPID1.0.0 || mkdir -p .tmp/TrabalhoPID1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.h ../BitMapHeader.h ../BMP.h ../CollorPallet.h ../Header.h ../Matriz.h ../Pixel.h .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../BitMapHeader.cpp ../BMP.cpp ../CollorPallet.cpp ../Header.cpp ../Pixel.cpp .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.ui .tmp/TrabalhoPID1.0.0/ && (cd `dirname .tmp/TrabalhoPID1.0.0` && $(TAR) TrabalhoPID1.0.0.tar TrabalhoPID1.0.0 && $(COMPRESS) TrabalhoPID1.0.0.tar) && $(MOVE) `dirname .tmp/TrabalhoPID1.0.0`/TrabalhoPID1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/TrabalhoPID1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.h ../BitMapHeader.h ../BMP.h ../CollorPallet.h ../Header.h ../Matriz.h ../Pixel.h ../Vetor.h .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../BitMapHeader.cpp ../BMP.cpp ../CollorPallet.cpp ../Header.cpp ../Pixel.cpp .tmp/TrabalhoPID1.0.0/ && $(COPY_FILE) --parents ../mainwindow.ui .tmp/TrabalhoPID1.0.0/ && (cd `dirname .tmp/TrabalhoPID1.0.0` && $(TAR) TrabalhoPID1.0.0.tar TrabalhoPID1.0.0 && $(COMPRESS) TrabalhoPID1.0.0.tar) && $(MOVE) `dirname .tmp/TrabalhoPID1.0.0`/TrabalhoPID1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/TrabalhoPID1.0.0
 
 
 clean:compiler_clean 
@@ -840,6 +840,9 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/QMenuBar \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/opt/Qt/5.3/gcc_64/include/QtWidgets/qabstractbutton.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
@@ -851,6 +854,7 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../Header.h \
 		../Pixel.h \
 		../Matriz.h \
+		../Vetor.h \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qdir.h \
