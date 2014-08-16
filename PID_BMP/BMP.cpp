@@ -690,7 +690,8 @@ bool BMP::histogramEqualizer(){
     Matriz<uint> tabelaConsulta = this->transformationFunction();
     if(tabelaConsulta.isEmpty())
         return false;
-    Matriz<Pixel> resultado;
+    Matriz<Pixel> resultado(this->matrizPixels.getLinha(),
+                            this->matrizPixels.getColuna());
     uint tempR = 0;
     uint tempG = 0;
     uint tempB = 0;
@@ -705,5 +706,36 @@ bool BMP::histogramEqualizer(){
             resultado.set(i, j, p);
         }
     }
+
+    this->matrizPixels = resultado;
     return true;
+}
+
+Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
+    uint size = orig.getColuna() * orig.getLinha();
+    Vetor<u_char> *ret;
+    ret = new Vetor<u_char>[3];
+    if(ret == NULL)
+        return NULL;
+    for (int i = 0; i < 3; ++i) {
+        ret[i] =  Vetor<u_char>(size);
+    }
+    uint k = 0;
+    Pixel p;
+    //coloca nos vetores a matriz
+    for (uint i = 0; i < orig.getLinha(); ++i) {
+        for (uint j = 0; j < orig.getColuna(); ++j) {
+            p = orig.get(i, j);
+            ret[0][k] = p.GetR();
+            ret[1][k] = p.GetG();
+            ret[2][k++] = p.GetB();
+        }
+    }
+
+    //ordena os vetores da mascara
+    ret[0].mergeSort(ret[0].getVetor(), size);
+    ret[1].mergeSort(ret[1].getVetor(), size);
+    ret[2].mergeSort(ret[2].getVetor(), size);
+
+    return ret;
 }

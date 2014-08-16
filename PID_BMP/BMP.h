@@ -12,6 +12,8 @@
 #include "Header.h"
 #include "Pixel.h"
 #include "Matriz.h"
+#include "Vetor.h"
+
 #define	BMP_H
 
 class BMP {
@@ -65,6 +67,7 @@ private:
     void convolution(Matriz<float> &mask);
     Matriz<uint> transformationFunction();
 
+    Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
 
 
 };
