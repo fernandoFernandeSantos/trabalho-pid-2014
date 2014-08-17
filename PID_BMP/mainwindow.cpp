@@ -21,7 +21,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionAbrir_triggered()
 {
     fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open File"), QDir::currentPath());
+                                            tr("Open File"), QDir::currentPath());
     /*
     if (!fileName.isEmpty()) {
         QImage image(fileName);
@@ -37,36 +37,25 @@ void MainWindow::on_actionAbrir_triggered()
 void MainWindow::on_pushButton_clicked()
 {
     BMP arquivo; //arquivo de entrada
-    BMP novo;
-    ifstream input, input2;
+    ifstream input;
     std::string aux = fileName.toStdString();
     input.open(aux.c_str(), ios::binary);
-    input2.open("../Imagens/CanMan.bmp", ios::binary);
 
-    /*
+
     if (!(input.good() && input.is_open())) {
         return;
     }
-    //if (!(input2.good() && input2.is_open())) {
-     //   return;
-    //}
+
     try{
         arquivo.read(&input);
-        //novo.read(&input2);
-        cout << "antes\n";
-                arquivo.printCabecalhoArquivo();
-                arquivo.printCabecalhoImagem();
-     //   arquivo.imageToGray("teste.bmp");
-      //  arquivo.salvar("testeSalvo.bmp");
-        arquivo.histogramEqualizer();
-        arquivo.salvar("teste.bmp");
-        cout << "\nDepoi\n";
+
+        arquivo.media(5);
+        arquivo.salvar("testeSalvo.bmp");
 
         input.close();
-        //input2.close();
     }catch(ifstream::failure e){
         cout << "Exception opening/reading/closing file\n";
         cout << e.what() << endl;
-    }*/
+    }
     //return;
 }

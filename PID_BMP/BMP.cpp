@@ -552,7 +552,7 @@ void BMP::imageToGray(char * newName){
 
 ///convolução da imagem
 /// recebe mascara de floats
-void BMP::convolution(Matriz<float> &mask){
+void BMP::convolution(Matriz<double> &mask){
     Matriz<Pixel>  tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
             maskRows, maskCols, rows, cols,ii, jj;
@@ -563,9 +563,9 @@ void BMP::convolution(Matriz<float> &mask){
     rows = tempMat.getLinha();
     cols = tempMat.getColuna();
 
-    Matriz<float> outRed(rows, cols);
-    Matriz<float> outGre(rows, cols);
-    Matriz<float> outBlu(rows, cols);
+    Matriz<double> outRed(rows, cols);
+    Matriz<double> outGre(rows, cols);
+    Matriz<double> outBlu(rows, cols);
 
     outRed.fill(0);
     outBlu.fill(0);
@@ -574,7 +574,7 @@ void BMP::convolution(Matriz<float> &mask){
     maskCenterX = maskCols / 2;
     maskCenterY = maskRows / 2;
 
-    float r = 0, g = 0, b = 0;
+    double r = 0, g = 0, b = 0;
     Pixel p;
     for(long int i=0; i < rows; ++i)              // rows
     {
@@ -610,23 +610,28 @@ void BMP::convolution(Matriz<float> &mask){
         }
     }
     //junto os resultados
-    for(long int i = 0; i < rows; i++)
+    int R, G, B;
+    for(long int i = 0; i < rows; i++){
         for(long int j = 0; j < cols; j++){
-            SATURATION(outRed.get(i,j),r);
-            SATURATION(outGre.get(i,j), g);
-            SATURATION(outBlu.get(i,j), b);
-            p.setRGB(r,g,b);
+            R = outRed.get(i,j);
+            G = outGre.get(i,j);
+            B = outBlu.get(i,j);
+            SATURATION(R,R);
+            SATURATION(G,G);
+            SATURATION(B,B);
+            p.setRGB(R,G,B);
             tempMat.set(i,j, p);
         }
+    }
     this->matrizPixels = tempMat;
 }
 
-void BMP::convolucao(Matriz<float> &orig){
+void BMP::convolucao(Matriz<double> &orig){
     this->convolution(orig);
 }
 
 void BMP::sobel(bool pos){
-    Matriz<float> aux(3,3);
+    Matriz<double> aux(3,3);
     if(pos){ //verdadeiro vertical, falso horizontal
         aux.set(0,0, 1.0/4.0); aux.set(0,1, 0); aux.set(0, 2, -1.0/4.0);
         aux.set(1,0, 2.0/4.0); aux.set(1,1, 0); aux.set(1,2, -2.0/4.0);
@@ -640,8 +645,9 @@ void BMP::sobel(bool pos){
 }
 
 void BMP::media(uint ordem){
-    Matriz<float> aux(ordem, ordem);
-    aux.fill(1/ordem);
+    Matriz<double> aux(ordem, ordem);
+    float t = 1.0/(ordem*ordem);
+    aux.fill(t);
     this->convolution(aux);
 }
 
@@ -650,7 +656,7 @@ void BMP::mediana(){
 }
 
 void BMP::roberts(bool pos){
-    Matriz<float> aux(3,3);
+    Matriz<double> aux(3,3);
     if(pos){ //verdadeiro vertical, falso horizontal
         aux.fill(0);
         aux.set(1,1, 1); aux.set(0,2, -1);
