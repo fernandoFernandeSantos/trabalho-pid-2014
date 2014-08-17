@@ -41,7 +41,7 @@ void MainWindow::on_pushButton_clicked()
     ifstream input, input2;
     std::string aux = fileName.toStdString();
     input.open(aux.c_str(), ios::binary);
-    //input2.open("../Imagens/CanMan.bmp", ios::binary);
+    input2.open("../Imagens/CanMan.bmp", ios::binary);
 
     /*
     if (!(input.good() && input.is_open())) {
