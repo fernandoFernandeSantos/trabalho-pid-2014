@@ -47,7 +47,7 @@ public:
     void convolucao(Matriz<double> &orig);
     void sobel(bool pos);
     void media(uint ordem);
-    void mediana();
+    void mediana(uint ordem);
     void roberts(bool pos);
     bool histogramEqualizer();
  Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);

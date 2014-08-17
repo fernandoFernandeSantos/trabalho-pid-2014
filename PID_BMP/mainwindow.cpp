@@ -49,8 +49,11 @@ void MainWindow::on_pushButton_clicked()
     try{
         arquivo.read(&input);
 
-        arquivo.media(5);
-        arquivo.salvar("testeSalvo.bmp");
+        arquivo.imageToGray("foi.bmp");
+       // arquivo.salvar("testeSalvo.bmp");
+        //system("shotwell foi.bmp");
+        arquivo.printCabecalhoArquivo();
+        arquivo.printCabecalhoImagem();
 
         input.close();
     }catch(ifstream::failure e){

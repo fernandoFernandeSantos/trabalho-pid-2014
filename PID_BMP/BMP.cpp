@@ -256,8 +256,7 @@ bool BMP::salvar(const char* nomeArquivo) {
             //se tem paleta de cores grava a paleta e a matriz
             if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
                 u_char r, g, b, t;
-                int tamanho = (int) pow(2, this->cabecalhoBitMap.GetBiBitCount());
-                for (int i = 0; i < tamanho; i++) {
+                for (int i = 0; i < 256; i++) {
                     b = this->paletaCores[i].GetBlue();
                     g = this->paletaCores[i].GetGreen();
                     r = this->paletaCores[i].GetRed();
@@ -504,18 +503,15 @@ bool BMP::operations(const BMP& g2, u_char operacao){
 void BMP::imageToGray(char * newName){
     //mudando as configurações do header
     BMP novo(*this);
+    uint lin = novo.GetMatrizPixels().getLinha();
+    uint col = novo.GetMatrizPixels().getColuna();
 
     Header he = novo.GetCabecalhoImagem();
     BitMapHeader bitMH = novo.GetCabecalhoBitMap();
     novo.SetPaletaCores(new CollorPallet[256]);
 
-
-    if(he.GetBfOffSetBits() == 1078){
-        he.SetBfSize(((he.GetBfSize() - 1078) / 3) + 1078);
-    }else{
-        he.SetBfSize(((he.GetBfSize() - 54) / 3) + 1078);
-    }
-
+    he.SetBfSize(lin * col + 1078);
+    he.SetBfReser2(0);
     he.SetBfOffSetBits(1078);
     novo.SetCabecalhoImagen(he);
 
@@ -523,12 +519,10 @@ void BMP::imageToGray(char * newName){
 
     bitMH.SetBiBitCount(8);
     bitMH.SetBiCrlUsed(256);
-    bitMH.SetBiSizeImage(0);
+    bitMH.SetBiSizeImage(lin * col);
+    cout << lin * col;
     novo.SetCabecalhoBitMap(bitMH);
 
-
-    uint lin = novo.GetMatrizPixels().getLinha();
-    uint col = novo.GetMatrizPixels().getColuna();
     Matriz<Pixel> mat(novo.GetMatrizPixels());
     CollorPallet *palc = new CollorPallet[256];
     Pixel p;
@@ -540,14 +534,9 @@ void BMP::imageToGray(char * newName){
             palc[p.GetB()].setCor(p.GetR(), p.GetG(), p.GetB(), 0);
         }
     }
-    // cout << "Matriz de imagem\n";
-    // cout << mat;
     novo.SetMatrizPixels(mat);
     novo.SetPaletaCores(palc);
     novo.salvar(newName);
-    novo.printCabecalhoArquivo();
-    novo.printCabecalhoImagem();
-
 }
 
 ///convolução da imagem
@@ -651,7 +640,20 @@ void BMP::media(uint ordem){
     this->convolution(aux);
 }
 
-void BMP::mediana(){
+void BMP::mediana(uint ordem){
+    Matriz<Pixel> mascara(ordem, ordem);
+    Matriz<Pixel> tempMat(this->matrizPixels);
+
+    uint prenche = 0;
+    uint quant = ordem * ordem;
+    uint k = 0, z = 0;
+    Pixel p;
+    for(uint i = 0; i < tempMat.getLinha(); i++){
+        for(uint j = 0; j < tempMat.getColuna(); j++){
+            p = tempMat.get(i,j);
+
+        }
+    }
 
 }
 
