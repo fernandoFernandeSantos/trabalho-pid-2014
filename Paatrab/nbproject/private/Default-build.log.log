@@ -1,0 +1,17 @@
+"/usr/bin/make" -f nbproject/Makefile-Debug.mk QMAKE= SUBPROJECTS= .build-conf
+make[1]: Entrando no diretório `/home/familia/NetBeansProjects/trunk/paatrab'
+"/usr/bin/make"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/paatrab
+make[2]: Entrando no diretório `/home/familia/NetBeansProjects/trunk/paatrab'
+mkdir -p build/Debug/GNU-Linux-x86
+rm -f "build/Debug/GNU-Linux-x86/FileGenerator.o.d"
+g++    -c -g -MMD -MP -MF "build/Debug/GNU-Linux-x86/FileGenerator.o.d" -o build/Debug/GNU-Linux-x86/FileGenerator.o FileGenerator.cpp
+mkdir -p build/Debug/GNU-Linux-x86
+rm -f "build/Debug/GNU-Linux-x86/Vetor.o.d"
+g++    -c -g -MMD -MP -MF "build/Debug/GNU-Linux-x86/Vetor.o.d" -o build/Debug/GNU-Linux-x86/Vetor.o Vetor.cpp
+mkdir -p build/Debug/GNU-Linux-x86
+rm -f "build/Debug/GNU-Linux-x86/main.o.d"
+g++    -c -g -MMD -MP -MF "build/Debug/GNU-Linux-x86/main.o.d" -o build/Debug/GNU-Linux-x86/main.o main.cpp
+mkdir -p dist/Debug/GNU-Linux-x86
+g++     -o dist/Debug/GNU-Linux-x86/paatrab build/Debug/GNU-Linux-x86/FileGenerator.o build/Debug/GNU-Linux-x86/Vetor.o build/Debug/GNU-Linux-x86/main.o 
+make[2]: Saindo do diretório `/home/familia/NetBeansProjects/trunk/paatrab'
+make[1]: Saindo do diretório `/home/familia/NetBeansProjects/trunk/paatrab'
