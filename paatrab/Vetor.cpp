@@ -42,6 +42,7 @@ Vetor::Vetor(int tam) {
     cout << "Vetor construído\n";
 }
 
+
 Vetor::Vetor(const Vetor &A) {
     cout << "Construtor de cópia construindo Vetor...\n";
     this->n = A.n;
