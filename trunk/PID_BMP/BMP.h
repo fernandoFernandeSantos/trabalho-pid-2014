@@ -44,7 +44,7 @@ public:
     void limiarImagem(u_int32_t fator = 127);
     bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
     void imageToGray(char * newName);
-    void convolucao(Matriz<float> &orig);
+    void convolucao(Matriz<double> &orig);
     void sobel(bool pos);
     void media(uint ordem);
     void mediana();
@@ -64,7 +64,7 @@ private:
     u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
     //aloca o histograma de acordo com a imagem
     void mallocHistogram();
-    void convolution(Matriz<float> &mask);
+    void convolution(Matriz<double> &mask);
     Matriz<uint> transformationFunction();
 
 
