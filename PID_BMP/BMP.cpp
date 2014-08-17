@@ -736,6 +736,5 @@ Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
     ret[0].mergeSort(ret[0].getVetor(), size);
     ret[1].mergeSort(ret[1].getVetor(), size);
     ret[2].mergeSort(ret[2].getVetor(), size);
-
     return ret;
 }

@@ -25,8 +25,17 @@ public:
     // lhe atribui "valor";
     T get(int i);	// obtem o valor armazenado na posi��o i do vetor
     void set(int i, T v);	// seta o valor v na posi��o i do vetor
+
+    //operador sobrecarregados
     T operator[](int i) const; // sobrecarga do operador [] para leitura
     T &operator[](int i); // sobrecarga do operador [] para escrita
+
+    template <class Ta>
+    friend ostream &operator <<(ostream &output, const Vetor<Ta> &B);
+
+    // Operador de atribuicao
+    Vetor<T> &operator =(const Vetor<T> &B);
+
     void escreve();	// escreve o vetor
     int searchSeq(T elem);  // Busca sequencial
     int searchBin(T elem); // Busca Binária
@@ -396,5 +405,48 @@ template <class T> T* Vetor <T>::getVetor(){
 
 template <class T> int Vetor <T>::getSize(){
     return this->n;
+}
+
+// Operador <<
+template <class Ta>
+ostream &operator <<(ostream &output, const Vetor<Ta> &B)
+{
+    for (uint i = 0; i < B.n; i++)
+    {
+       output << "Vet[" << i << "]= " << B.V[i]
+                      << "\n";
+    }
+    return output;
+}
+
+
+template <class T>
+Vetor<T> &Vetor<T>::operator =(const Vetor<T> &B)
+{
+    // verifica a auto-atribuicao
+    if (this != &B)
+    {
+        // Verifica se a matriz recebedora ja existe e limpa-a.
+        if (this->V)
+        {
+            try{
+                // o vetor existe. limpe-0
+                for (uint i = 0; i< this->n; i++)
+                {
+                  delete [] this->V;
+                }
+            }catch(std::exception &e){
+                cout << e.what();
+            }
+        }
+        this->n = B.n;
+        // aloca com o novo tamanho
+        this->V = new T[this->n];
+
+        //copia os valores para a matriz
+        for (uint i = 0; i < this->n; i++)
+           this->V[i] = B.V[i];
+    }
+    return (*this);
 }
 #endif // VECTOR_H

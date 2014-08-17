@@ -50,7 +50,7 @@ public:
     void mediana();
     void roberts(bool pos);
     bool histogramEqualizer();
-
+ Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
@@ -67,7 +67,7 @@ private:
     void convolution(Matriz<float> &mask);
     Matriz<uint> transformationFunction();
 
-    Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
+
 
 
 };
