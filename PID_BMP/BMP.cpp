@@ -641,69 +641,82 @@ void BMP::media(uint ordem){
 }
 
 void BMP::mediana(uint ordem){
-    Matriz<Pixel> mascara(ordem, ordem);
-    Matriz<Pixel> tempMat(this->matrizPixels);
-    int lin = tempMat.getLinha();
-    int col = tempMat.getColuna();
     Vetor<u_char> *maskOrdered;
+    Matriz<Pixel> mask(ordem, ordem);
+    Matriz<Pixel>  tempMat(this->GetMatrizPixels());
+    long int maskCenterX, maskCenterY,
+            maskRows, maskCols, rows, cols,ii, jj;
+    long int nn, mm;
 
-    int meioMask, meioMaskPar = 0;
-    int sizeOrdem = ordem * ordem;
-    u_char r, g, b;
-    u_char r1, g1, b1;
-    if(sizeOrdem % 2 == 0){
-        meioMask = 0;
-    }else{
-        meioMask = sizeOrdem / 2;
-    }
+    maskCols = ordem;
+    maskRows = ordem;
+    rows = tempMat.getLinha();
+    cols = tempMat.getColuna();
 
+    maskCenterX = maskCols / 2;
+    maskCenterY = maskRows / 2;
 
+    double r = 0, g = 0, b = 0;
     Pixel p;
-    for(int i = 0; i < lin; i++){
-        for(int j = 0; j < col; j++){
-            for(int k = 0; k < ordem; k++){
-                for(int z = 0; z < ordem; z++){
-                    if((i + k) < lin && (j + z) < col){
-                        p = tempMat.get(i + k,j + z);
-                        mascara.set(k, z, p);
+    for(long int i=0; i < rows; ++i)              // rows
+    {
+        for(long int j=0; j < cols; ++j)          // columns
+        {
+            for(long int m=0; m < maskRows; ++m)     // kernel rows
+            {
+                mm = maskRows - 1 - m;      // row index of flipped kernel
+
+                for(long int n=0; n < maskCols; ++n) // kernel columns
+                {
+                    nn = maskCols - 1 - n;  // column index of flipped kernel
+
+                    // index of input signal, used for checking boundary
+                    ii = i + (m - maskCenterY);
+                    jj = j + (n - maskCenterX);
+
+                    // ignore input samples which are out of bound
+
+                    if( ii >= 0 && ii < rows && jj >= 0 && jj < cols ){
+                        //matriz original
+                        p =  tempMat.get(ii,jj);
+                        mask.set(m, n, p);
                     }
                 }
             }
-            //ordena a mascara coletada
-            maskOrdered = this->maskOrder(mascara);
-            if(meioMask){
-                r = maskOrdered[0][meioMask];
-                g = maskOrdered[1][meioMask];
-                b = maskOrdered[2][meioMask];
-                p.setRGB(r,g,b);
-                if(((i - meioMask) >= 0) && ((j - meioMask) >= 0)){
-                    tempMat.set((i - meioMask) / 2, (j - meioMask) / 2, p);
-                }
-            }else{
-                meioMask = sizeOrdem / 2;
-                meioMaskPar = meioMask + 1;
-                r = maskOrdered[0][meioMask];
-                g = maskOrdered[1][meioMask];
-                b = maskOrdered[2][meioMask];
-                r1 = maskOrdered[0][meioMaskPar];
-                g1 = maskOrdered[1][meioMaskPar];
-                b1 = maskOrdered[2][meioMaskPar];
-                r = (r + r1)/2;
-                g = (g + g1)/2;
-                b = (b + b1)/2;
-                p.setRGB(r, g, b);
-                if((i - meioMask) >= 0 && (j - meioMask) >= 0){
-                    tempMat.set((i - meioMask) / 2, (j - meioMask) / 2, p);
-                    if((i - meioMask + 1) < lin && (j - meioMask + 1) < col){
-                        tempMat.set((i - meioMask + 1), (j - meioMask + 1), p);
-                    }
-                }
+            maskOrdered = this->maskOrder(mask);
+            r = maskOrdered[0][maskCenterX];
+            g = maskOrdered[1][maskCenterX];
+            b = maskOrdered[2][maskCenterX];
+            p.setRGB(r, g, b);
+            if((j - maskCenterX) >= 0 && (i - maskCenterX) >= 0){
+                tempMat.set((i - maskCenterX), (j - maskCenterY), p);
             }
-            for(uint o = 0; o < 3; o++){
-                delete [] maskOrdered[o].getVetor();
-            }
+            delete [] maskOrdered[0].getVetor();
+            delete [] maskOrdered[1].getVetor();
+            delete [] maskOrdered[2].getVetor();
         }
     }
+
+    /*
+     *     for(long int i=edgex; i < rows - edgex; i++)              // rows
+    {
+        for(long int j=edgey; j < cols - edgey; j++)          // columns
+        {
+            for(long int fx=0; fx < maskRows; fx++)     // kernel rows
+            {
+                for(long int fy=0; fy < maskCols; fy++) // kernel columns
+                {
+                    //colorArray[fx][fy] := inputPixelValue[x + fx - edgex][y + fy - edgey]
+                    p = tempMat.get((i + fx - edgex), (j + fy - edgey));
+                    mask.set(fx, fy, p);
+                }
+            }
+            maskOrdered = this->maskOrder(mask);
+            r = maskOrdered[0][edgex];
+            g = maskOrdered[1][edgex];
+            b = maskOrdered[2][edgex];
+            p.setRGB(r, g, b);
+            tempMat.set(i, j, p);*/
     this->matrizPixels = tempMat;
 }
 

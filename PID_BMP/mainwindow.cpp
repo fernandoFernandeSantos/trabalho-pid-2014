@@ -51,7 +51,7 @@ void MainWindow::on_pushButton_clicked()
 
        // arquivo.imageToGray("foi.bmp");
        // arquivo.salvar("testeSalvo.bmp");
-        arquivo.mediana(3);
+        arquivo.mediana(4);
         arquivo.salvar("foi.bmp");
         system("shotwell foi.bmp");
 
