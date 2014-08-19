@@ -49,9 +49,12 @@ void MainWindow::on_pushButton_clicked()
     try{
         arquivo.read(&input);
 
-        arquivo.imageToGray("foi.bmp");
+       // arquivo.imageToGray("foi.bmp");
        // arquivo.salvar("testeSalvo.bmp");
-        //system("shotwell foi.bmp");
+        arquivo.mediana(3);
+        arquivo.salvar("foi.bmp");
+        system("shotwell foi.bmp");
+
         arquivo.printCabecalhoArquivo();
         arquivo.printCabecalhoImagem();
 

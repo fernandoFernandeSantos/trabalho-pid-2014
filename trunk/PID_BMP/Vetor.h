@@ -59,15 +59,15 @@ public:
 template <class T> Vetor<T>::Vetor()
 {
     // construtor default
-    cout << "Construtor default construindo vetor...\n";
+    //cout << "Construtor default construindo vetor...\n";
     this->n = 0;
     this->V = NULL;
-    cout << "Vetor construido.\n";
+    //cout << "Vetor construido.\n";
 }
 
 template <class T> Vetor<T>::Vetor(int tam)
 {
-    cout << "Construtor inicializ�vel construindo vetor...\n";
+    //cout << "Construtor inicializ�vel construindo vetor...\n";
     if (tam < 0)
     {
         cerr << "Erro: o n�mero de elementos n�o pode ser negativo.\n";
@@ -91,12 +91,12 @@ template <class T> Vetor<T>::Vetor(int tam)
                 this->V[i] = 0;
         }
     }
-    cout << "Vetor constru�do\n";
+    //cout << "Vetor constru�do\n";
 }
 
 template <class T> Vetor<T>::Vetor(const Vetor <T> &A)
 {
-    cout << "Construtor de c�pia construindo Vetor...\n";
+   // cout << "Construtor de c�pia construindo Vetor...\n";
     this->n = A.n;
     this->V = new T[this->n];
     if (this->V == NULL)
@@ -108,14 +108,14 @@ template <class T> Vetor<T>::Vetor(const Vetor <T> &A)
     {
         this->V[i] = A.V[i];
     }
-    cout << "Vetor constru�do.";
+   // cout << "Vetor constru�do.";
 }
 
 template <class T> Vetor<T>::~Vetor()
 {
-    cout << "Destruindo Vetor...\n";
+    //cout << "Destruindo Vetor...\n";
     delete[] V;
-    cout << "Vetor destru�do\n";
+    //cout << "Vetor destru�do\n";
 }
 
 template <class T> void Vetor<T>::realloc()
