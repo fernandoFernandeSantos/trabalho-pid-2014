@@ -643,18 +643,68 @@ void BMP::media(uint ordem){
 void BMP::mediana(uint ordem){
     Matriz<Pixel> mascara(ordem, ordem);
     Matriz<Pixel> tempMat(this->matrizPixels);
+    int lin = tempMat.getLinha();
+    int col = tempMat.getColuna();
+    Vetor<u_char> *maskOrdered;
 
-    uint prenche = 0;
-    uint quant = ordem * ordem;
-    uint k = 0, z = 0;
-    Pixel p;
-    for(uint i = 0; i < tempMat.getLinha(); i++){
-        for(uint j = 0; j < tempMat.getColuna(); j++){
-            p = tempMat.get(i,j);
-
-        }
+    int meioMask, meioMaskPar = 0;
+    int sizeOrdem = ordem * ordem;
+    u_char r, g, b;
+    u_char r1, g1, b1;
+    if(sizeOrdem % 2 == 0){
+        meioMask = 0;
+    }else{
+        meioMask = sizeOrdem / 2;
     }
 
+
+    Pixel p;
+    for(int i = 0; i < lin; i++){
+        for(int j = 0; j < col; j++){
+            for(int k = 0; k < ordem; k++){
+                for(int z = 0; z < ordem; z++){
+                    if((i + k) < lin && (j + z) < col){
+                        p = tempMat.get(i + k,j + z);
+                        mascara.set(k, z, p);
+                    }
+                }
+            }
+            //ordena a mascara coletada
+            maskOrdered = this->maskOrder(mascara);
+            if(meioMask){
+                r = maskOrdered[0][meioMask];
+                g = maskOrdered[1][meioMask];
+                b = maskOrdered[2][meioMask];
+                p.setRGB(r,g,b);
+                if(((i - meioMask) >= 0) && ((j - meioMask) >= 0)){
+                    tempMat.set((i - meioMask) / 2, (j - meioMask) / 2, p);
+                }
+            }else{
+                meioMask = sizeOrdem / 2;
+                meioMaskPar = meioMask + 1;
+                r = maskOrdered[0][meioMask];
+                g = maskOrdered[1][meioMask];
+                b = maskOrdered[2][meioMask];
+                r1 = maskOrdered[0][meioMaskPar];
+                g1 = maskOrdered[1][meioMaskPar];
+                b1 = maskOrdered[2][meioMaskPar];
+                r = (r + r1)/2;
+                g = (g + g1)/2;
+                b = (b + b1)/2;
+                p.setRGB(r, g, b);
+                if((i - meioMask) >= 0 && (j - meioMask) >= 0){
+                    tempMat.set((i - meioMask) / 2, (j - meioMask) / 2, p);
+                    if((i - meioMask + 1) < lin && (j - meioMask + 1) < col){
+                        tempMat.set((i - meioMask + 1), (j - meioMask + 1), p);
+                    }
+                }
+            }
+            for(uint o = 0; o < 3; o++){
+                delete [] maskOrdered[o].getVetor();
+            }
+        }
+    }
+    this->matrizPixels = tempMat;
 }
 
 void BMP::roberts(bool pos){
