@@ -522,16 +522,20 @@ void BMP::imageToGray(char * newName){
     bitMH.SetBiSizeImage(lin * col);
     cout << lin * col;
     novo.SetCabecalhoBitMap(bitMH);
+    CollorPallet *palc = new CollorPallet[256];
+    //for para paleta
+    Pixel p;
+    for (ushort i = 0; i < 256; i++) {
+        palc[i].setCor(i, i, i, 0);
+    }
 
     Matriz<Pixel> mat(novo.GetMatrizPixels());
-    CollorPallet *palc = new CollorPallet[256];
-    Pixel p;
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
             p = mat.get(i,j);
             p = p / 3;
             mat.set(i, j, p);
-            palc[p.GetB()].setCor(p.GetR(), p.GetG(), p.GetB(), 0);
+
         }
     }
     novo.SetMatrizPixels(mat);
@@ -647,7 +651,7 @@ void BMP::mediana(uint ordem){
     long int maskCenterX, maskCenterY,
             maskRows, maskCols, rows, cols,ii, jj;
     long int nn, mm;
-
+    uint midle = (ordem * ordem) /2;
     maskCols = ordem;
     maskRows = ordem;
     rows = tempMat.getLinha();
@@ -664,12 +668,8 @@ void BMP::mediana(uint ordem){
         {
             for(long int m=0; m < maskRows; ++m)     // kernel rows
             {
-                mm = maskRows - 1 - m;      // row index of flipped kernel
-
                 for(long int n=0; n < maskCols; ++n) // kernel columns
                 {
-                    nn = maskCols - 1 - n;  // column index of flipped kernel
-
                     // index of input signal, used for checking boundary
                     ii = i + (m - maskCenterY);
                     jj = j + (n - maskCenterX);
@@ -684,9 +684,9 @@ void BMP::mediana(uint ordem){
                 }
             }
             maskOrdered = this->maskOrder(mask);
-            r = maskOrdered[0][maskCenterX];
-            g = maskOrdered[1][maskCenterX];
-            b = maskOrdered[2][maskCenterX];
+            r = maskOrdered[0][midle];
+            g = maskOrdered[1][midle];
+            b = maskOrdered[2][midle];
             p.setRGB(r, g, b);
             if((j - maskCenterX) >= 0 && (i - maskCenterX) >= 0){
                 tempMat.set((i - maskCenterX), (j - maskCenterY), p);
@@ -696,27 +696,6 @@ void BMP::mediana(uint ordem){
             delete [] maskOrdered[2].getVetor();
         }
     }
-
-    /*
-     *     for(long int i=edgex; i < rows - edgex; i++)              // rows
-    {
-        for(long int j=edgey; j < cols - edgey; j++)          // columns
-        {
-            for(long int fx=0; fx < maskRows; fx++)     // kernel rows
-            {
-                for(long int fy=0; fy < maskCols; fy++) // kernel columns
-                {
-                    //colorArray[fx][fy] := inputPixelValue[x + fx - edgex][y + fy - edgey]
-                    p = tempMat.get((i + fx - edgex), (j + fy - edgey));
-                    mask.set(fx, fy, p);
-                }
-            }
-            maskOrdered = this->maskOrder(mask);
-            r = maskOrdered[0][edgex];
-            g = maskOrdered[1][edgex];
-            b = maskOrdered[2][edgex];
-            p.setRGB(r, g, b);
-            tempMat.set(i, j, p);*/
     this->matrizPixels = tempMat;
 }
 

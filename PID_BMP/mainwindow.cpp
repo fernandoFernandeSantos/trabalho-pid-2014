@@ -51,8 +51,11 @@ void MainWindow::on_pushButton_clicked()
 
        // arquivo.imageToGray("foi.bmp");
        // arquivo.salvar("testeSalvo.bmp");
-        arquivo.mediana(4);
-        arquivo.salvar("foi.bmp");
+        //arquivo.mediana(21);
+        cout << "Foi"<< endl
+                ;
+        arquivo.imageToGray("foi.bmp");
+        //arquivo.salvar("foi.bmp");
         system("shotwell foi.bmp");
 
         arquivo.printCabecalhoArquivo();
