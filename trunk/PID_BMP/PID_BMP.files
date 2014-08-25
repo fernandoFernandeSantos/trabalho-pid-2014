@@ -1,0 +1,14 @@
+BitMapHeader.cpp
+BitMapHeader.h
+BMP.cpp
+BMP.h
+CollorPallet.cpp
+CollorPallet.h
+Header.cpp
+Header.h
+main.cpp
+Matriz.h
+Pixel.cpp
+Pixel.h
+Vetor.cpp
+Vetor.h
