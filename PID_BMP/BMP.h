@@ -20,6 +20,7 @@ class BMP {
 public:
     BMP();
     BMP(const BMP& orig);
+    BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig);
     virtual ~BMP();
     BitMapHeader GetCabecalhoBitMap() const;
     void SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap);
@@ -28,7 +29,7 @@ public:
     CollorPallet* GetPaletaCores() const;
     void SetPaletaCores(CollorPallet* paletaCores);
     Matriz<Pixel> GetMatrizPixels() const;
-    Matriz<int> GetHistogram() const;
+    Matriz<uint> GetHistogram() const;
     void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
     bool salvar(const char* nomeArquivo);
@@ -50,7 +51,8 @@ public:
     void mediana(uint ordem);
     void roberts(bool pos);
     bool histogramEqualizer();
- Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
+    Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
+    void printHistogram();
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
@@ -58,7 +60,7 @@ private:
     Header cabecalhoImagem; //cabeçalho do arquivo
     //armazena os dados do bmp
     Matriz<Pixel> matrizPixels;
-    Matriz<int> Histograma;
+    Matriz<uint> Histograma;
 
     //métodos privados
     u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
@@ -66,9 +68,6 @@ private:
     void mallocHistogram();
     void convolution(Matriz<double> &mask);
     Matriz<uint> transformationFunction();
-
-
-
 
 };
 

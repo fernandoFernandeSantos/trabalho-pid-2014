@@ -159,3 +159,18 @@ BitMapHeader &BitMapHeader::operator =(const BitMapHeader &ori){
     this->SetBiYPPMeter(ori.GetBiYPPMeter());
     return (*this);
 }
+
+void BitMapHeader::SaveBitMapHeader(std::ofstream &arquivoSaida){
+    //grava o cabeçalho da imagem
+    arquivoSaida.write((char*) & this->BiSize, sizeof (this->BiSize));
+    arquivoSaida.write((char*) & this->BiWidth, sizeof (this->BiWidth));
+    arquivoSaida.write((char*) & this->BiHeigth, sizeof (this->BiHeigth));
+    arquivoSaida.write((char*) & this->BiPlanes, sizeof (this->BiPlanes));
+    arquivoSaida.write((char*) & this->BiBitCount, sizeof (this->BiBitCount));
+    arquivoSaida.write((char*) & this->BiCompress, sizeof (this->BiCompress));
+    arquivoSaida.write((char*) & this->BiSizeImage, sizeof (this->BiSizeImage));
+    arquivoSaida.write((char*) & this->BiXPPMeter, sizeof (this->BiXPPMeter));
+    arquivoSaida.write((char*) & this->BiYPPMeter, sizeof (this->BiYPPMeter));
+    arquivoSaida.write((char*) & this->BiCrlUsed, sizeof (this->BiCrlUsed));
+    arquivoSaida.write((char*) & this->BiClrImport, sizeof (this->BiClrImport));
+}

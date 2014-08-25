@@ -41,6 +41,7 @@ public:
 
     void read(std::ifstream *input);
     void print();
+    void saveHeader(std::ofstream& arquivoSaida);
 
 };
 

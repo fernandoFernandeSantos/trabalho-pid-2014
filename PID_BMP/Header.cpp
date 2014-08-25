@@ -84,6 +84,25 @@ void Header::print() {
     std::cout << "BfOffSetBits : " << this->GetBfOffSetBits() << std::endl;
 }
 
+void Header::saveHeader(std::ofstream& arquivoSaida){
+    //como em c só grava endereço tem que por para variavéis
+    /*char BfType1 = out.GetBfType()[0];
+    char BfType2 = out.GetBfType()[1];
+    uint BfSize = out.GetBfSize();
+    u_short BfReser1 = out.GetBfReser1();
+    u_short BfReser2 = out.GetBfReser2();
+    uint BfOffSetBits = out.GetBfOffSetBits();
+*/
+    //grava o header
+    arquivoSaida.write((char*) & this->BfType[0], sizeof (this->BfType[0]));
+    arquivoSaida.write((char*) & this->BfType[1], sizeof (this->BfType[1]));
+    arquivoSaida.write((char*) & this->BfSize, sizeof (BfSize));
+    arquivoSaida.write((char*) & this->BfReser1, sizeof (BfReser1));
+    arquivoSaida.write((char*) & this->BfReser2, sizeof (BfReser2));
+    arquivoSaida.write((char*) & this->BfOffSetBits, sizeof (BfOffSetBits));
+}
+
+
 Header &Header::operator =(const Header &orig){
     this->SetBfOffSetBits(orig.BfOffSetBits);
     this->SetBfReser1(orig.BfReser1);
