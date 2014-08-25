@@ -42,7 +42,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(283, 299);
+        MainWindow->resize(253, 296);
         actionAbrir = new QAction(MainWindow);
         actionAbrir->setObjectName(QStringLiteral("actionAbrir"));
         actionSalvar = new QAction(MainWindow);
@@ -53,11 +53,11 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(60, 50, 99, 27));
+        pushButton->setGeometry(QRect(0, 0, 251, 41));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 283, 25));
+        menuBar->setGeometry(QRect(0, 0, 253, 25));
         menuArquivo = new QMenu(menuBar);
         menuArquivo->setObjectName(QStringLiteral("menuArquivo"));
         MainWindow->setMenuBar(menuBar);
@@ -74,6 +74,7 @@ public:
         menuBar->addAction(menuArquivo->menuAction());
         menuArquivo->addAction(actionAbrir);
         menuArquivo->addAction(actionSalvar);
+        menuArquivo->addSeparator();
         menuArquivo->addAction(actionSair);
 
         retranslateUi(MainWindow);
@@ -87,7 +88,7 @@ public:
         actionAbrir->setText(QApplication::translate("MainWindow", "Abrir", 0));
         actionSalvar->setText(QApplication::translate("MainWindow", "Salvar", 0));
         actionSair->setText(QApplication::translate("MainWindow", "Sair", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "Limiar Imagem", 0));
         menuArquivo->setTitle(QApplication::translate("MainWindow", "Arquivo", 0));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
     } // retranslateUi

@@ -10,6 +10,7 @@
       <itemPath>Header.h</itemPath>
       <itemPath>Matriz.h</itemPath>
       <itemPath>Pixel.h</itemPath>
+      <itemPath>Vetor.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de Código-Fonte"
@@ -69,6 +70,8 @@
       </item>
       <item path="Pixel.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Vetor.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -113,6 +116,8 @@
       <item path="Pixel.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Pixel.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Vetor.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

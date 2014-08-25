@@ -421,12 +421,13 @@ void BMP::limiarImagem(u_int32_t fator){
 }
 //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
 bool BMP::operations(const BMP& g2, u_char operacao){
-    uint lin = this->matrizPixels.getLinha();
-    uint col = this->matrizPixels.getColuna();
-    if(g2.GetCabecalhoBitMap().GetBiHeigth() != lin || g2.GetCabecalhoBitMap().GetBiWidth() != col)
-        return false;
-
+    
     Matriz<Pixel> matAux(g2.GetMatrizPixels());
+    uint lin = (this->matrizPixels.getLinha() < matAux.getLinha() ?
+                    this->matrizPixels.getLinha(): matAux.getLinha());
+    uint col = (this->matrizPixels.getColuna() < matAux.getColuna() ?
+                    this->matrizPixels.getColuna(): matAux.getColuna());
+
     Pixel p, b;
     if(operacao == 1){ // &
         for (uint i = 0; i < lin; i++) {
@@ -798,8 +799,8 @@ void BMP::printHistogram(bool fifthShades){
         if(altura < this->Histograma.get(2, i))
             altura = this->Histograma.get(2, i);
     }
-
-    altura = (altura * 3) / 10;
+    uint proporcao = 2;
+    altura = (altura ) / 10;
     newHeader.SetBfSize((largura * altura) + 54);
 
     BitMapHeader newBitMapReader;
@@ -830,6 +831,9 @@ void BMP::printHistogram(bool fifthShades){
                 histG = this->Histograma.get(1,jHist);
                 histB = this->Histograma.get(2,jHist);
 
+                histR = (histR * proporcao) / 10;
+                histG = (histG * proporcao) / 10;
+                histB = (histB * proporcao) / 10;
                 //verifica a intensidade para pintar para cada pixel
                 //para componente R
                 if(histR > i){
@@ -856,6 +860,7 @@ void BMP::printHistogram(bool fifthShades){
                 }
             }else{ //gera só um histograma para cinza
                 histR = this->Histograma.get(0,jHist);
+                histR = (histR * proporcao) / 10;
                 if(histR > i){
                     //for para fazer a proporção
                     for(uint k = 0; k < incremento; k++){
