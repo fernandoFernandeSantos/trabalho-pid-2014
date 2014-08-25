@@ -24,6 +24,12 @@ BMP::BMP(const BMP& orig) {
     this->paletaCores = orig.paletaCores;
 }
 
+BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig){
+    this->cabecalhoImagem = headerOrig;
+    this->cabecalhoBitMap = bitMapOrig;
+    this->matrizPixels = matOrig;
+}
+
 BMP::~BMP() {
     //deletar paleta de cores
     if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
@@ -60,7 +66,7 @@ Matriz<Pixel> BMP::GetMatrizPixels() const {
     return matrizPixels;
 }
 
-Matriz<int> BMP::GetHistogram() const{
+Matriz<uint> BMP::GetHistogram() const{
     return this->Histograma;
 }
 
@@ -211,14 +217,9 @@ bool BMP::salvar(const char* nomeArquivo) {
         std::ofstream arquivoSaida(nomeArquivo, std::ios::out);
         //verifica se pode ser aberto ou não
         if (arquivoSaida.is_open() && arquivoSaida.good()) {
-            //como em c só grava endereço tem que por para variavéis
-            char BfType1 = this->cabecalhoImagem.GetBfType()[0];
-            char BfType2 = this->cabecalhoImagem.GetBfType()[1];
-            uint BfSize = this->cabecalhoImagem.GetBfSize();
-            u_short BfReser1 = this->cabecalhoImagem.GetBfReser1();
-            u_short BfReser2 = this->cabecalhoImagem.GetBfReser2();
-            uint BfOffSetBits = this->cabecalhoImagem.GetBfOffSetBits();
-            uint BiSize = this->cabecalhoBitMap.GetBiSize();
+            this->cabecalhoImagem.saveHeader(arquivoSaida);
+            this->cabecalhoBitMap.SaveBitMapHeader(arquivoSaida);
+           /* uint BiSize = this->cabecalhoBitMap.GetBiSize();
             uint BiWidth = this->cabecalhoBitMap.GetBiWidth();
             uint BiHeigth = this->cabecalhoBitMap.GetBiHeigth();
             u_short BiPlanes = this->cabecalhoBitMap.GetBiPlanes();
@@ -228,28 +229,7 @@ bool BMP::salvar(const char* nomeArquivo) {
             uint BiXPPMeter = this->cabecalhoBitMap.GetBiXPPMeter();
             uint BiYPPMeter = this->cabecalhoBitMap.GetBiYPPMeter();
             uint BiCrlUsed = this->cabecalhoBitMap.GetBiCrlUsed();
-            uint BiClrImport = this->cabecalhoBitMap.GetBiClrImport();
-
-            //grava o header
-            arquivoSaida.write((char*) & BfType1, sizeof (BfType1));
-            arquivoSaida.write((char*) & BfType2, sizeof (BfType2));
-            arquivoSaida.write((char*) & BfSize, sizeof (BfSize));
-            arquivoSaida.write((char*) & BfReser1, sizeof (BfReser1));
-            arquivoSaida.write((char*) & BfReser2, sizeof (BfReser2));
-            arquivoSaida.write((char*) & BfOffSetBits, sizeof (BfOffSetBits));
-
-            //grava o cabeçalho da imagem
-            arquivoSaida.write((char*) & BiSize, sizeof (BiSize));
-            arquivoSaida.write((char*) & BiWidth, sizeof (BiWidth));
-            arquivoSaida.write((char*) & BiHeigth, sizeof (BiHeigth));
-            arquivoSaida.write((char*) & BiPlanes, sizeof (BiPlanes));
-            arquivoSaida.write((char*) & BiBitCount, sizeof (BiBitCount));
-            arquivoSaida.write((char*) & BiCompress, sizeof (BiCompress));
-            arquivoSaida.write((char*) & BiSizeImage, sizeof (BiSizeImage));
-            arquivoSaida.write((char*) & BiXPPMeter, sizeof (BiXPPMeter));
-            arquivoSaida.write((char*) & BiYPPMeter, sizeof (BiYPPMeter));
-            arquivoSaida.write((char*) & BiCrlUsed, sizeof (BiCrlUsed));
-            arquivoSaida.write((char*) & BiClrImport, sizeof (BiClrImport));
+            uint BiClrImport = this->cabecalhoBitMap.GetBiClrImport();*/
 
             uint lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
             u_char aux;
@@ -288,7 +268,7 @@ bool BMP::salvar(const char* nomeArquivo) {
                             }
                         }
                     } catch (std::exception& ex) {
-                        std::cout << "Pau na gravação";
+                        std::cout << ex.what();
                         break;
                     }
                 }
@@ -520,7 +500,7 @@ void BMP::imageToGray(char * newName){
     bitMH.SetBiBitCount(8);
     bitMH.SetBiCrlUsed(256);
     bitMH.SetBiSizeImage(lin * col);
-    cout << lin * col;
+
     novo.SetCabecalhoBitMap(bitMH);
     CollorPallet *palc = new CollorPallet[256];
     //for para paleta
@@ -650,8 +630,8 @@ void BMP::mediana(uint ordem){
     Matriz<Pixel>  tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
             maskRows, maskCols, rows, cols,ii, jj;
-    long int nn, mm;
     uint midle = (ordem * ordem) /2;
+
     maskCols = ordem;
     maskRows = ordem;
     rows = tempMat.getLinha();
@@ -660,7 +640,7 @@ void BMP::mediana(uint ordem){
     maskCenterX = maskCols / 2;
     maskCenterY = maskRows / 2;
 
-    double r = 0, g = 0, b = 0;
+    u_char r = 0, g = 0, b = 0;
     Pixel p;
     for(long int i=0; i < rows; ++i)              // rows
     {
@@ -670,17 +650,28 @@ void BMP::mediana(uint ordem){
             {
                 for(long int n=0; n < maskCols; ++n) // kernel columns
                 {
-                    // index of input signal, used for checking boundary
-                    ii = i + (m - maskCenterY);
-                    jj = j + (n - maskCenterX);
-
-                    // ignore input samples which are out of bound
-
-                    if( ii >= 0 && ii < rows && jj >= 0 && jj < cols ){
-                        //matriz original
-                        p =  tempMat.get(ii,jj);
-                        mask.set(m, n, p);
+                    ii = i + m - maskCenterX;
+                    jj = j + n - maskCenterY;
+                    if((ii < 0) || (jj < 0) || (ii >= rows) || (jj >= cols)){
+                        //cima
+                        if(ii < 0){
+                            ii = i + m;
+                        }
+                        //baixo
+                        if(ii >= rows){
+                            ii = i - m;
+                        }
+                        //lado esquerdo
+                        if(jj < 0){
+                            jj = j + n;
+                        }
+                        //lado direito
+                        if(jj >= cols){
+                            jj = j - n;
+                        }
                     }
+                    p =  tempMat.get(ii,jj);
+                    mask.set(m,n, p);
                 }
             }
             maskOrdered = this->maskOrder(mask);
@@ -688,9 +679,8 @@ void BMP::mediana(uint ordem){
             g = maskOrdered[1][midle];
             b = maskOrdered[2][midle];
             p.setRGB(r, g, b);
-            if((j - maskCenterX) >= 0 && (i - maskCenterX) >= 0){
-                tempMat.set((i - maskCenterX), (j - maskCenterY), p);
-            }
+            tempMat.set(i, j, p);
+
             delete [] maskOrdered[0].getVetor();
             delete [] maskOrdered[1].getVetor();
             delete [] maskOrdered[2].getVetor();
@@ -788,3 +778,76 @@ Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
     ret[2].mergeSort(ret[2].getVetor(), size);
     return ret;
 }
+
+void BMP::printHistogram(){
+    if(this->Histograma.isEmpty())
+        return;
+    Header newHeader(this->GetCabecalhoImagem());
+    //nova imagem sem paleta
+    newHeader.SetBfOffSetBits(54);
+    //novo tamanho
+    uint altura = 4096;
+    uint largura = 2048;
+    newHeader.SetBfSize((largura * altura) + 54);
+
+    BitMapHeader newBitMapReader;
+    newBitMapReader.SetBiSize(40);
+    newBitMapReader.SetBiWidth(largura);
+
+    newBitMapReader.SetBiHeigth(altura);
+    newBitMapReader.SetBiPlanes(1);
+    newBitMapReader.SetBiBitCount(24);
+    newBitMapReader.SetBiCompress(0);
+    newBitMapReader.SetBiSizeImage((altura * largura));
+    newBitMapReader.SetBiXPPMeter(0);
+    newBitMapReader.SetBiYPPMeter(0);
+    newBitMapReader.SetBiCrlUsed(0);
+    newBitMapReader.SetBiClrImport(0);
+
+    Matriz<Pixel> outR(altura, largura), outG(altura, largura), outB(altura, largura);
+
+    uint histR, histG, histB;
+    Pixel pRed(255, 0, 0), pGreen(0, 255, 0), pBlue(0, 0, 255);
+    uint incremento = (largura / 256);
+
+    for(uint i = 0; i < altura; i++){
+        for(uint j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++){
+            histR = this->Histograma.get(0,jHist);
+            histG = this->Histograma.get(1,jHist);
+            histB = this->Histograma.get(2,jHist);
+
+            //verifica a intensidade para pintar para cada pixel
+            //para componente R
+            if(histR > i){
+                //for para fazer a proporção
+                for(uint k = 0; k < incremento; k++){
+                    outR.set(i, (j + k), pRed);
+                }
+            }
+
+            //para componente G
+            if(histG > i){
+                //for para fazer a proporção
+                for(uint k = 0; k < incremento; k++){
+                    outG.set(i, (j + k), pGreen);
+                }
+            }
+
+            //para componente B
+            if(histB > i){
+                //for para fazer a proporção
+                for(uint k = 0; k < incremento; k++){
+                    outB.set(i, (j + k), pBlue);
+                }
+            }
+        }
+    }
+    BMP novoR(newHeader, newBitMapReader, outR);
+    BMP novoG(newHeader, newBitMapReader, outG);
+    BMP novoB(newHeader, newBitMapReader, outB);
+    novoR.salvar("histogramRED.bmp");
+    novoG.salvar("histogramaGreen.bmp");
+    novoB.salvar("histogramaBlue.bmp");
+
+}
+
