@@ -219,7 +219,7 @@ bool BMP::salvar(const char* nomeArquivo) {
         if (arquivoSaida.is_open() && arquivoSaida.good()) {
             this->cabecalhoImagem.saveHeader(arquivoSaida);
             this->cabecalhoBitMap.SaveBitMapHeader(arquivoSaida);
-           /* uint BiSize = this->cabecalhoBitMap.GetBiSize();
+            /* uint BiSize = this->cabecalhoBitMap.GetBiSize();
             uint BiWidth = this->cabecalhoBitMap.GetBiWidth();
             uint BiHeigth = this->cabecalhoBitMap.GetBiHeigth();
             u_short BiPlanes = this->cabecalhoBitMap.GetBiPlanes();
@@ -779,15 +779,27 @@ Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
     return ret;
 }
 
-void BMP::printHistogram(){
+void BMP::printHistogram(bool fifthShades){
     if(this->Histograma.isEmpty())
         return;
     Header newHeader(this->GetCabecalhoImagem());
     //nova imagem sem paleta
     newHeader.SetBfOffSetBits(54);
     //novo tamanho
-    uint altura = 4096;
-    uint largura = 2048;
+    uint altura = 0;
+    uint largura = 1024;
+    for (int i = 0; i < this->Histograma.getColuna(); i++) {
+        if(altura < this->Histograma.get(0, i))
+            altura = this->Histograma.get(0, i);
+
+        if(altura < this->Histograma.get(1, i))
+            altura = this->Histograma.get(1, i);
+
+        if(altura < this->Histograma.get(2, i))
+            altura = this->Histograma.get(2, i);
+    }
+
+    altura = (altura * 3) / 10;
     newHeader.SetBfSize((largura * altura) + 54);
 
     BitMapHeader newBitMapReader;
@@ -808,46 +820,61 @@ void BMP::printHistogram(){
 
     uint histR, histG, histB;
     Pixel pRed(255, 0, 0), pGreen(0, 255, 0), pBlue(0, 0, 255);
+    Pixel pGray(255, 255, 255);
     uint incremento = (largura / 256);
 
     for(uint i = 0; i < altura; i++){
         for(uint j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++){
-            histR = this->Histograma.get(0,jHist);
-            histG = this->Histograma.get(1,jHist);
-            histB = this->Histograma.get(2,jHist);
+            if(!fifthShades){
+                histR = this->Histograma.get(0,jHist);
+                histG = this->Histograma.get(1,jHist);
+                histB = this->Histograma.get(2,jHist);
 
-            //verifica a intensidade para pintar para cada pixel
-            //para componente R
-            if(histR > i){
-                //for para fazer a proporção
-                for(uint k = 0; k < incremento; k++){
-                    outR.set(i, (j + k), pRed);
+                //verifica a intensidade para pintar para cada pixel
+                //para componente R
+                if(histR > i){
+                    //for para fazer a proporção
+                    for(uint k = 0; k < incremento; k++){
+                        outR.set(i, (j + k), pRed);
+                    }
                 }
-            }
 
-            //para componente G
-            if(histG > i){
-                //for para fazer a proporção
-                for(uint k = 0; k < incremento; k++){
-                    outG.set(i, (j + k), pGreen);
+                //para componente G
+                if(histG > i){
+                    //for para fazer a proporção
+                    for(uint k = 0; k < incremento; k++){
+                        outG.set(i, (j + k), pGreen);
+                    }
                 }
-            }
 
-            //para componente B
-            if(histB > i){
-                //for para fazer a proporção
-                for(uint k = 0; k < incremento; k++){
-                    outB.set(i, (j + k), pBlue);
+                //para componente B
+                if(histB > i){
+                    //for para fazer a proporção
+                    for(uint k = 0; k < incremento; k++){
+                        outB.set(i, (j + k), pBlue);
+                    }
+                }
+            }else{ //gera só um histograma para cinza
+                histR = this->Histograma.get(0,jHist);
+                if(histR > i){
+                    //for para fazer a proporção
+                    for(uint k = 0; k < incremento; k++){
+                        outR.set(i, (j + k), pGray);
+                    }
                 }
             }
         }
     }
-    BMP novoR(newHeader, newBitMapReader, outR);
-    BMP novoG(newHeader, newBitMapReader, outG);
-    BMP novoB(newHeader, newBitMapReader, outB);
-    novoR.salvar("histogramRED.bmp");
-    novoG.salvar("histogramaGreen.bmp");
-    novoB.salvar("histogramaBlue.bmp");
-
+    if(fifthShades){
+        BMP novoR(newHeader, newBitMapReader, outR);
+        novoR.salvar("histogram.bmp");
+    }else{
+        BMP novoR(newHeader, newBitMapReader, outR);
+        novoR.salvar("histogramRED.bmp");
+        BMP novoG(newHeader, newBitMapReader, outG);
+        BMP novoB(newHeader, newBitMapReader, outB);
+        novoG.salvar("histogramaGreen.bmp");
+        novoB.salvar("histogramaBlue.bmp");
+    }
 }
 

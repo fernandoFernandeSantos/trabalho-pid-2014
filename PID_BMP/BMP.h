@@ -52,7 +52,7 @@ public:
     void roberts(bool pos);
     bool histogramEqualizer();
     Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
-    void printHistogram();
+    void printHistogram(bool fiftyShades);
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
