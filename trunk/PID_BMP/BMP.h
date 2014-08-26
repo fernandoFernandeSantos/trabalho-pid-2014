@@ -21,6 +21,8 @@ public:
     BMP();
     BMP(const BMP& orig);
     BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig);
+    BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, 
+        const Matriz<Pixel>& matOrig, const CollorPallet *nova);
     virtual ~BMP();
     BitMapHeader GetCabecalhoBitMap() const;
     void SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap);
@@ -44,7 +46,7 @@ public:
     bool makeHistogram();
     void limiarImagem(u_int32_t fator = 127);
     bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
-    void imageToGray(char * newName);
+    BMP imageToGray();
     void convolucao(Matriz<double> &orig);
     void sobel(bool pos);
     void media(uint ordem);
