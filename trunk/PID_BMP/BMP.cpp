@@ -713,6 +713,7 @@ void BMP::roberts(bool pos){
 Matriz<uint> BMP::transformationFunction(){
     if(!this->makeHistogram())
         return NULL;
+    
     Matriz<uint> soma(this->Histograma.getLinha(), this->Histograma.getColuna());
 
     soma.fill(0);
