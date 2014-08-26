@@ -62,10 +62,10 @@ void CollorPallet::setCor(unsigned char r, unsigned char g,
 
 CollorPallet &CollorPallet::operator =(const CollorPallet &orig){
     if(this != &orig){
-        this->SetBlue(orig.GetBlue());
-        this->SetRed(orig.GetRed());
-        this->SetGreen(orig.GetGreen());
-        this->SetReservado(orig.GetReservado());
+        this->Blue = orig.Blue;
+        this->Red = orig.Red;
+        this->Green = orig.Green;
+        this->Reservado = orig.Reservado;
     }
     return (*this);
 }

@@ -12,7 +12,8 @@
 #include <fstream>
 #include <exception>
 #include <cstdio>
-#define SATURATION(a,b) ((a < 0) ? b = 0:((a > 255) ? b = 255:b = a))
+
+#define SATURATION(a,b) ((a < 0) ? b = 0:((a > 255) ? b = 255:b = a));
 
 BMP::BMP() {
 }
@@ -21,13 +22,25 @@ BMP::BMP(const BMP& orig) {
     this->cabecalhoBitMap = orig.cabecalhoBitMap;
     this->cabecalhoImagem = orig.cabecalhoImagem;
     this->matrizPixels = orig.matrizPixels;
-    this->paletaCores = orig.paletaCores;
+    for (int i = 0; i < 256; i++) {
+        this->paletaCores[i] = orig.paletaCores[i];
+    }
 }
 
 BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig){
     this->cabecalhoImagem = headerOrig;
     this->cabecalhoBitMap = bitMapOrig;
     this->matrizPixels = matOrig;
+}
+
+BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, 
+        const Matriz<Pixel>& matOrig, const CollorPallet *nova){
+    this->cabecalhoImagem = headerOrig;
+    this->cabecalhoBitMap = bitMapOrig;
+    this->matrizPixels = matOrig;
+    for (int i = 0; i < 256; i++) {
+        this->paletaCores[i] = nova[i];
+    }
 }
 
 BMP::~BMP() {
@@ -481,9 +494,53 @@ bool BMP::operations(const BMP& g2, u_char operacao){
     return true;
 }
 
-void BMP::imageToGray(char * newName){
+BMP BMP::imageToGray(){
+    
+    //novos objetos
+    Header novoHe;
+    BitMapHeader novoBitHe;
+    CollorPallet *novaPallet = new CollorPallet[256];
+    
+    uint lin = this->matrizPixels.getLinha();
+    uint col = this->matrizPixels.getColuna();
+    Matriz<Pixel> novaMat(lin, col);
+    
+    for (int i = 0; i < 256; i++) {
+        novaPallet[i].setCor(i, i, i, 0);
+    }
+    
+    //seta as definições do header
+    novoHe.SetBfType((unsigned char*)"BM");
+    novoHe.SetBfSize(lin * col + 1078);
+    novoHe.SetBfReser1(0);
+    novoHe.SetBfReser2(0);
+    novoHe.SetBfOffSetBits(1078); //agora tem paleta
+    
+    //seta as definições do bitmap header
+    novoBitHe.SetBiBitCount(8);
+    novoBitHe.SetBiClrImport(256);
+    novoBitHe.SetBiCompress(0);
+    novoBitHe.SetBiCrlUsed(0);
+    novoBitHe.SetBiHeigth(lin);
+    novoBitHe.SetBiPlanes(1);
+    novoBitHe.SetBiSize(40);
+    novoBitHe.SetBiWidth(col);
+    novoBitHe.SetBiXPPMeter(this->cabecalhoBitMap.GetBiXPPMeter());
+    novoBitHe.SetBiYPPMeter(this->cabecalhoBitMap.GetBiYPPMeter());
+    novoBitHe.SetBiSizeImage(lin * col);
+    
+    Pixel p;
+    for (uint i = 0; i < lin; i++) {
+        for (uint j = 0; j < col; j++) {
+            p =  this->matrizPixels.get(i,j);
+            p = p / 3;
+            novaMat.set(i,j, p);
+        }
+    }
+    BMP results(novoHe, novoBitHe, novaMat, novaPallet);
+    return results;
     //mudando as configurações do header
-    BMP novo(*this);
+    /*BMP novo(*this);
     uint lin = novo.GetMatrizPixels().getLinha();
     uint col = novo.GetMatrizPixels().getColuna();
 
@@ -521,7 +578,7 @@ void BMP::imageToGray(char * newName){
     }
     novo.SetMatrizPixels(mat);
     novo.SetPaletaCores(palc);
-    novo.salvar(newName);
+    novo.salvar(newName);*/
 }
 
 ///convolução da imagem

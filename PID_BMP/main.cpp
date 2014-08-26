@@ -425,7 +425,8 @@ int main() {
                     break;
                 }
                 cout << "Conversão de imagem para tons de cinza\n";
-                
+                BMP novo(arquivo.imageToGray());
+                novo.salvar("foi.bmp");
                 break;
             }
             case 0:
