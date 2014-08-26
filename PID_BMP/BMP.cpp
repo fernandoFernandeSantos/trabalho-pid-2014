@@ -38,6 +38,7 @@ BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig,
     this->cabecalhoImagem = headerOrig;
     this->cabecalhoBitMap = bitMapOrig;
     this->matrizPixels = matOrig;
+    this->paletaCores = new CollorPallet[256]();
     for (int i = 0; i < 256; i++) {
         this->paletaCores[i] = nova[i];
     }
@@ -232,28 +233,17 @@ bool BMP::salvar(const char* nomeArquivo) {
         if (arquivoSaida.is_open() && arquivoSaida.good()) {
             this->cabecalhoImagem.saveHeader(arquivoSaida);
             this->cabecalhoBitMap.SaveBitMapHeader(arquivoSaida);
-            /* uint BiSize = this->cabecalhoBitMap.GetBiSize();
-            uint BiWidth = this->cabecalhoBitMap.GetBiWidth();
-            uint BiHeigth = this->cabecalhoBitMap.GetBiHeigth();
-            u_short BiPlanes = this->cabecalhoBitMap.GetBiPlanes();
-            u_short BiBitCount = this->cabecalhoBitMap.GetBiBitCount();
-            uint BiCompress = this->cabecalhoBitMap.GetBiCompress();
-            uint BiSizeImage = this->cabecalhoBitMap.GetBiSizeImage();
-            uint BiXPPMeter = this->cabecalhoBitMap.GetBiXPPMeter();
-            uint BiYPPMeter = this->cabecalhoBitMap.GetBiYPPMeter();
-            uint BiCrlUsed = this->cabecalhoBitMap.GetBiCrlUsed();
-            uint BiClrImport = this->cabecalhoBitMap.GetBiClrImport();*/
-
-            uint lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
             u_char aux;
             //se tem paleta de cores grava a paleta e a matriz
             if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
+                uint lixo = (this->cabecalhoBitMap.GetBiWidth() * 3) % 4;
                 u_char r, g, b, t;
                 for (int i = 0; i < 256; i++) {
                     b = this->paletaCores[i].GetBlue();
                     g = this->paletaCores[i].GetGreen();
                     r = this->paletaCores[i].GetRed();
                     t = this->paletaCores[i].GetReservado();
+
                     arquivoSaida.write((char*) & b, sizeof (u_char));
                     arquivoSaida.write((char*) & g, sizeof (u_char));
                     arquivoSaida.write((char*) & r, sizeof (u_char));
@@ -261,19 +251,18 @@ bool BMP::salvar(const char* nomeArquivo) {
                 }
 
                 //grava a matriz para 8 bits
+                Pixel p;
                 uint linha = 0, coluna = 0;
                 while (true) {
                     try {
-                        u_char indice = this->findIndex(this->matrizPixels.get(linha, coluna).GetR(),
-                                                        this->matrizPixels.get(linha, coluna).GetG(),
-                                                        this->matrizPixels.get(linha, coluna).GetB());
+                        p = this->matrizPixels.get(linha, coluna);
+                        u_char indice = this->findIndex(p.GetR(), p.GetG(), p.GetB());
                         arquivoSaida.write((char*) & indice, sizeof (u_char));
                         coluna++;
                         if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                             linha++;
-                            for (uint i = 0; i < lixo * 3; i++) {
+                            for (uint i = 0; i < lixo; i++) {
                                 arquivoSaida.write((char*) & aux, sizeof (u_char));
-
                             }
                             coluna = 0;
                             if (linha == this->cabecalhoBitMap.GetBiHeigth()) {
@@ -290,6 +279,7 @@ bool BMP::salvar(const char* nomeArquivo) {
             if (this->cabecalhoBitMap.GetBiBitCount() == 24) {
                 u_char r, g, b;
                 uint linha = 0, coluna = 0;
+                uint lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
                 while (true) {
                     r = this->matrizPixels.get(linha, coluna).GetR();
                     g = this->matrizPixels.get(linha, coluna).GetG();
@@ -494,23 +484,23 @@ bool BMP::operations(const BMP& g2, u_char operacao){
     return true;
 }
 
-BMP BMP::imageToGray(){
-    
+BMP BMP::imageToGray(){   
     //novos objetos
     Header novoHe;
     BitMapHeader novoBitHe;
-    CollorPallet *novaPallet = new CollorPallet[256];
+    CollorPallet *novaPallet = new CollorPallet[256]();
     
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Matriz<Pixel> novaMat(lin, col);
     
     for (int i = 0; i < 256; i++) {
-        novaPallet[i].setCor(i, i, i, 0);
+        novaPallet[i].setCor((u_char)i, (u_char)i, (u_char)i, (u_char)0);
     }
-    
-    //seta as definições do header
-    novoHe.SetBfType((unsigned char*)"BM");
+    unsigned char* BfType = new unsigned char[3];
+    BfType[0] = 'B';
+    BfType[1] = 'M';
+    novoHe.SetBfType(BfType);
     novoHe.SetBfSize(lin * col + 1078);
     novoHe.SetBfReser1(0);
     novoHe.SetBfReser2(0);
@@ -527,7 +517,7 @@ BMP BMP::imageToGray(){
     novoBitHe.SetBiWidth(col);
     novoBitHe.SetBiXPPMeter(this->cabecalhoBitMap.GetBiXPPMeter());
     novoBitHe.SetBiYPPMeter(this->cabecalhoBitMap.GetBiYPPMeter());
-    novoBitHe.SetBiSizeImage(lin * col);
+    novoBitHe.SetBiSizeImage(0);
     
     Pixel p;
     for (uint i = 0; i < lin; i++) {
@@ -538,47 +528,8 @@ BMP BMP::imageToGray(){
         }
     }
     BMP results(novoHe, novoBitHe, novaMat, novaPallet);
+    delete [] novaPallet;
     return results;
-    //mudando as configurações do header
-    /*BMP novo(*this);
-    uint lin = novo.GetMatrizPixels().getLinha();
-    uint col = novo.GetMatrizPixels().getColuna();
-
-    Header he = novo.GetCabecalhoImagem();
-    BitMapHeader bitMH = novo.GetCabecalhoBitMap();
-    novo.SetPaletaCores(new CollorPallet[256]);
-
-    he.SetBfSize(lin * col + 1078);
-    he.SetBfReser2(0);
-    he.SetBfOffSetBits(1078);
-    novo.SetCabecalhoImagen(he);
-
-    //mudando as configurações do bimapheader
-
-    bitMH.SetBiBitCount(8);
-    bitMH.SetBiCrlUsed(256);
-    bitMH.SetBiSizeImage(lin * col);
-
-    novo.SetCabecalhoBitMap(bitMH);
-    CollorPallet *palc = new CollorPallet[256];
-    //for para paleta
-    Pixel p;
-    for (ushort i = 0; i < 256; i++) {
-        palc[i].setCor(i, i, i, 0);
-    }
-
-    Matriz<Pixel> mat(novo.GetMatrizPixels());
-    for (uint i = 0; i < lin; i++) {
-        for (uint j = 0; j < col; j++) {
-            p = mat.get(i,j);
-            p = p / 3;
-            mat.set(i, j, p);
-
-        }
-    }
-    novo.SetMatrizPixels(mat);
-    novo.SetPaletaCores(palc);
-    novo.salvar(newName);*/
 }
 
 ///convolução da imagem
