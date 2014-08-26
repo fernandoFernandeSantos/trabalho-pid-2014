@@ -17,6 +17,12 @@ public:
     int generate();
     
 private:
+    
+    
+    void worst_for_selection(int valor[], int tamanho);
+    void sort(int valor[], int esquerda, int direita);
+    void inverte(int v[], int fim);
+    
 
 };
 
