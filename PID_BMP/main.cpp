@@ -426,9 +426,18 @@ int main() {
                 }
                 cout << "Conversão de imagem para tons de cinza\n";
                 BMP novo(arquivo.imageToGray());
-                novo.salvar("foi.bmp");
-                novo.printCabecalhoArquivo();
-                novo.printCabecalhoImagem();
+                cout << "\n Entre como nome do arquivo de saida: ";
+                cin >> nome;
+                try {
+                    novo.salvar(nome);
+
+                } catch (ifstream::failure e) {
+                    cout << "Exception opening/reading/closing file\n";
+                    cout << e.what() << endl;
+                    continua();
+                    break;
+                }
+                cout << "Arquivo salvo com sucesso\n";
                 continua();
                 break;
             }
