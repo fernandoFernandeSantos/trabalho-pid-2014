@@ -7,6 +7,13 @@
 
 #ifndef FILEGENERATOR_H
 #define	FILEGENERATOR_H
+#include <iostream>
+#include <cstdio>
+#include <ctime>
+#include <cstdlib>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 class FileGenerator {
 public:
@@ -14,7 +21,8 @@ public:
     FileGenerator();
     FileGenerator(const FileGenerator& orig);
     virtual ~FileGenerator();
-    int generate();
+    int generate(std::string pasta);
+
     
 private:
     

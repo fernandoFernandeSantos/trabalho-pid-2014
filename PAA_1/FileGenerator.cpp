@@ -6,13 +6,7 @@
  */
 
 #include "FileGenerator.h"
-#include <iostream>
-#include <cstdio>
-#include <ctime>
-#include <cstdlib>
-#include <fstream>
-#include <string>
-#include <sstream>
+
 
 using namespace std;
 
@@ -79,18 +73,26 @@ void FileGenerator::inverte(int v[], int fim) {
     }
 }
 
-int FileGenerator::generate() {
+int FileGenerator::generate(string pasta) {
+    string pastaSaida = "cd "+ pasta;
+    if(system(pastaSaida.c_str())){
+        cout << "Criando pasta\n";
+        string foi = "mkdir "+pasta;
+        system(foi.c_str());
+        pasta = "cd "+pasta;
+        system(pasta.c_str());
+    }
+    
     ofstream output;
     ostringstream outputstring;
     srand( (unsigned)time(0));
-
+    //randomico
     for(int j = 1 ; j <= 6; j++){
 
         int limit  = 10000;
 
         while(limit <= 100000){
-
-            outputstring << "arq" << limit << "n" << j << ".txt";
+            outputstring << pasta + "/arq" << limit << "n" << j << ".txt";
             string s = outputstring.str();
             cout << s << endl;
             output.open(s.c_str());
@@ -104,20 +106,20 @@ int FileGenerator::generate() {
             output.close();
 
             limit += 5000;
-        }
+        } //fim while limit
 
-    }
+    } //fim for randomico
     outputstring.str("");
     outputstring.clear();
+    
     //sequencial
-
     for(int i = 1; i <= 2; i++){
         int limit = 10000;
         while(limit <= 100000){
 
             int vetor[limit];
 
-            outputstring << "arq" << limit << "seq" << "n" << i << ".txt";
+            outputstring << pasta + "/arq" << limit << "seq" << "n" << i << ".txt";
 
             string s = outputstring.str();
             cout << s << endl;
@@ -140,9 +142,10 @@ int FileGenerator::generate() {
         }
     }
 
-    //inverço - pior caso
+    //inverso - pior caso
     outputstring.str("");
     outputstring.clear();
+    
     for(int i = 1; i <= 2; i++){
 
         int limit = 10000;
@@ -150,7 +153,7 @@ int FileGenerator::generate() {
 
             int vetor[limit];
 
-            outputstring << "arq" << limit << "inv" << "n" << i << ".txt";
+            outputstring << pasta + "/arq" << limit << "inv" << "n" << i << ".txt";
 
             string s = outputstring.str();
             cout << s << endl;
@@ -174,3 +177,4 @@ int FileGenerator::generate() {
         }
     }
 }
+

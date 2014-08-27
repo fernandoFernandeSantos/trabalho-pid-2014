@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/FileGenerator.o \
+	${OBJECTDIR}/GeneratedCases.o \
 	${OBJECTDIR}/Vetor.o \
 	${OBJECTDIR}/main.o
 
@@ -68,6 +69,11 @@ ${OBJECTDIR}/FileGenerator.o: FileGenerator.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/FileGenerator.o FileGenerator.cpp
+
+${OBJECTDIR}/GeneratedCases.o: GeneratedCases.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/GeneratedCases.o GeneratedCases.cpp
 
 ${OBJECTDIR}/Vetor.o: Vetor.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -4,10 +4,14 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Arquivos de Cabeçalho"
                    projectFiles="true">
+      <itemPath>FileGenerator.h</itemPath>
+      <itemPath>Vetor.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de Código-Fonte"
                    projectFiles="true">
+      <itemPath>FileGenerator.cpp</itemPath>
+      <itemPath>Vetor.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -25,10 +29,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>FileGenerator.cpp</itemPath>
-    <itemPath>FileGenerator.h</itemPath>
-    <itemPath>Vetor.cpp</itemPath>
-    <itemPath>Vetor.h</itemPath>
+    <itemPath>GeneratedCases.cpp</itemPath>
+    <itemPath>GeneratedCases.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -43,6 +45,10 @@
       <item path="FileGenerator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="GeneratedCases.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="GeneratedCases.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Vetor.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -74,6 +80,10 @@
       <item path="FileGenerator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="GeneratedCases.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="GeneratedCases.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Vetor.cpp" ex="false" tool="1" flavor2="0">
       </item>
