@@ -9,45 +9,69 @@
 #include "FileGenerator.h"
 #include <iostream>
 #include "Vetor.h"
-#include "GeneratedCases.h"
+#include "CaseGenerator.h"
 
 using namespace std;
+string pastaProjeto = "/home/fernandofernandes/NetBeansProjects/PAA_1/";
+string pasta = "testes";
 
-void Fscanf(std::string nome, int size, int * v) {
-
-    std::ifstream ifs;
-    ifs.open(nome.c_str());
-    if (ifs.fail()) {
-        cout << "Falha ao abrir o arquivo";
-        exit(1);
-    }
-
-
-    if (v != NULL) {
-        delete[] v;
-    }
-    v = new int[size];
-    for (int i = 0; i < size; i++) {
-        ifs >> v[i];
-    }
-    ifs.close();
-
-}
-
-static void geraRandomico(GeneratedCases *rand, string pasta) {
+void geraRandomico(CaseGenerator *rand, string pasta) {
     uint i = 0;
-    ostringstream inputstring;
-    for (int j = 1; j <= 6; j++) {
+    std::ostringstream inputstring;
+    string s = "";
+    for (int j = 0; j < 6; j++) {
         int limit = 10000;
         while (limit <= 100000) {
-            inputstring << pasta + "/arq" << limit << "n" << j << ".txt";
-            string s = inputstring.str();
-            Fscanf(s, rand[j].GetM(), rand[j].getVet(i));
+            inputstring << pasta + "/arq" << limit << "n" << (j + 1) << ".txt";
+            s = inputstring.str();
+            rand[j].SetM(limit, j);
+            rand[j].Fscanf(s, i, );
             limit += 5000;
             i++;
+            inputstring.str("");
+            s.clear();
         } //fim while limit
 
     } //fim for randomico
+}
+
+void geraSequencial(CaseGenerator* seq, string pasta) {
+    std::ostringstream inputstring;
+    string s = "";
+    uint j = 0;
+    for (int i = 0; i < 2; i++) {
+        int limit = 10000;
+        while (limit <= 100000) {
+            inputstring << pasta + "/arq" << limit << "seq" << "n" << (i + 1) << ".txt";
+            s = inputstring.str();
+            seq[i].SetM(limit);
+            seq[i].Fscanf(s, j++);
+            inputstring.str("");
+            inputstring.clear();
+            limit += 5000;
+            s.clear();
+        }
+    }
+}
+
+void geraInvertido(CaseGenerator* inv, string pasta) {
+    std::ostringstream inputstring;
+    string s = "";
+    uint j = 0;
+    for (int i = 0; i < 2; i++) {
+        int limit = 10000;
+        while (limit <= 100000) {
+            inputstring << pasta + "/arq" << limit << "inv" << "n" << (i + 1) << ".txt";
+            s = inputstring.str();
+            inv[i].SetM(limit, j);
+            inv[i].Fscanf(s, j);
+            j++;
+            inputstring.str("");
+            inputstring.clear();
+            limit += 5000;
+            s.clear();
+        }
+    }
 }
 
 int main(int argc, char** argv) {
@@ -55,9 +79,9 @@ int main(int argc, char** argv) {
     FileGenerator novos;
     string t = "randomico";
     //pegando primeiro os randomicos
-    GeneratedCases *randomicos = new GeneratedCases[6]();
-    GeneratedCases *sequencial = new GeneratedCases[2]();
-    GeneratedCases *invertido = new GeneratedCases[2]();
+    CaseGenerator *randomicos = new CaseGenerator[6]();
+    CaseGenerator *sequencial = new CaseGenerator[2]();
+    CaseGenerator *invertido = new CaseGenerator[2]();
     for (u_char i = 0; i < 6; i++) {
         randomicos[i].initData(19, t);
     }
@@ -70,9 +94,22 @@ int main(int argc, char** argv) {
     char a;
     cin >> a;
     if (a == 'S' || a == 's') {
-        novos.generate("testes");
+        novos.generate(pasta);
     }
-    geraRandomico(randomicos, "testes");
+    geraRandomico(randomicos, pastaProjeto + pasta);
+    geraSequencial(sequencial, pastaProjeto + pasta);
+    geraInvertido(invertido, pastaProjeto + pasta);
+
+    //testes
+    Vetor se;
+    cout << "Comparações Antes" << se.getQuantComp() << endl;
+    cout << "Trocas Antes" << se.getQuantTrocas() << endl;
+    se.setVetor(sequencial[0].getVet(1), sequencial[0].GetM());
+
+    se.InsertionSort();
+    cout << "Comparações " << se.getQuantComp() << endl;
+    cout << "Trocas " << se.getQuantTrocas() << endl;
+
     return 0;
 }
 

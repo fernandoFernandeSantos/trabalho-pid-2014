@@ -18,6 +18,9 @@ Vetor::Vetor() {
     n = 0;
     V = NULL;
     cout << "Vetor construido.\n";
+    this->quantComp = 0;
+    this->quantTrocas = 0;
+    this->fromHere = false;
 }
 
 Vetor::Vetor(int tam) {
@@ -39,9 +42,11 @@ Vetor::Vetor(int tam) {
                 V[i] = 0;
         }
     }
+    this->quantComp = 0;
+    this->quantTrocas = 0;
+    this->fromHere = true;
     cout << "Vetor construído\n";
 }
-
 
 Vetor::Vetor(const Vetor &A) {
     cout << "Construtor de cópia construindo Vetor...\n";
@@ -55,12 +60,15 @@ Vetor::Vetor(const Vetor &A) {
         this->V[i] = A.V[i];
     }
     cout << "Vetor construído.";
+    this->fromHere = false;
 }
 
 Vetor::~Vetor() {
-    cout << "Destruindo Vetor...\n";
-    delete[] V;
-    cout << "Vetor destruído\n";
+    if (this->fromHere) {
+        cout << "Destruindo Vetor...\n";
+        delete[] V;
+        cout << "Vetor destruído\n";
+    }
 }
 
 void Vetor::realloc() {
@@ -158,22 +166,32 @@ void Vetor::swap(int &a, int &b) {
     a = b;
     b = c;
 }
+//==============================================================================
+//algoritmos de ordenação
 
 void Vetor::BubbleSort() {
     for (int i = 0; i < n - 1; i++)
-        for (int j = n - 1; j > i; j--)
-            if (V[j] < V[j - 1])
+        for (int j = n - 1; j > i; j--) {
+            this->quantComp++;
+            if (V[j] < V[j - 1]) {
+                this->quantTrocas++;
                 swap(V[j], V[j - 1]);
+            }
+        }
 }
 
 void Vetor::InsertionSort() {
     for (int i = 0; i < n; i++) {
         int key = V[i];
         int j = i - 1;
+        this->quantComp++;
         while (j >= 0 && V[j] > key) {
+            this->quantComp++;
+            this->quantTrocas++;
             V[j + 1] = V[j];
             j--;
         }
+        this->quantTrocas++;
         V[j + 1] = key;
     }
 }
@@ -182,10 +200,14 @@ void Vetor::SelectionSort() {
     for (int i = 0; i < (n - 1); i++) {
         // Encontra o menor elemento
         int min = i;
-        for (int j = i + 1; j < n; j++)
-            if (V[j] < V[min])
+        for (int j = i + 1; j < n; j++) {
+            this->quantComp++;
+            if (V[j] < V[min]) {
                 min = j;
+            }
+        }
         // troca a posição atual com o menor elemento do vetor
+        this->quantTrocas++;
         int aux = V[min];
         V[min] = V[i];
         V[i] = aux;
@@ -196,7 +218,9 @@ int Vetor::partition(int* __restrict__ A, int p, int r) {
     int x = A[r];
     int i = p - 1;
     for (int j = p; j < r; j++) {
+        this->quantComp++;
         if (A[j] <= x) {
+            this->quantTrocas++;
             i = i + 1;
             swap(A[i], A[j]);
         }
@@ -232,7 +256,9 @@ void Vetor::Merge(int* __restrict__ A, int p, int q, int r) {
     int i = 0;
     int j = 0;
     for (int k = p; k <= r; k++) {
+        this->quantComp++;
         if ((L[i] <= R[j])) {
+            this->quantTrocas++;
             A[k] = L[i];
             i = i + 1;
         } else {
@@ -251,4 +277,27 @@ void Vetor::MergeSort(int* __restrict__ A, int p, int r) {
         Merge(A, p, q, r);
     }
 }
+//------------------------------------------------------------------------------
 
+void Vetor::setVetor(int* vet, int n) {
+    if (vet == NULL)
+        return;
+    this->n = n;
+    this->V = vet;
+    this->fromHere = false;
+}
+
+u_int64_t Vetor::getQuantComp() const {
+    return this->quantComp;
+}
+
+u_int64_t Vetor::getQuantTrocas() const {
+    return this->quantTrocas;
+}
+
+void Vetor::fill(int valor){
+    for (int i = 0; i < this->n; i++) {
+        this->V [i] = 0;
+
+    }
+}

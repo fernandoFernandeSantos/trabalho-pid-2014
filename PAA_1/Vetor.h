@@ -7,16 +7,21 @@
 
 #ifndef VETOR_H
 #define	VETOR_H
+#include <cstdlib>
 
 class Vetor {
 private:
+    u_int64_t quantTrocas; //quantidade de trocas
+    u_int64_t quantComp; //quantidade de comparações
     int n; // O número de elementos do vetor;
     int *V; // A estrutura que armazena os elementos
+    bool fromHere;
     void swap(int &a, int &b); // Método auxiliar para troca
     void realloc(); // método auxiliar para realocar o vetor V.
     //metodos privados
-    int partition(int* __restrict__  vec, int esquerdo, int direito);
+    int partition(int* __restrict__ vec, int esquerdo, int direito);
     void Merge(int* __restrict__ A, int p, int q, int r);
+
 public:
     // Construtores e destruidores
     Vetor(); // Construtor default
@@ -33,6 +38,10 @@ public:
     int &operator[](int i); // sobrecarga do operador [] para escrita
     void escreve(); // escreve o vetor
     int* getVetor();
+    u_int64_t getQuantComp() const;
+    u_int64_t getQuantTrocas() const;
+    void setVetor(int* vet, int n);
+
     int getTamanho();
     // Métodos de ordenação 
     /*
@@ -45,12 +54,12 @@ public:
     void BubbleSort(); // ordenação pelo método da bolha
     void InsertionSort(); // ordenação pelo método de inserção
     void SelectionSort(); // ordenação pelo método de seleção
-    
+
     //pagina 24 cormen
     void MergeSort(int* __restrict__ A, int p, int r);
-    
+
     void QuickSort(int* __restrict__ A, int p, int r);
-    
+    void fill(int valor = 0);
 
 
 };

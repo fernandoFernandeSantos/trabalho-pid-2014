@@ -12,21 +12,25 @@
 #include <iostream>
 #include <cstdlib>
 #include <climits>
+#include <fstream>
+#include <sstream>
+#include "Vetor.h"
 using namespace std;
 
-class GeneratedCases {
+class CaseGenerator {
 public:
-    GeneratedCases(uint n, uint m);
-    GeneratedCases();
-    GeneratedCases(uint n, string t);
-    GeneratedCases(const GeneratedCases& orig);
-    virtual ~GeneratedCases();
+    CaseGenerator(uint n, uint m);
+    CaseGenerator();
+    CaseGenerator(uint n, string t);
+    CaseGenerator(const CaseGenerator& orig);
+    virtual ~CaseGenerator();
     int** GetDataVector() const;
 
     void SetDataVector(int** dataVector);
-    unsigned int GetM() const;
+    
+    Vetor GetM() const;
 
-    void SetM(unsigned int m);
+    void SetM(uint tam, uint pos);
 
     unsigned int GetN() const;
 
@@ -39,16 +43,22 @@ public:
     int getAt(uint i, uint j);
     int* getVet(uint i);
     
-    void mallocSizeM(uint sizeM);
+    void mallocSizeM(uint posicao, int sizeM);
     void initData(uint n, string t);
+    
+    void Fscanf(string nome, uint i, uint k);
+//    
+//    static void geraRandomico(CaseGenerator *rand, string pasta);
+//    static void geraSequencial(CaseGenerator *seq, string pasta);
+//    static void geraInvertido(CaseGenerator *inv, string pasta);
+//    
 
 private:
     int **dataVector;
     unsigned int n; //quantidade de entradas
-    unsigned int m; // quantidade de numeros
+    Vetor m; // vetor de tamanhos
 
     std::string tipo; //pode ser invertido, randomico ou sequencial
-
 };
 
 #endif	/* GENERATEDCASES_H */

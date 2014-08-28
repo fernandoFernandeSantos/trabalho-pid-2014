@@ -18,7 +18,7 @@ FileGenerator::FileGenerator(const FileGenerator& orig) {
 
 FileGenerator::~FileGenerator() {
 }
-
+/*
 void FileGenerator::worst_for_selection(int valor[], int tamanho) {
 
     int aux = valor[0];
@@ -72,7 +72,7 @@ void FileGenerator::inverte(int v[], int fim) {
         j--;
     }
 }
-
+*/
 int FileGenerator::generate(string pasta) {
     string pastaSaida = "cd "+ pasta;
     if(system(pastaSaida.c_str())){
@@ -117,7 +117,7 @@ int FileGenerator::generate(string pasta) {
         int limit = 10000;
         while(limit <= 100000){
 
-            int vetor[limit];
+            //int vetor[limit];
 
             outputstring << pasta + "/arq" << limit << "seq" << "n" << i << ".txt";
 
@@ -127,14 +127,14 @@ int FileGenerator::generate(string pasta) {
             outputstring.str("");
             outputstring.clear();
 
-            for(int j = 0; j < limit; j++){
+            /*for(int j = 0; j < limit; j++){
                 vetor[j] = rand();
             }
             sort(vetor, 0, limit - 1);
-
+             */
 
             for(int j = 0; j < limit; j++){
-                output << vetor[j] << endl;
+                output << j << endl;
             }
             limit += 5000;
 
@@ -151,7 +151,7 @@ int FileGenerator::generate(string pasta) {
         int limit = 10000;
         while(limit <= 100000){
 
-            int vetor[limit];
+            //int vetor[limit];
 
             outputstring << pasta + "/arq" << limit << "inv" << "n" << i << ".txt";
 
@@ -160,16 +160,16 @@ int FileGenerator::generate(string pasta) {
             output.open(s.c_str());
             outputstring.str("");
             outputstring.clear();
-
+            /*
             for(int j = 0; j < limit; j++){
                 vetor[j] = rand();
             }
             sort(vetor, 0, limit - 1);
             inverte(vetor, limit);
-
+             */
             //salva invertido
-            for(int j = 0; j < limit; j++)
-                output << vetor[j] << endl;
+            for(int j = limit - 1; j >= 0; j--)
+                output << j << endl;
 
 
             limit += 5000;
