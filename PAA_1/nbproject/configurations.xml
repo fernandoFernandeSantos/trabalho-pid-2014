@@ -11,8 +11,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de Código-Fonte"
                    projectFiles="true">
-      <itemPath>CaseGenerator.cpp</itemPath>
-      <itemPath>FileGenerator.cpp</itemPath>
       <itemPath>Vetor.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -42,11 +40,7 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="CaseGenerator.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="CaseGenerator.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="FileGenerator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -77,11 +71,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="CaseGenerator.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="CaseGenerator.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="FileGenerator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
       </item>

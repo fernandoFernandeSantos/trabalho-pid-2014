@@ -186,8 +186,8 @@ void Vetor::InsertionSort() {
         int j = i - 1;
         this->quantComp++;
         while (j >= 0 && V[j] > key) {
-            this->quantComp++;
-            this->quantTrocas++;
+            //this->quantComp++;
+            //this->quantTrocas++;
             V[j + 1] = V[j];
             j--;
         }
@@ -225,6 +225,7 @@ int Vetor::partition(int* __restrict__ A, int p, int r) {
             swap(A[i], A[j]);
         }
     }
+    this->quantTrocas++;
     swap(A[i + 1], A[r]);
     return i + 1;
 }
