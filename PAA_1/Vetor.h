@@ -312,11 +312,11 @@ public:
     }
 
     void MergeCall() {
-        this->MergeSort(this->V, this->V[0], this->V[this->n - 1]);
+        this->MergeSort(this->V, 0, this->n - 1);
     }
 
     void QuickCall() {
-        this->QuickSort(this->V, this->V[0], this->V[this->n - 1]);
+        this->QuickSort(this->V, 0, this->n - 1);
     }
 
     void zeraTEC() {
