@@ -12,7 +12,7 @@
 #include "CaseGenerator.h"
 
 using namespace std;
-string pastaProjeto = "/home/fernandofernandes/NetBeansProjects/PAA_1/";
+string pastaProjeto = "/home/familia/NetBeansProjects/paatrab/trunk/PAA_1/";
 string pasta = "testes";
 
 void sort(CaseGenerator *seq, CaseGenerator *rand, CaseGenerator *inv) {
@@ -21,45 +21,49 @@ void sort(CaseGenerator *seq, CaseGenerator *rand, CaseGenerator *inv) {
     uint posSize;
     //randomico
     cout << "Caso Aleatorio\n";
-    cout << "BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
+    cout << "Size, BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
             "MergeSort Troca, Compar, QuickSort Troca, Compar\n";
-       
-    for (int i = 0; i < 6; i++) {
+
+   for (int i = 0; i < 6; i++) {
         posSize = 0;
         while (posSize < 19) {
             //cout << "Vetor posicao " << posSize << " Tamanho " << rand[i].GetSizeAt(i) << ",";
             resRand.setVetor(rand[i].GetVetor(posSize), rand[i].GetSizeAt(posSize));
-            cout << "Size " << i << " " << posSize << " " << resRand.getTamanho() << endl;
+            cout << resRand.getTamanho() << ", ";
             Vetor buble(resRand), sele(resRand), inser(resRand), mer(resRand), quick(resRand);
             //ordena buble
             buble.BubbleSort();
             cout << buble.getQuantTrocas() << ", " << buble.getQuantComp() << ",";
+
             //ordena selection
             sele.SelectionSort();
-            cout <<sele.getQuantTrocas() << ", " << sele.getQuantComp() << ",";
-            //ordena selection
+            cout << sele.getQuantTrocas() << ", " << sele.getQuantComp() << ",";
+
+            //ordena insertion
             inser.InsertionSort();
             cout << inser.getQuantTrocas() << ", " << inser.getQuantComp() << ",";
-            //ordena selection
+
+            //ordena merge
             mer.MergeCall();
             cout << mer.getQuantTrocas() << ", " << mer.getQuantComp() << ",";
-             //ordena quick
-            buble.QuickCall();
-            cout << buble.getQuantTrocas() << ", " << buble.getQuantComp() << ", ";
-            buble.zeraTEC();
+
+            //ordena quick
+            quick.QuickCall();
+            cout << quick.getQuantTrocas() << ", " << quick.getQuantComp() << endl;
             posSize++;
         }
-        cout << "\n";
     }
+    cout << endl << endl;
+
     cout << "\nCaso Sequencial\n";
-    cout << "BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
+    cout << "Size, BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
             "MergeSort Troca, Compar, QuickSort Troca, Compar\n";
     for (int i = 0; i < 2; i++) {
         posSize = 0;
         while (posSize < 19) {
             //cout << "Vetor posicao " << posSize << " Tamanho " << rand[i].GetSizeAt(i) << ",";
             resSeq.setVetor(seq[i].GetVetor(posSize), seq[i].GetSizeAt(posSize));
-            cout << "Size " << i << " " << posSize << " " << resSeq.getTamanho() << endl;
+            cout << resSeq.getTamanho() << ", ";
             Vetor buble(resSeq), sele(resSeq), inser(resSeq), merge(resSeq), quick(resSeq);
             //ordena buble
             buble.BubbleSort();
@@ -71,25 +75,24 @@ void sort(CaseGenerator *seq, CaseGenerator *rand, CaseGenerator *inv) {
             inser.InsertionSort();
             cout << inser.getQuantTrocas() << ", " << inser.getQuantComp() << ",";
             //ordena selection
-            /*merge.MergeCall();
-            cout << merge.getQuantTrocas() << ", " << merge.getQuantComp() << ",";
+            merge.MergeCall();
+            cout << merge.getQuantTrocas() << ", " << merge.getQuantComp() << ","; 
             //ordena quick
             quick.QuickCall();
-            cout << quick.getQuantTrocas() << ", " << quick.getQuantComp() << ", ";
-             */posSize++;
+            cout << quick.getQuantTrocas() << ", " << quick.getQuantComp() << endl;
+            posSize++;
         }
-        cout << "\n";
-
     }
+    cout << endl;
     cout << "\nCaso Invertido\n";
-    cout << "BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
+    cout << "Size, BubleSort Troca, Compar,SelectionSort Troca, Compar, InsertionSort Troca, Compar, "
             "MergeSort Troca, Compar, QuickSort Troca, Compar\n";
     for (int i = 0; i < 2; i++) {
         posSize = 0;
         while (posSize < 19) {
             //cout << "Vetor posicao " << posSize << " Tamanho " << rand[i].GetSizeAt(i) << ",";
             resInv.setVetor(inv[i].GetVetor(posSize), inv[i].GetSizeAt(posSize));
-            cout << "Size " << i << " " << posSize << " " << resSeq.getTamanho() << endl;
+            cout << resInv.getTamanho() << ", ";
             Vetor buble(resInv), sele(resInv), inser(resInv), merge(resInv), quick(resInv);
             //ordena buble
             buble.BubbleSort();
@@ -104,13 +107,12 @@ void sort(CaseGenerator *seq, CaseGenerator *rand, CaseGenerator *inv) {
             merge.MergeCall();
             cout << merge.getQuantTrocas() << ", " << merge.getQuantComp() << ",";
             //ordena quick
-            /*quick.QuickCall();
-            cout << quick.getQuantTrocas() << ", " << quick.getQuantComp() << ", ";
-             */posSize++;
+            quick.QuickCall();
+            cout << quick.getQuantTrocas() << ", " << quick.getQuantComp() << endl;
+            posSize++;
         }
-        cout << "\n";
-
     }
+    cout << endl;
 }
 
 int main() {

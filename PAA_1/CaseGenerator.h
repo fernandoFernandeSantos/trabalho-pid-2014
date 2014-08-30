@@ -30,8 +30,6 @@ public:
     }
 
     ~CaseGenerator() {
-        if (this->n <= 0)
-            return;
         for (int i = 0; i < this->n; i++) {
             delete [] this->dataVector[i];
         }

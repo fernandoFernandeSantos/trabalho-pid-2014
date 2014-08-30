@@ -21,10 +21,12 @@ private:
     int n; // O número de elementos do vetor;
     int *V; // A estrutura que armazena os elementos
     bool fromHere;
+    //==============================================================================
 
     int partition(int* A, int p, int r) {
         int x = A[r];
         int i = p - 1;
+        this->quantComp++;
         for (int j = p; j < r; j++) {
             this->quantComp++;
             if (A[j] <= x) {
@@ -54,9 +56,11 @@ private:
         int L[n1 + 1];
         int R[n2 + 1];
         for (int i = 0; i < n1; i++) {
+            this->quantTrocas++;
             L[i] = A[p + i];
         }
         for (int j = 0; j < n2; j++) {
+            this->quantTrocas++;
             R[j] = A[q + j + 1];
         }
         L[n1] = INT_MAX - 1;
@@ -71,19 +75,21 @@ private:
                 A[k] = L[i];
                 i = i + 1;
             } else {
+                this->quantTrocas++;
                 A[k] = R[j];
                 j = j + 1;
             }
         }
     }
+    //------------------------------------------------------------------------------
 public:
 
     Vetor() {
         // construtor default
-        cout << "Construtor default construindo vetor...\n";
+        // cout << "Construtor default construindo vetor...\n";
         n = 0;
         V = NULL;
-        cout << "Vetor construido.\n";
+        //cout << "Vetor construido.\n";
         this->quantComp = 0;
         this->quantTrocas = 0;
         this->fromHere = false;
@@ -115,8 +121,10 @@ public:
     }
 
     Vetor(const Vetor &A) {
-       // cout << "Construtor de cópia construindo Vetor...\n";
+        // cout << "Construtor de cópia construindo Vetor...\n";
         this->n = A.n;
+        this->quantComp = 0;
+        this->quantTrocas = 0;
         V = new int[this->n];
         if (V == NULL) {
             cerr << "Erro 2: Não é possível criar a cópia do vetor.";
@@ -126,14 +134,14 @@ public:
             this->V[i] = A.V[i];
         }
         //cout << "Vetor construído.";
-        this->fromHere = false;
+        this->fromHere = true;
     }
 
     ~Vetor() {
         if (this->fromHere) {
-            cout << "Destruindo Vetor...\n";
+            // cout << "Destruindo Vetor...\n";
             delete[] V;
-            cout << "Vetor destruído\n";
+            //cout << "Vetor destruído\n";
         }
     }
 
@@ -244,8 +252,8 @@ public:
             int j = i - 1;
             this->quantComp++;
             while (j >= 0 && V[j] > key) {
-                //this->quantComp++;
-                //this->quantTrocas++;
+                this->quantComp++;
+                this->quantTrocas++;
                 V[j + 1] = V[j];
                 j--;
             }

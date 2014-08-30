@@ -21,7 +21,6 @@ class FileGenerator {
 public:
 
     FileGenerator(){}
-    FileGenerator(const FileGenerator& orig){}
     virtual ~FileGenerator(){}
 
     int generate(string pasta) {
