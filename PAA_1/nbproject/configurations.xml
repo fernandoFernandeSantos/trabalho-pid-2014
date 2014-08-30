@@ -11,7 +11,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de Código-Fonte"
                    projectFiles="true">
-      <itemPath>Vetor.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -44,8 +43,6 @@
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Vetor.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="Vetor.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
@@ -74,8 +71,6 @@
       <item path="CaseGenerator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FileGenerator.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Vetor.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Vetor.h" ex="false" tool="3" flavor2="0">
       </item>

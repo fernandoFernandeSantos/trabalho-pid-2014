@@ -35,11 +35,13 @@ public:
         for (int i = 0; i < this->n; i++) {
             delete [] this->dataVector[i];
         }
+        delete [] this->dataVector;
     }
 
     bool Malloc(string tipo) {
-        if (this->n <= false) return false;
+        if (this->n <= 0) return false;
         this->tipo = tipo;
+        this->dataVector = new int*[this->n];
     }
 
     uint GetN() {
@@ -54,7 +56,7 @@ public:
         this->sizes[posSize] = valor;
     }
 
-    void Fscanf(string nome, uint posVet) {
+    void Fscanf(string nome, uint posVet, uint tamanho) {
 
         std::ifstream ifs;
         ifs.open(nome.c_str());
@@ -69,8 +71,8 @@ public:
         if (this->dataVector[posVet] != NULL) {
             delete[] this->dataVector[posVet];
         }
-        this->dataVector[posVet] = new int[this->sizes[posVet]];
-        for (uint j = 0; j < this->sizes[posVet]; j++) {
+        this->dataVector[posVet] = new int[tamanho];
+        for (uint j = 0; j < tamanho; j++) {
             ifs >> this->dataVector[posVet][j];
         }
         ifs.close();
@@ -86,7 +88,7 @@ public:
         return this->sizes[posSize];
     }
 
-    static void geraRandomico(CaseGenerator *rand, string pasta) {
+    static void geraRandomico(CaseGenerator rand[], string pasta) {
         uint posSize = 0;
         std::ostringstream inputstring;
         string s = "";
@@ -96,7 +98,7 @@ public:
                 inputstring << pasta + "/arq" << limit << "n" << (i + 1) << ".txt";
                 s = inputstring.str();
                 rand[i].SetSizes(posSize, limit); //coloca o tamanho do vetor na posição i
-                rand[i].Fscanf(s, posSize);
+                rand[i].Fscanf(s, posSize, limit);
                 limit += 5000;
                 posSize++;
                 inputstring.str("");
@@ -106,7 +108,7 @@ public:
         } //fim for randomico
     }
 
-    static void geraSequencial(CaseGenerator* seq, string pasta) {
+    static void geraSequencial(CaseGenerator seq[], string pasta) {
         std::ostringstream inputstring;
         string s = "";
         uint posSize = 0;
@@ -116,17 +118,18 @@ public:
                 inputstring << pasta + "/arq" << limit << "seq" << "n" << (i + 1) << ".txt";
                 s = inputstring.str();
                 seq[i].SetSizes(posSize, limit); //coloca o tamanho do vetor na posição i
-                seq[i].Fscanf(s, posSize);
+                seq[i].Fscanf(s, posSize, limit);
                 inputstring.str("");
                 inputstring.clear();
                 limit += 5000;
                 s.clear();
+                posSize++;
             }
             posSize = 0;
         }
     }
 
-    static void geraInvertido(CaseGenerator* inv, string pasta) {
+    static void geraInvertido(CaseGenerator inv[], string pasta) {
         std::ostringstream inputstring;
         string s = "";
         uint posSize = 0;
@@ -136,7 +139,7 @@ public:
                 inputstring << pasta + "/arq" << limit << "inv" << "n" << (i + 1) << ".txt";
                 s = inputstring.str();
                 inv[i].SetSizes(posSize, limit); //coloca o tamanho do vetor na posição i
-                inv[i].Fscanf(s, posSize);
+                inv[i].Fscanf(s, posSize, limit);
                 posSize++;
                 inputstring.str("");
                 inputstring.clear();
@@ -147,7 +150,7 @@ public:
         }
     }
 private:
-    int* dataVector[20];
+    int** dataVector;
     int sizes[20]; // vetor de tamanhos
     unsigned int n; //quantidade de entradas
     std::string tipo; //pode ser invertido, randomico ou sequencial
