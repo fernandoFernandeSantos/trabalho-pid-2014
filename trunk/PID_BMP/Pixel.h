@@ -27,6 +27,7 @@ public:
     void setRGB(unsigned char r, unsigned char g, unsigned char b);
     //saida
     friend ostream &operator <<(ostream &output, const Pixel &B);
+    u_char pGray(Pixel p);
 
 
     // Operador de atribuicao
