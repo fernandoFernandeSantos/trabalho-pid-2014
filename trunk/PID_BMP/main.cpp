@@ -160,14 +160,8 @@ static void maskOperations(BMP& arquivo) {
             }
             case 2:
             {
-                char pos;
-                cout << "Filtro de Sobel\n";
-                cout << "Deseja Sobel Vertical[V] ou Horizontal[H]: ";
-                cin >> pos;
-                if (pos == 'V')
-                    arquivo.sobel(true);
-                else
-                    arquivo.sobel(false);
+                cout << "Filtro de Sobel...\n";
+                arquivo.sobel();
                 cout << "Filtro aplicado\n";
                 continua();
                 break;
@@ -438,6 +432,19 @@ int main() {
                     break;
                 }
                 cout << "Arquivo salvo com sucesso\n";
+                continua();
+                break;
+            }
+            case 12:
+            {
+                if (!input.is_open()) {
+                    cout << "Primeiro abra o arquivo\n";
+                    continua();
+                    break;
+                }
+                ushort limiar = 0;
+                arquivo.houghTransformation(10, 40);
+                cout << "Hough aplicado\n";
                 continua();
                 break;
             }
