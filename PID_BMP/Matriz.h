@@ -51,6 +51,7 @@ public:
 
     // Operador de multiplicacao
     Matriz<T> operator *(const Matriz<T> &B);
+    
 
 };
 

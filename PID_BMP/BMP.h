@@ -16,6 +16,9 @@
 
 #define	BMP_H
 
+typedef Vetor<unsigned int> IntArray;
+typedef Vetor<IntArray>     Image;
+
 class BMP {
 public:
     BMP();
@@ -48,13 +51,17 @@ public:
     bool operations(const BMP& g2, u_char operacao); //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
     BMP imageToGray();
     void convolucao(Matriz<double> &orig);
-    void sobel(bool pos);
+    void sobel();
     void media(uint ordem);
     void mediana(uint ordem);
     void roberts(bool pos);
     bool histogramEqualizer();
     Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
     void printHistogram(bool fiftyShades);
+    void houghTransformation(unsigned int min_r, unsigned int max_r);
+    
+    void accum_circle(Image &image, const int xval, const int yval, unsigned int radius);
+    void accum_pixel(Image &image, const int xval, const int yval);
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores

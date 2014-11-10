@@ -1,10 +1,5 @@
-﻿/* 
- * File:   BMP.cpp
- * Author: fernandofernandes
- *
- * Created on 9 de Abril de 2014, 18:19
- */
 
+#include "CollorPallet.h"
 #include "BMP.h"
 #include <cmath>
 #include <stdlib.h>
@@ -13,7 +8,10 @@
 #include <exception>
 #include <cstdio>
 
+
 #define SATURATION(a,b) ((a < 0) ? b = 0:((a > 255) ? b = 255:b = a));
+
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 
 BMP::BMP() {
 }
@@ -22,19 +20,21 @@ BMP::BMP(const BMP& orig) {
     this->cabecalhoBitMap = orig.cabecalhoBitMap;
     this->cabecalhoImagem = orig.cabecalhoImagem;
     this->matrizPixels = orig.matrizPixels;
-    for (int i = 0; i < 256; i++) {
-        this->paletaCores[i] = orig.paletaCores[i];
-    }
+    this->paletaCores = new CollorPallet[256]();
+    if (this->cabecalhoImagem.GetBfOffSetBits() != 54)
+        for (int i = 0; i < 256; i++) {
+            this->paletaCores[i] = orig.paletaCores[i];
+        }
 }
 
-BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig){
+BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig) {
     this->cabecalhoImagem = headerOrig;
     this->cabecalhoBitMap = bitMapOrig;
     this->matrizPixels = matOrig;
 }
 
-BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, 
-        const Matriz<Pixel>& matOrig, const CollorPallet *nova){
+BMP::BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig,
+        const Matriz<Pixel>& matOrig, const CollorPallet *nova) {
     this->cabecalhoImagem = headerOrig;
     this->cabecalhoBitMap = bitMapOrig;
     this->matrizPixels = matOrig;
@@ -80,7 +80,7 @@ Matriz<Pixel> BMP::GetMatrizPixels() const {
     return matrizPixels;
 }
 
-Matriz<uint> BMP::GetHistogram() const{
+Matriz<uint> BMP::GetHistogram() const {
     return this->Histograma;
 }
 
@@ -166,23 +166,23 @@ void BMP::read(std::ifstream* input) {
     }
 }
 
-void BMP::mallocHistogram(){
+void BMP::mallocHistogram() {
     //aloca a variavel Histograma
     //index 0 = R, 1 = G, 2 = B
     this->Histograma.mAlloc(3, (this->GetCabecalhoBitMap().GetBiCrlUsed() == 0)
-                            ? 256 : this->GetCabecalhoBitMap().GetBiCrlUsed());
+            ? 256 : this->GetCabecalhoBitMap().GetBiCrlUsed());
     this->Histograma.fill(0);
 }
 
-bool BMP::makeHistogram(){
-    if(this->matrizPixels.isEmpty()){
+bool BMP::makeHistogram() {
+    if (this->matrizPixels.isEmpty()) {
         return false;
-    }else{
+    } else {
         mallocHistogram();
         u_char r, g, b;
         Matriz<Pixel> aux(this->GetMatrizPixels());
         for (uint i = 0; i < aux.getLinha(); i++) {
-            for (uint j = 0; j < aux.getColuna();j++) {
+            for (uint j = 0; j < aux.getColuna(); j++) {
                 r = aux.get(i, j).GetR();
                 g = aux.get(i, j).GetG();
                 b = aux.get(i, j).GetB();
@@ -195,7 +195,6 @@ bool BMP::makeHistogram(){
     }
     return true;
 }
-
 
 long double* BMP::valorMedio() {
     u_int64_t somaR = 0;
@@ -358,9 +357,9 @@ long double * BMP::covariancia(BMP g2) {
     int64_t somaB = 0;
     //vou pegar as dimensões da menor imagem
     unsigned long int altura = (this->cabecalhoBitMap.GetBiHeigth() < g2.cabecalhoBitMap.GetBiHeigth()) ?
-                this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
+            this->cabecalhoBitMap.GetBiHeigth() : g2.cabecalhoBitMap.GetBiHeigth();
     unsigned long int largura = (this->cabecalhoBitMap.GetBiWidth() < g2.cabecalhoBitMap.GetBiWidth()) ?
-                this->cabecalhoBitMap.GetBiWidth() : g2.cabecalhoBitMap.GetBiWidth();
+            this->cabecalhoBitMap.GetBiWidth() : g2.cabecalhoBitMap.GetBiWidth();
     //pega as médias
     long double *valorMedioThis = this->valorMedio();
     long double *valorMedioG2 = g2.valorMedio();
@@ -393,89 +392,90 @@ long double * BMP::covariancia(BMP g2) {
     return valores;
 }
 
-void BMP::printCabecalhoArquivo(){
+void BMP::printCabecalhoArquivo() {
     this->cabecalhoImagem.print();
 }
 
-void BMP::printCabecalhoImagem(){
+void BMP::printCabecalhoImagem() {
     this->cabecalhoBitMap.print();
 }
 
-void BMP::limiarImagem(u_int32_t fator){
+void BMP::limiarImagem(u_int32_t fator) {
     u_int32_t k = 0;
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Pixel p;
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
-            k = this->matrizPixels.get(i , j).GetB() +
-                    this->matrizPixels.get(i , j).GetG() +
-                    this->matrizPixels.get(i , j).GetR();
-            k /=3;
-            if(k > fator){
-                p.setRGB(255,255,255);
-                this->matrizPixels.set(i, j,p );
-            }else{
-                p.setRGB(0,0,0);
-                this->matrizPixels.set(i, j,p );
+            k = (this->matrizPixels.get(i, j).GetB() * 5 +
+                    this->matrizPixels.get(i, j).GetG() * 16 +
+                    this->matrizPixels.get(i, j).GetR() * 11);
+            k /= 32;
+            if (k > fator) {
+                p.setRGB(255, 255, 255);
+                this->matrizPixels.set(i, j, p);
+            } else {
+                p.setRGB(0, 0, 0);
+                this->matrizPixels.set(i, j, p);
             }
         }
     }
 }
 //1 = &; 2 = |, 3 = +, 4 = -, 5 = ~
-bool BMP::operations(const BMP& g2, u_char operacao){
-    
+
+bool BMP::operations(const BMP& g2, u_char operacao) {
+
     Matriz<Pixel> matAux(g2.GetMatrizPixels());
     uint lin = (this->matrizPixels.getLinha() < matAux.getLinha() ?
-                    this->matrizPixels.getLinha(): matAux.getLinha());
+            this->matrizPixels.getLinha() : matAux.getLinha());
     uint col = (this->matrizPixels.getColuna() < matAux.getColuna() ?
-                    this->matrizPixels.getColuna(): matAux.getColuna());
+            this->matrizPixels.getColuna() : matAux.getColuna());
 
     Pixel p, b;
-    if(operacao == 1){ // &
+    if (operacao == 1) { // &
         for (uint i = 0; i < lin; i++) {
             for (uint j = 0; j < col; j++) {
-                p = this->matrizPixels.get(i,j);
-                b = matAux.get(i,j);
+                p = this->matrizPixels.get(i, j);
+                b = matAux.get(i, j);
                 p = p & b;
                 this->matrizPixels.set(i, j, p);
             }
         }
     }
-    if(operacao == 2){ // |
+    if (operacao == 2) { // |
         for (uint i = 0; i < lin; i++) {
             for (uint j = 0; j < col; j++) {
-                p = this->matrizPixels.get(i,j);
-                b = matAux.get(i,j);
+                p = this->matrizPixels.get(i, j);
+                b = matAux.get(i, j);
                 p = p | b;
                 this->matrizPixels.set(i, j, p);
             }
         }
     }
-    if(operacao == 3){ // +
+    if (operacao == 3) { // +
         for (uint i = 0; i < lin; i++) {
             for (uint j = 0; j < col; j++) {
-                p = this->matrizPixels.get(i,j);
-                b = matAux.get(i,j);
+                p = this->matrizPixels.get(i, j);
+                b = matAux.get(i, j);
                 p = p + b;
                 this->matrizPixels.set(i, j, p);
             }
         }
     }
-    if(operacao == 4){ //-
+    if (operacao == 4) { //-
         for (uint i = 0; i < lin; i++) {
             for (uint j = 0; j < col; j++) {
-                p = this->matrizPixels.get(i,j);
-                b = matAux.get(i,j);
+                p = this->matrizPixels.get(i, j);
+                b = matAux.get(i, j);
                 p = p - b;
                 this->matrizPixels.set(i, j, p);
             }
         }
     }
-    if(operacao == 5){ //~
+    if (operacao == 5) { //~
         for (uint i = 0; i < lin; i++) {
             for (uint j = 0; j < col; j++) {
-                p = this->matrizPixels.get(i,j);
+                p = this->matrizPixels.get(i, j);
                 ~p;
                 this->matrizPixels.set(i, j, p);
             }
@@ -484,18 +484,18 @@ bool BMP::operations(const BMP& g2, u_char operacao){
     return true;
 }
 
-BMP BMP::imageToGray(){   
+BMP BMP::imageToGray() {
     //novos objetos
     Header novoHe;
     BitMapHeader novoBitHe;
     CollorPallet *novaPallet = new CollorPallet[256]();
-    
+
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Matriz<Pixel> novaMat(lin, col);
-    
+
     for (int i = 0; i < 256; i++) {
-        novaPallet[i].setCor((u_char)i, (u_char)i, (u_char)i, (u_char)0);
+        novaPallet[i].setCor((u_char) i, (u_char) i, (u_char) i, (u_char) 0);
     }
     unsigned char* BfType = new unsigned char[3];
     BfType[0] = 'B';
@@ -505,7 +505,7 @@ BMP BMP::imageToGray(){
     novoHe.SetBfReser1(0);
     novoHe.SetBfReser2(0);
     novoHe.SetBfOffSetBits(1078); //agora tem paleta
-    
+
     //seta as definições do bitmap header
     novoBitHe.SetBiBitCount(8);
     novoBitHe.SetBiClrImport(256);
@@ -518,13 +518,13 @@ BMP BMP::imageToGray(){
     novoBitHe.SetBiXPPMeter(this->cabecalhoBitMap.GetBiXPPMeter());
     novoBitHe.SetBiYPPMeter(this->cabecalhoBitMap.GetBiYPPMeter());
     novoBitHe.SetBiSizeImage(0);
-    
+
     Pixel p;
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
-            p =  this->matrizPixels.get(i,j);
-            p = p / 3;
-            novaMat.set(i,j, p);
+            p = this->matrizPixels.get(i, j);
+            p = p / 32;
+            novaMat.set(i, j, p);
         }
     }
     BMP results(novoHe, novoBitHe, novaMat, novaPallet);
@@ -534,10 +534,11 @@ BMP BMP::imageToGray(){
 
 ///convolução da imagem
 /// recebe mascara de floats
-void BMP::convolution(Matriz<double> &mask){
-    Matriz<Pixel>  tempMat(this->GetMatrizPixels());
+
+void BMP::convolution(Matriz<double> &mask) {
+    Matriz<Pixel> tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
-            maskRows, maskCols, rows, cols,ii, jj;
+            maskRows, maskCols, rows, cols, ii, jj;
     long int nn, mm;
 
     maskCols = mask.getColuna();
@@ -558,17 +559,17 @@ void BMP::convolution(Matriz<double> &mask){
 
     double r = 0, g = 0, b = 0;
     Pixel p;
-    for(long int i=0; i < rows; ++i)              // rows
+    for (long int i = 0; i < rows; ++i) // rows
     {
-        for(long int j=0; j < cols; ++j)          // columns
+        for (long int j = 0; j < cols; ++j) // columns
         {
-            for(long int m=0; m < maskRows; ++m)     // kernel rows
+            for (long int m = 0; m < maskRows; ++m) // kernel rows
             {
-                mm = maskRows - 1 - m;      // row index of flipped kernel
+                mm = maskRows - 1 - m; // row index of flipped kernel
 
-                for(long int n=0; n < maskCols; ++n) // kernel columns
+                for (long int n = 0; n < maskCols; ++n) // kernel columns
                 {
-                    nn = maskCols - 1 - n;  // column index of flipped kernel
+                    nn = maskCols - 1 - n; // column index of flipped kernel
 
                     // index of input signal, used for checking boundary
                     ii = i + (m - maskCenterY);
@@ -576,16 +577,16 @@ void BMP::convolution(Matriz<double> &mask){
 
                     // ignore input samples which are out of bound
 
-                    if( ii >= 0 && ii < rows && jj >= 0 && jj < cols ){
+                    if (ii >= 0 && ii < rows && jj >= 0 && jj < cols) {
                         //matriz original
-                        p =  tempMat.get(ii,jj);
+                        p = tempMat.get(ii, jj);
                         r = p.GetR() * mask.get(mm, nn);
                         g = p.GetG() * mask.get(mm, nn);
                         b = p.GetG() * mask.get(mm, nn);
 
-                        outRed.set(i, j, (outRed.get(i,j) + r));
-                        outGre.set(i, j, (outGre.get(i,j) + g));
-                        outBlu.set(i, j, (outBlu.get(i,j) + b));
+                        outRed.set(i, j, (outRed.get(i, j) + r));
+                        outGre.set(i, j, (outGre.get(i, j) + g));
+                        outBlu.set(i, j, (outBlu.get(i, j) + b));
                     }
                 }
             }
@@ -593,53 +594,91 @@ void BMP::convolution(Matriz<double> &mask){
     }
     //junto os resultados
     int R, G, B;
-    for(long int i = 0; i < rows; i++){
-        for(long int j = 0; j < cols; j++){
-            R = outRed.get(i,j);
-            G = outGre.get(i,j);
-            B = outBlu.get(i,j);
-            SATURATION(R,R);
-            SATURATION(G,G);
-            SATURATION(B,B);
-            p.setRGB(R,G,B);
-            tempMat.set(i,j, p);
+    for (long int i = 0; i < rows; i++) {
+        for (long int j = 0; j < cols; j++) {
+            R = outRed.get(i, j);
+            G = outGre.get(i, j);
+            B = outBlu.get(i, j);
+            SATURATION(R, R);
+            SATURATION(G, G);
+            SATURATION(B, B);
+            p.setRGB(R, G, B);
+            tempMat.set(i, j, p);
         }
     }
     this->matrizPixels = tempMat;
 }
 
-void BMP::convolucao(Matriz<double> &orig){
+void BMP::convolucao(Matriz<double> &orig) {
     this->convolution(orig);
 }
 
-void BMP::sobel(bool pos){
-    Matriz<double> aux(3,3);
-    if(pos){ //verdadeiro vertical, falso horizontal
-        aux.set(0,0, 1.0/4.0); aux.set(0,1, 0); aux.set(0, 2, -1.0/4.0);
-        aux.set(1,0, 2.0/4.0); aux.set(1,1, 0); aux.set(1,2, -2.0/4.0);
-        aux.set(2,0, 1.0/4.0); aux.set(2,1, 0); aux.set(2,2, -1.0/4.0);
-    }else{
-        aux.set(0,0, -1.0/4); aux.set(0,1, -2.0/4.0); aux.set(0, 2, -1.0/4.0);
-        aux.set(1,0, 0); aux.set(1,1, 0); aux.set(1,2, 0);
-        aux.set(2,0, 1.0/4.0); aux.set(2,1, 2.0/4.0); aux.set(2,2, 1.0/4.0);
+void BMP::sobel() {
+    /*** Sobel edge detection ***/
+
+    /* Set up Lx, Ly */
+    Matriz<double> Lx(3, 3), Ly(3, 3);
+
+    Lx.set(0, 0, -1);
+    Lx.set(0, 1, +0);
+    Lx.set(0, 2, +1);
+    Lx.set(1, 0, -2);
+    Lx.set(1, 1, +0);
+    Lx.set(1, 2, +2);
+    Lx.set(2, 0, -1);
+    Lx.set(2, 1, +0);
+    Lx.set(2, 2, +1);
+
+    Ly.set(0, 0, +1);
+    Ly.set(0, 1, +2);
+    Ly.set(0, 2, +1);
+    Ly.set(1, 0, +0);
+    Ly.set(1, 1, +0);
+    Ly.set(1, 2, +0);
+    Ly.set(2, 0, -1);
+    Ly.set(2, 1, -2);
+    Ly.set(2, 2, -1);
+
+    uint height = this->matrizPixels.getLinha();
+    uint width = this->matrizPixels.getColuna();
+    Pixel p, Py, Px;
+
+    //faz a convoluçao lx * g e ly * g
+    BMP Gy(*this), Gx(*this);
+
+    Gy.convolution(Ly);
+    Gx.convolution(Lx);
+
+    //faz a soma G = sqrt(gx*gx + gy*gy)
+    double newR = 0, newG = 0, newB = 0;
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            Px = Gx.matrizPixels.get(i, j);
+            Py = Gy.matrizPixels.get(i, j);
+            newR = sqrt((Px.GetR() * Px.GetR()) + (Py.GetR() * Py.GetR()));
+            newG = sqrt((Px.GetG() * Px.GetG()) + (Py.GetG() * Py.GetG()));
+            newB = sqrt((Px.GetG() * Px.GetG()) + (Py.GetG() * Py.GetG()));
+            p.setRGB(newR, newG, newB);
+            this->matrizPixels.set(i, j, p);
+        }
     }
-    this->convolution(aux);
 }
 
-void BMP::media(uint ordem){
+void BMP::media(uint ordem) {
     Matriz<double> aux(ordem, ordem);
-    float t = 1.0/(ordem*ordem);
+    float t = 1.0 / (ordem * ordem);
     aux.fill(t);
     this->convolution(aux);
 }
 
-void BMP::mediana(uint ordem){
+void BMP::mediana(uint ordem) {
     Vetor<u_char> *maskOrdered;
     Matriz<Pixel> mask(ordem, ordem);
-    Matriz<Pixel>  tempMat(this->GetMatrizPixels());
+    Matriz<Pixel> tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
-            maskRows, maskCols, rows, cols,ii, jj;
-    uint midle = (ordem * ordem) /2;
+            maskRows, maskCols, rows, cols, ii, jj;
+    uint midle = (ordem * ordem) / 2;
 
     maskCols = ordem;
     maskRows = ordem;
@@ -651,36 +690,36 @@ void BMP::mediana(uint ordem){
 
     u_char r = 0, g = 0, b = 0;
     Pixel p;
-    for(long int i=0; i < rows; ++i)              // rows
+    for (long int i = 0; i < rows; ++i) // rows
     {
-        for(long int j=0; j < cols; ++j)          // columns
+        for (long int j = 0; j < cols; ++j) // columns
         {
-            for(long int m=0; m < maskRows; ++m)     // kernel rows
+            for (long int m = 0; m < maskRows; ++m) // kernel rows
             {
-                for(long int n=0; n < maskCols; ++n) // kernel columns
+                for (long int n = 0; n < maskCols; ++n) // kernel columns
                 {
                     ii = i + m - maskCenterX;
                     jj = j + n - maskCenterY;
-                    if((ii < 0) || (jj < 0) || (ii >= rows) || (jj >= cols)){
+                    if ((ii < 0) || (jj < 0) || (ii >= rows) || (jj >= cols)) {
                         //cima
-                        if(ii < 0){
+                        if (ii < 0) {
                             ii = i + m;
                         }
                         //baixo
-                        if(ii >= rows){
+                        if (ii >= rows) {
                             ii = i - m;
                         }
                         //lado esquerdo
-                        if(jj < 0){
+                        if (jj < 0) {
                             jj = j + n;
                         }
                         //lado direito
-                        if(jj >= cols){
+                        if (jj >= cols) {
                             jj = j - n;
                         }
                     }
-                    p =  tempMat.get(ii,jj);
-                    mask.set(m,n, p);
+                    p = tempMat.get(ii, jj);
+                    mask.set(m, n, p);
                 }
             }
             maskOrdered = this->maskOrder(mask);
@@ -698,22 +737,24 @@ void BMP::mediana(uint ordem){
     this->matrizPixels = tempMat;
 }
 
-void BMP::roberts(bool pos){
-    Matriz<double> aux(3,3);
-    if(pos){ //verdadeiro vertical, falso horizontal
+void BMP::roberts(bool pos) {
+    Matriz<double> aux(3, 3);
+    if (pos) { //verdadeiro vertical, falso horizontal
         aux.fill(0);
-        aux.set(1,1, 1); aux.set(0,2, -1);
-    }else{
+        aux.set(1, 1, 1);
+        aux.set(0, 2, -1);
+    } else {
         aux.fill(0);
-        aux.set(1,1, 1); aux.set(0,0, -1);
+        aux.set(1, 1, 1);
+        aux.set(0, 0, -1);
     }
     this->convolution(aux);
 }
 
-Matriz<uint> BMP::transformationFunction(){
-    if(!this->makeHistogram())
+Matriz<uint> BMP::transformationFunction() {
+    if (!this->makeHistogram())
         return NULL;
-    
+
     Matriz<uint> soma(this->Histograma.getLinha(), this->Histograma.getColuna());
 
     soma.fill(0);
@@ -736,19 +777,19 @@ Matriz<uint> BMP::transformationFunction(){
     return soma;
 }
 
-bool BMP::histogramEqualizer(){
+bool BMP::histogramEqualizer() {
     Matriz<uint> tabelaConsulta = this->transformationFunction();
-    if(tabelaConsulta.isEmpty())
+    if (tabelaConsulta.isEmpty())
         return false;
     Matriz<Pixel> resultado(this->matrizPixels.getLinha(),
-                            this->matrizPixels.getColuna());
+            this->matrizPixels.getColuna());
     uint tempR = 0;
     uint tempG = 0;
     uint tempB = 0;
     Pixel p;
     for (uint i = 0; i < this->matrizPixels.getLinha(); ++i) {
         for (uint j = 0; j < this->matrizPixels.getColuna(); ++j) {
-            p = this->matrizPixels.get(i,j);
+            p = this->matrizPixels.get(i, j);
             tempR = tabelaConsulta.get(0, p.GetR());
             tempG = tabelaConsulta.get(1, p.GetG());
             tempB = tabelaConsulta.get(2, p.GetB());
@@ -761,14 +802,14 @@ bool BMP::histogramEqualizer(){
     return true;
 }
 
-Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
+Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig) {
     uint size = orig.getColuna() * orig.getLinha();
     Vetor<u_char> *ret;
     ret = new Vetor<u_char>[3];
-    if(ret == NULL)
+    if (ret == NULL)
         return NULL;
     for (int i = 0; i < 3; ++i) {
-        ret[i] =  Vetor<u_char>(size);
+        ret[i] = Vetor<u_char>(size);
     }
     uint k = 0;
     Pixel p;
@@ -789,8 +830,8 @@ Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig){
     return ret;
 }
 
-void BMP::printHistogram(bool fifthShades){
-    if(this->Histograma.isEmpty())
+void BMP::printHistogram(bool fifthShades) {
+    if (this->Histograma.isEmpty())
         return;
     Header newHeader(this->GetCabecalhoImagem());
     //nova imagem sem paleta
@@ -799,17 +840,17 @@ void BMP::printHistogram(bool fifthShades){
     uint altura = 0;
     uint largura = 1024;
     for (int i = 0; i < this->Histograma.getColuna(); i++) {
-        if(altura < this->Histograma.get(0, i))
+        if (altura < this->Histograma.get(0, i))
             altura = this->Histograma.get(0, i);
 
-        if(altura < this->Histograma.get(1, i))
+        if (altura < this->Histograma.get(1, i))
             altura = this->Histograma.get(1, i);
 
-        if(altura < this->Histograma.get(2, i))
+        if (altura < this->Histograma.get(2, i))
             altura = this->Histograma.get(2, i);
     }
     uint proporcao = 2;
-    altura = (altura ) / 10;
+    altura = (altura) / 10;
     newHeader.SetBfSize((largura * altura) + 54);
 
     BitMapHeader newBitMapReader;
@@ -833,56 +874,56 @@ void BMP::printHistogram(bool fifthShades){
     Pixel pGray(255, 255, 255);
     uint incremento = (largura / 256);
 
-    for(uint i = 0; i < altura; i++){
-        for(uint j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++){
-            if(!fifthShades){
-                histR = this->Histograma.get(0,jHist);
-                histG = this->Histograma.get(1,jHist);
-                histB = this->Histograma.get(2,jHist);
+    for (uint i = 0; i < altura; i++) {
+        for (uint j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++) {
+            if (!fifthShades) {
+                histR = this->Histograma.get(0, jHist);
+                histG = this->Histograma.get(1, jHist);
+                histB = this->Histograma.get(2, jHist);
 
                 histR = (histR * proporcao) / 10;
                 histG = (histG * proporcao) / 10;
                 histB = (histB * proporcao) / 10;
                 //verifica a intensidade para pintar para cada pixel
                 //para componente R
-                if(histR > i){
+                if (histR > i) {
                     //for para fazer a proporção
-                    for(uint k = 0; k < incremento; k++){
+                    for (uint k = 0; k < incremento; k++) {
                         outR.set(i, (j + k), pRed);
                     }
                 }
 
                 //para componente G
-                if(histG > i){
+                if (histG > i) {
                     //for para fazer a proporção
-                    for(uint k = 0; k < incremento; k++){
+                    for (uint k = 0; k < incremento; k++) {
                         outG.set(i, (j + k), pGreen);
                     }
                 }
 
                 //para componente B
-                if(histB > i){
+                if (histB > i) {
                     //for para fazer a proporção
-                    for(uint k = 0; k < incremento; k++){
+                    for (uint k = 0; k < incremento; k++) {
                         outB.set(i, (j + k), pBlue);
                     }
                 }
-            }else{ //gera só um histograma para cinza
-                histR = this->Histograma.get(0,jHist);
+            } else { //gera só um histograma para cinza
+                histR = this->Histograma.get(0, jHist);
                 histR = (histR * proporcao) / 10;
-                if(histR > i){
+                if (histR > i) {
                     //for para fazer a proporção
-                    for(uint k = 0; k < incremento; k++){
+                    for (uint k = 0; k < incremento; k++) {
                         outR.set(i, (j + k), pGray);
                     }
                 }
             }
         }
     }
-    if(fifthShades){
+    if (fifthShades) {
         BMP novoR(newHeader, newBitMapReader, outR);
         novoR.salvar("histogram.bmp");
-    }else{
+    } else {
         BMP novoR(newHeader, newBitMapReader, outR);
         novoR.salvar("histogramRED.bmp");
         BMP novoG(newHeader, newBitMapReader, outG);
@@ -890,5 +931,113 @@ void BMP::printHistogram(bool fifthShades){
         novoG.salvar("histogramaGreen.bmp");
         novoB.salvar("histogramaBlue.bmp");
     }
+}
+
+void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
+    //sobel e limiar
+    this->sobel();
+    this->limiarImagem();
+
+    //detecçao dos circulos
+    uint width = this->matrizPixels.getColuna();
+    uint height = this->matrizPixels.getLinha();
+
+    if (min_r == 0) {
+        min_r = 5;
+    }
+
+    if (max_r == 0) {
+        max_r = MIN(width, height) / 2;
+    }
+
+    Vetor<Image> houghs(max_r - min_r);
+
+    for (unsigned int i = min_r; i < max_r; i++) {
+        /* instantiate Hough-space for circles of radius i */
+        Image &hough = houghs[i - min_r];
+        hough.realloc(width);
+        for (unsigned int x = 0; x < hough.getSize(); x++) {
+            hough[x].realloc(height);
+            for (unsigned int y = 0; y < hough[x].getSize(); y++) {
+                hough[x][y] = 0;
+            }
+        }
+
+        /* find all the edges */
+        for (unsigned int x = 0; x < width; x++) {
+            for (unsigned int y = 0; y < height; y++) {
+                /* edge! */
+                if (this->matrizPixels.get(x, y).GetB() == 255) {
+                    accum_circle(hough, x, y, i);
+                }
+            }
+        }
+    }
+}
+
+/****************************************************************************
+**
+** Author: Marc Bowes
+**
+** Accumulates a circle on the specified image at the specified position with
+** the specified radius, using the midpoint circle drawing algorithm
+**
+** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+**
+****************************************************************************/
+void BMP::accum_circle(Image &image, const int xval, const int yval, unsigned int radius)
+{
+  int f = 1 - radius;
+  int ddF_x = 1;
+  int ddF_y = -2 * radius;
+  int x = 0;
+  int y = radius;
+  
+  accum_pixel(image, xval, yval + radius);
+  accum_pixel(image, xval, yval - radius);
+  accum_pixel(image, xval + radius, yval);
+  accum_pixel(image, xval - radius, yval);
+  
+  while(x < y)
+  {
+    if(f >= 0)
+    {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+    
+    accum_pixel(image, xval + x, yval + y);
+    accum_pixel(image, xval - x, yval + y);
+    accum_pixel(image, xval + x, yval - y);
+    accum_pixel(image, xval - x, yval - y);
+    accum_pixel(image, xval + y, yval + x);
+    accum_pixel(image, xval - y, yval + x);
+    accum_pixel(image, xval + y, yval - x);
+    accum_pixel(image, xval - y, yval - x);
+  }
+}
+
+/****************************************************************************
+**
+** Author: Marc Bowes
+**
+** Accumulates at the specified position
+**
+****************************************************************************/
+void BMP::accum_pixel(Image &image, const int xval, const int yval)
+{
+  /* bounds checking */
+  if(xval < 0 || xval >= image.getSize() ||
+     yval < 0 || yval >= image[xval].getSize())
+  {
+    return;
+  }
+  
+  image[xval][yval]++;
 }
 

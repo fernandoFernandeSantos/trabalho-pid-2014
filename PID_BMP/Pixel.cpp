@@ -131,7 +131,7 @@ Pixel Pixel::operator /(const unsigned int divisor){
     unsigned char a = this->GetR();
     unsigned char b = this->GetG();
     unsigned char c = this->GetB();
-    unsigned int temp = a + b + c;
+    unsigned int temp = (a * 11 + b * 16 + c * 5);
     temp /=divisor;
     a = temp;
     Pixel div(a,a,a);
