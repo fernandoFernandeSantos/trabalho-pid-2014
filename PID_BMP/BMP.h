@@ -13,11 +13,12 @@
 #include "Pixel.h"
 #include "Matriz.h"
 #include "Vetor.h"
+#include <vector>
 
 #define	BMP_H
 
-typedef Vetor<unsigned int> IntArray;
-typedef Vetor<IntArray>     Image;
+typedef vector<unsigned int> IntArray;
+typedef vector<IntArray>     Image;
 
 class BMP {
 public:
@@ -60,8 +61,11 @@ public:
     void printHistogram(bool fiftyShades);
     void houghTransformation(unsigned int min_r, unsigned int max_r);
     
-    void accum_circle(Image &image, const int xval, const int yval, unsigned int radius);
+    void accum_circle(Image &image, const uint xval, const uint yval, unsigned int radius);
     void accum_pixel(Image &image, const int xval, const int yval);
+    void draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, unsigned int radius, const Pixel &color);
+    void draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, const Pixel &color);
+    Matriz<Pixel> edges(Matriz<Pixel> &source);
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores

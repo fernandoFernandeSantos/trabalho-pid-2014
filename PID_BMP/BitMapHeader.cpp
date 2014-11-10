@@ -87,6 +87,7 @@ unsigned int BitMapHeader::GetBiWidth() const {
     return BiWidth;
 }
 
+
 void BitMapHeader::SetBiWidth(unsigned int BiWidth) {
     this->BiWidth = BiWidth;
 }

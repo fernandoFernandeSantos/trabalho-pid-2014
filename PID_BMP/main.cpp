@@ -228,6 +228,7 @@ static void opcoes() {
             " [9]  - Operações com máscaras\n" <<
             " [10] - Limiarização da imagem\n" <<
             " [11] - Converter a imagem para níveis cinza\n" <<
+            " [12] - Detecção de olhos\n" <<
             " [0]  - Sair\n\n" <<
             "Opção:";
 }
@@ -442,8 +443,8 @@ int main() {
                     continua();
                     break;
                 }
-                ushort limiar = 0;
-                arquivo.houghTransformation(10, 40);
+                
+                arquivo.houghTransformation(20, 100);
                 cout << "Hough aplicado\n";
                 continua();
                 break;

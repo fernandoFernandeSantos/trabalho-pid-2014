@@ -146,3 +146,8 @@ ostream &operator <<(ostream &output, const Pixel &B)
               "[" << B.GetB() << "]";
     return output;
 }
+
+u_char Pixel::pGray(Pixel p){
+    p = p / 32;
+    return p.B;
+}

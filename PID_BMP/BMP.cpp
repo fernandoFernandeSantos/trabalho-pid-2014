@@ -1,4 +1,3 @@
-
 #include "CollorPallet.h"
 #include "BMP.h"
 #include <cmath>
@@ -401,17 +400,15 @@ void BMP::printCabecalhoImagem() {
 }
 
 void BMP::limiarImagem(u_int32_t fator) {
-    u_int32_t k = 0;
+
     uint lin = this->matrizPixels.getLinha();
     uint col = this->matrizPixels.getColuna();
     Pixel p;
     for (uint i = 0; i < lin; i++) {
         for (uint j = 0; j < col; j++) {
-            k = (this->matrizPixels.get(i, j).GetB() * 5 +
-                    this->matrizPixels.get(i, j).GetG() * 16 +
-                    this->matrizPixels.get(i, j).GetR() * 11);
-            k /= 32;
-            if (k > fator) {
+            p = this->matrizPixels.get(i, j);
+            p = p / 32;
+            if (p.GetG() > fator) {
                 p.setRGB(255, 255, 255);
                 this->matrizPixels.set(i, j, p);
             } else {
@@ -646,8 +643,9 @@ void BMP::sobel() {
     //faz a convoluçao lx * g e ly * g
     BMP Gy(*this), Gx(*this);
 
-    Gy.convolution(Ly);
     Gx.convolution(Lx);
+    Gy.convolution(Ly);
+
 
     //faz a soma G = sqrt(gx*gx + gy*gy)
     double newR = 0, newG = 0, newB = 0;
@@ -658,7 +656,7 @@ void BMP::sobel() {
             Py = Gy.matrizPixels.get(i, j);
             newR = sqrt((Px.GetR() * Px.GetR()) + (Py.GetR() * Py.GetR()));
             newG = sqrt((Px.GetG() * Px.GetG()) + (Py.GetG() * Py.GetG()));
-            newB = sqrt((Px.GetG() * Px.GetG()) + (Py.GetG() * Py.GetG()));
+            newB = sqrt((Px.GetB() * Px.GetB()) + (Py.GetB() * Py.GetB()));
             p.setRGB(newR, newG, newB);
             this->matrizPixels.set(i, j, p);
         }
@@ -934,14 +932,15 @@ void BMP::printHistogram(bool fifthShades) {
 }
 
 void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
+    BMP detection(*this);
+    Matriz<Pixel> binary = this->edges(detection.matrizPixels);
     //sobel e limiar
-    this->sobel();
-    this->limiarImagem();
+    //    this->limiarImagem();
+    //    this->sobel();
 
     //detecçao dos circulos
     uint width = this->matrizPixels.getColuna();
     uint height = this->matrizPixels.getLinha();
-
     if (min_r == 0) {
         min_r = 5;
     }
@@ -950,94 +949,240 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
         max_r = MIN(width, height) / 2;
     }
 
-    Vetor<Image> houghs(max_r - min_r);
+    vector<Image> houghs(max_r - min_r);
+    Pixel p(255, 255, 0);
+    if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
+        detection.paletaCores[255].setCor(255, 255, 0, 0);
+    }
 
     for (unsigned int i = min_r; i < max_r; i++) {
         /* instantiate Hough-space for circles of radius i */
         Image &hough = houghs[i - min_r];
-        hough.realloc(width);
-        for (unsigned int x = 0; x < hough.getSize(); x++) {
-            hough[x].realloc(height);
-            for (unsigned int y = 0; y < hough[x].getSize(); y++) {
+        hough.resize(width);
+        for (unsigned int x = 0; x < hough.size(); x++) {
+            hough[x].resize(height);
+            for (unsigned int y = 0; y < hough[x].size(); y++) {
                 hough[x][y] = 0;
             }
         }
 
         /* find all the edges */
-        for (unsigned int x = 0; x < width; x++) {
-            for (unsigned int y = 0; y < height; y++) {
+        for (unsigned int x = 0; x < height; x++) {
+            for (unsigned int y = 0; y < width; y++) {
                 /* edge! */
-                if (this->matrizPixels.get(x, y).GetB() == 255) {
+                if (binary.get(x, y).GetB() == 1) {
                     accum_circle(hough, x, y, i);
                 }
             }
         }
+
+        /* loop through all the Hough-space images, searching for bright spots, which
+   indicate the center of a circle, then draw circles in image-space */
+        unsigned int threshold = 4.9 * i;
+        for (unsigned int x = 0; x < hough.size(); x++) {
+            for (unsigned int y = 0; y < hough[x].size(); y++) {
+                if (hough[x][y] > threshold) {
+                    draw_circle(detection.matrizPixels, x, y, i, p);
+                }
+            }
+        }
+    }
+    cout << "passou\n";
+    detection.salvar("teste.bmp");
+}
+
+/****************************************************************************
+ **
+ ** Author: Marc Bowes
+ **
+ ** Accumulates a circle on the specified image at the specified position with
+ ** the specified radius, using the midpoint circle drawing algorithm
+ **
+ ** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+ **
+ ****************************************************************************/
+void BMP::accum_circle(Image &image, const uint xval, const uint yval, unsigned int radius) {
+    int f = 1 - radius;
+    int ddF_x = 1;
+    int ddF_y = -2 * radius;
+    int x = 0;
+    int y = radius;
+
+    accum_pixel(image, xval, yval + radius);
+    accum_pixel(image, xval, yval - radius);
+    accum_pixel(image, xval + radius, yval);
+    accum_pixel(image, xval - radius, yval);
+
+    while (x < y) {
+        if (f >= 0) {
+            y--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+
+        x++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        accum_pixel(image, xval + x, yval + y);
+        accum_pixel(image, xval - x, yval + y);
+        accum_pixel(image, xval + x, yval - y);
+        accum_pixel(image, xval - x, yval - y);
+        accum_pixel(image, xval + y, yval + x);
+        accum_pixel(image, xval - y, yval + x);
+        accum_pixel(image, xval + y, yval - x);
+        accum_pixel(image, xval - y, yval - x);
     }
 }
 
 /****************************************************************************
-**
-** Author: Marc Bowes
-**
-** Accumulates a circle on the specified image at the specified position with
-** the specified radius, using the midpoint circle drawing algorithm
-**
-** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
-**
-****************************************************************************/
-void BMP::accum_circle(Image &image, const int xval, const int yval, unsigned int radius)
-{
-  int f = 1 - radius;
-  int ddF_x = 1;
-  int ddF_y = -2 * radius;
-  int x = 0;
-  int y = radius;
-  
-  accum_pixel(image, xval, yval + radius);
-  accum_pixel(image, xval, yval - radius);
-  accum_pixel(image, xval + radius, yval);
-  accum_pixel(image, xval - radius, yval);
-  
-  while(x < y)
-  {
-    if(f >= 0)
-    {
-      y--;
-      ddF_y += 2;
-      f += ddF_y;
+ **
+ ** Author: Marc Bowes
+ **
+ ** Accumulates at the specified position
+ **
+ ****************************************************************************/
+void BMP::accum_pixel(Image &image, const int xval, const int yval) {
+    /* bounds checking */
+    if (xval < 0 || xval >= image.size() ||
+            yval < 0 || yval >= image[xval].size()) {
+        return;
     }
-    
-    x++;
-    ddF_x += 2;
-    f += ddF_x;
-    
-    accum_pixel(image, xval + x, yval + y);
-    accum_pixel(image, xval - x, yval + y);
-    accum_pixel(image, xval + x, yval - y);
-    accum_pixel(image, xval - x, yval - y);
-    accum_pixel(image, xval + y, yval + x);
-    accum_pixel(image, xval - y, yval + x);
-    accum_pixel(image, xval + y, yval - x);
-    accum_pixel(image, xval - y, yval - x);
-  }
+
+    image[xval][yval]++;
 }
 
 /****************************************************************************
-**
-** Author: Marc Bowes
-**
-** Accumulates at the specified position
-**
-****************************************************************************/
-void BMP::accum_pixel(Image &image, const int xval, const int yval)
-{
-  /* bounds checking */
-  if(xval < 0 || xval >= image.getSize() ||
-     yval < 0 || yval >= image[xval].getSize())
-  {
-    return;
-  }
-  
-  image[xval][yval]++;
+ **
+ ** Author: Marc Bowes
+ **
+ ** Draws a circle on the specified image at the specified position with
+ ** the specified radius, using the midpoint circle drawing algorithm
+ **
+ ** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+ **
+ ****************************************************************************/
+void BMP::draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, unsigned int radius, const Pixel &color) {
+    int f = 1 - radius;
+    int ddF_x = 1;
+    int ddF_y = -2 * radius;
+    int x = 0;
+    int y = radius;
+
+    draw_pixel(image, xval, yval + radius, color);
+    draw_pixel(image, xval, yval - radius, color);
+    draw_pixel(image, xval + radius, yval, color);
+    draw_pixel(image, xval - radius, yval, color);
+
+    while (x < y) {
+        if (f >= 0) {
+            y--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+
+        x++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        draw_pixel(image, xval + x, yval + y, color);
+        draw_pixel(image, xval - x, yval + y, color);
+        draw_pixel(image, xval + x, yval - y, color);
+        draw_pixel(image, xval - x, yval - y, color);
+        draw_pixel(image, xval + y, yval + x, color);
+        draw_pixel(image, xval - y, yval + x, color);
+        draw_pixel(image, xval + y, yval - x, color);
+        draw_pixel(image, xval - y, yval - x, color);
+    }
 }
+
+/****************************************************************************
+ **
+ ** Author: Marc Bowes
+ **
+ ** Draws at the specified position
+ **
+ ****************************************************************************/
+void BMP::draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, const Pixel &color) {
+    /* bounds checking */
+    if (xval < 0 || xval >= image.getColuna() ||
+            yval < 0 || yval >= image.getLinha()) {
+        return;
+    }
+
+    image.set(xval, yval, color);
+}
+
+Matriz<Pixel> BMP::edges(Matriz<Pixel> &source) {
+    /* initialisation */
+    BMP binary;
+    binary.SetMatrizPixels(source);
+    binary.limiarImagem(128);
+    /*** Sobel edge detection ***/
+
+    /* Set up Lx, Ly */
+    Matriz<double> Lx(3, 3), Ly(3, 3);
+
+    Lx.set(0, 0, -1);
+    Lx.set(0, 1, +0);
+    Lx.set(0, 2, +1);
+    Lx.set(1, 0, -2);
+    Lx.set(1, 1, +0);
+    Lx.set(1, 2, +2);
+    Lx.set(2, 0, -1);
+    Lx.set(2, 1, +0);
+    Lx.set(2, 2, +1);
+
+    Ly.set(0, 0, +1);
+    Ly.set(0, 1, +2);
+    Ly.set(0, 2, +1);
+    Ly.set(1, 0, +0);
+    Ly.set(1, 1, +0);
+    Ly.set(1, 2, +0);
+    Ly.set(2, 0, -1);
+    Ly.set(2, 1, -2);
+    Ly.set(2, 2, -1);
+    Pixel p;
+
+    for (unsigned int x = 0; x < source.getLinha(); x++) {
+        for (unsigned int y = 0; y < source.getColuna(); y++) {
+            double new_x = 0.0, new_y = 0.0;
+
+            /* gradient */
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    /* these are offset co-ords */
+                    int _x = x + i;
+                    int _y = y + j;
+
+                    /* bounds checking */
+                    if (_x < 0)
+                        _x = -_x;
+                    else
+                        if (_x >= source.getLinha())
+                        _x = 2 * source.getLinha() - _x - 2;
+
+                    if (_y < 0)
+                        _y = -_y;
+                    else
+                        if (_y >= source.getColuna())
+                        _y = 2 * source.getColuna() - _y - 2;
+
+                    p = source.get(_x, _y);
+                    /* accumulate */
+                    int gray = p.pGray(p);
+                    new_x += Lx.get(i + 1, j + 1) * gray;
+                    new_y += Ly.get(i + 1, j + 1) * gray;
+                }
+            }
+
+            /* using 128 as a threshold, decide if the steepness is sufficient (= edge = 1) */
+            int pixel = sqrt(pow(new_x, 2) + pow(new_y, 2)) > 128 ? 1 : 0;
+            binary.matrizPixels.set(x, y, Pixel(pixel, pixel, pixel));
+        }
+    }
+
+    return binary.matrizPixels;
+}
+
 
