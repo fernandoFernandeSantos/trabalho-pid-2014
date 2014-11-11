@@ -958,9 +958,9 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
     for (unsigned int i = min_r; i < max_r; i++) {
         /* instantiate Hough-space for circles of radius i */
         Image &hough = houghs[i - min_r];
-        hough.resize(width);
+        hough.resize(height);
         for (unsigned int x = 0; x < hough.size(); x++) {
-            hough[x].resize(height);
+            hough[x].resize(width);
             for (unsigned int y = 0; y < hough[x].size(); y++) {
                 hough[x][y] = 0;
             }
@@ -975,7 +975,6 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
                 }
             }
         }
-
         /* loop through all the Hough-space images, searching for bright spots, which
    indicate the center of a circle, then draw circles in image-space */
         unsigned int threshold = 4.9 * i;
@@ -1105,8 +1104,8 @@ void BMP::draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, un
  ****************************************************************************/
 void BMP::draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, const Pixel &color) {
     /* bounds checking */
-    if (xval < 0 || xval >= image.getColuna() ||
-            yval < 0 || yval >= image.getLinha()) {
+    if (xval < 0 || xval >= image.getLinha() ||
+            yval < 0 || yval >= image.getColuna()) {
         return;
     }
 
