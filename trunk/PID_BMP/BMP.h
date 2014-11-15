@@ -14,19 +14,20 @@
 #include "Matriz.h"
 #include "Vetor.h"
 #include <vector>
+#include "Ponto.h"
 
 #define	BMP_H
 
 typedef vector<unsigned int> IntArray;
-typedef vector<IntArray>     Image;
+typedef vector<IntArray> Image;
 
 class BMP {
 public:
     BMP();
     BMP(const BMP& orig);
     BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, const Matriz<Pixel>& matOrig);
-    BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig, 
-        const Matriz<Pixel>& matOrig, const CollorPallet *nova);
+    BMP(const Header& headerOrig, const BitMapHeader& bitMapOrig,
+            const Matriz<Pixel>& matOrig, const CollorPallet *nova);
     virtual ~BMP();
     BitMapHeader GetCabecalhoBitMap() const;
     void SetCabecalhoBitMap(BitMapHeader cabecalhoBitMap);
@@ -40,7 +41,7 @@ public:
     void read(std::ifstream *input);
     bool salvar(const char* nomeArquivo);
 
-    
+
     //operações
     long double * variancia(long double * valorMedio);
     long double * covariancia(BMP g2);
@@ -57,15 +58,11 @@ public:
     void mediana(uint ordem);
     void roberts(bool pos);
     bool histogramEqualizer();
-    Vetor<u_char>*  maskOrder(Matriz<Pixel> &orig);
+    Vetor<u_char>* maskOrder(Matriz<Pixel> &orig);
     void printHistogram(bool fiftyShades);
+    //hough
     void houghTransformation(unsigned int min_r, unsigned int max_r);
-    
-    void accum_circle(Image &image, const uint xval, const uint yval, unsigned int radius);
-    void accum_pixel(Image &image, const int xval, const int yval);
-    void draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, unsigned int radius, const Pixel &color);
-    void draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, const Pixel &color);
-    Matriz<Pixel> edges(Matriz<Pixel> &source);
+
 
 private:
     CollorPallet *paletaCores; //paleta de cores ou mapa de cores
@@ -82,6 +79,16 @@ private:
     void convolution(Matriz<double> &mask);
     Matriz<uint> transformationFunction();
 
+    void acumulaCirculo(Image &image, const Ponto point, unsigned int radius);
+    void acumulaPixel(Image &image, const Ponto point);
+    void desenhaCirculo(Matriz<Pixel> &image, const Ponto point, unsigned int radius, const Pixel &color);
+    void desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &color);
+    Matriz<Pixel> sobelPlusLimiar(Matriz<Pixel> &source);
+    
+    //heuristicas para encontrar o olho
+    bool verificaDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned erro_max);
+    bool distanciaEproporcao(const Ponto p1, const Ponto p2);
+    
 };
 
 

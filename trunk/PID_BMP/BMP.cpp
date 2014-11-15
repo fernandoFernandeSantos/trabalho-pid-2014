@@ -933,10 +933,7 @@ void BMP::printHistogram(bool fifthShades) {
 
 void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
     BMP detection(*this);
-    Matriz<Pixel> binary = this->edges(detection.matrizPixels);
-    //sobel e limiar
-    //    this->limiarImagem();
-    //    this->sobel();
+    Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels);
 
     //detecçao dos circulos
     uint width = this->matrizPixels.getColuna();
@@ -971,7 +968,7 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
             for (unsigned int y = 0; y < width; y++) {
                 /* edge! */
                 if (binary.get(x, y).GetB() == 1) {
-                    accum_circle(hough, x, y, i);
+                    acumulaCirculo(hough, Ponto(x, y), i);
                 }
             }
         }
@@ -981,7 +978,7 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
         for (unsigned int x = 0; x < hough.size(); x++) {
             for (unsigned int y = 0; y < hough[x].size(); y++) {
                 if (hough[x][y] > threshold) {
-                    draw_circle(detection.matrizPixels, x, y, i, p);
+                    desenhaCirculo(detection.matrizPixels, Ponto(x, y), i, p);
                 }
             }
         }
@@ -990,27 +987,17 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
     detection.salvar("teste.bmp");
 }
 
-/****************************************************************************
- **
- ** Author: Marc Bowes
- **
- ** Accumulates a circle on the specified image at the specified position with
- ** the specified radius, using the midpoint circle drawing algorithm
- **
- ** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- **
- ****************************************************************************/
-void BMP::accum_circle(Image &image, const uint xval, const uint yval, unsigned int radius) {
+void BMP::acumulaCirculo(Image &image, const Ponto point, unsigned int radius) {
     int f = 1 - radius;
     int ddF_x = 1;
     int ddF_y = -2 * radius;
     int x = 0;
     int y = radius;
 
-    accum_pixel(image, xval, yval + radius);
-    accum_pixel(image, xval, yval - radius);
-    accum_pixel(image, xval + radius, yval);
-    accum_pixel(image, xval - radius, yval);
+    acumulaPixel(image, Ponto(point.GetX(), point.GetY() + radius));
+    acumulaPixel(image, Ponto(point.GetX(), point.GetY() - radius));
+    acumulaPixel(image, Ponto(point.GetX() + radius, point.GetY()));
+    acumulaPixel(image, Ponto(point.GetX() - radius, point.GetY()));
 
     while (x < y) {
         if (f >= 0) {
@@ -1023,26 +1010,21 @@ void BMP::accum_circle(Image &image, const uint xval, const uint yval, unsigned 
         ddF_x += 2;
         f += ddF_x;
 
-        accum_pixel(image, xval + x, yval + y);
-        accum_pixel(image, xval - x, yval + y);
-        accum_pixel(image, xval + x, yval - y);
-        accum_pixel(image, xval - x, yval - y);
-        accum_pixel(image, xval + y, yval + x);
-        accum_pixel(image, xval - y, yval + x);
-        accum_pixel(image, xval + y, yval - x);
-        accum_pixel(image, xval - y, yval - x);
+        acumulaPixel(image, Ponto(point.GetX() + x, point.GetY() + y));
+        acumulaPixel(image, Ponto(point.GetX() - x, point.GetY() + y));
+        acumulaPixel(image, Ponto(point.GetX() + x, point.GetY() - y));
+        acumulaPixel(image, Ponto(point.GetX() - x, point.GetY() - y));
+        acumulaPixel(image, Ponto(point.GetX() + y, point.GetY() + x));
+        acumulaPixel(image, Ponto(point.GetX() - y, point.GetY() + x));
+        acumulaPixel(image, Ponto(point.GetX() + y, point.GetY() - x));
+        acumulaPixel(image, Ponto(point.GetX() - y, point.GetY() - x));
     }
 }
 
-/****************************************************************************
- **
- ** Author: Marc Bowes
- **
- ** Accumulates at the specified position
- **
- ****************************************************************************/
-void BMP::accum_pixel(Image &image, const int xval, const int yval) {
+void BMP::acumulaPixel(Image &image, const Ponto point) {
     /* bounds checking */
+    uint xval = point.GetX();
+    uint yval = point.GetY();
     if (xval < 0 || xval >= image.size() ||
             yval < 0 || yval >= image[xval].size()) {
         return;
@@ -1051,27 +1033,17 @@ void BMP::accum_pixel(Image &image, const int xval, const int yval) {
     image[xval][yval]++;
 }
 
-/****************************************************************************
- **
- ** Author: Marc Bowes
- **
- ** Draws a circle on the specified image at the specified position with
- ** the specified radius, using the midpoint circle drawing algorithm
- **
- ** Adapted from: http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- **
- ****************************************************************************/
-void BMP::draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, unsigned int radius, const Pixel &color) {
+void BMP::desenhaCirculo(Matriz<Pixel> &image, const Ponto point, unsigned int radius, const Pixel &color) {
     int f = 1 - radius;
     int ddF_x = 1;
     int ddF_y = -2 * radius;
     int x = 0;
     int y = radius;
 
-    draw_pixel(image, xval, yval + radius, color);
-    draw_pixel(image, xval, yval - radius, color);
-    draw_pixel(image, xval + radius, yval, color);
-    draw_pixel(image, xval - radius, yval, color);
+    desenhaPixel(image, Ponto(point.GetX(), point.GetY() + radius), color);
+    desenhaPixel(image, Ponto(point.GetX(), point.GetY() - radius), color);
+    desenhaPixel(image, Ponto(point.GetX() + radius, point.GetY()), color);
+    desenhaPixel(image, Ponto(point.GetX() - radius, point.GetY()), color);
 
     while (x < y) {
         if (f >= 0) {
@@ -1084,26 +1056,21 @@ void BMP::draw_circle(Matriz<Pixel> &image, const uint xval, const uint yval, un
         ddF_x += 2;
         f += ddF_x;
 
-        draw_pixel(image, xval + x, yval + y, color);
-        draw_pixel(image, xval - x, yval + y, color);
-        draw_pixel(image, xval + x, yval - y, color);
-        draw_pixel(image, xval - x, yval - y, color);
-        draw_pixel(image, xval + y, yval + x, color);
-        draw_pixel(image, xval - y, yval + x, color);
-        draw_pixel(image, xval + y, yval - x, color);
-        draw_pixel(image, xval - y, yval - x, color);
+        desenhaPixel(image, Ponto(point.GetX() + x, point.GetY() + y), color);
+        desenhaPixel(image, Ponto(point.GetX() - x, point.GetY() + y), color);
+        desenhaPixel(image, Ponto(point.GetX() + x, point.GetY() - y), color);
+        desenhaPixel(image, Ponto(point.GetX() - x, point.GetY() - y), color);
+        desenhaPixel(image, Ponto(point.GetX() + y, point.GetY() + x), color);
+        desenhaPixel(image, Ponto(point.GetX() - y, point.GetY() + x), color);
+        desenhaPixel(image, Ponto(point.GetX() + y, point.GetY() - x), color);
+        desenhaPixel(image, Ponto(point.GetX() - y, point.GetY() - x), color);
     }
 }
 
-/****************************************************************************
- **
- ** Author: Marc Bowes
- **
- ** Draws at the specified position
- **
- ****************************************************************************/
-void BMP::draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, const Pixel &color) {
+void BMP::desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &color) {
     /* bounds checking */
+    uint xval = point.GetX();
+    uint yval = point.GetY();
     if (xval < 0 || xval >= image.getLinha() ||
             yval < 0 || yval >= image.getColuna()) {
         return;
@@ -1112,7 +1079,7 @@ void BMP::draw_pixel(Matriz<Pixel> &image, const uint xval, const uint yval, con
     image.set(xval, yval, color);
 }
 
-Matriz<Pixel> BMP::edges(Matriz<Pixel> &source) {
+Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source) {
     /* initialisation */
     BMP binary;
     binary.SetMatrizPixels(source);
@@ -1184,4 +1151,22 @@ Matriz<Pixel> BMP::edges(Matriz<Pixel> &source) {
     return binary.matrizPixels;
 }
 
+bool BMP::verificaDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned erro_max) {
+    //produto escalar e modulo
+    uint vet1X = p2.GetX() - p1.GetX();
+    uint vet1Y = p2.GetY() - p1.GetY();
 
+    uint pEscalar = vet1Y;
+    uint modulo1 = (vet1X * vet1X) + (vet1Y * vet1Y);
+    double angulo = (double) pEscalar / (double) modulo1;
+
+    if ((angulo <= (90 + erro_max)) || (angulo <= (90 - erro_min))) {
+        return true;
+    }
+    return false;
+}
+
+bool BMP::distanciaEproporcao(const Ponto p1, const Ponto p2) {
+    uint vet1X = p2.GetX() - p1.GetX();
+    uint vet1Y = p2.GetY() - p1.GetY();
+}
