@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/CollorPallet.o \
 	${OBJECTDIR}/Header.o \
 	${OBJECTDIR}/Pixel.o \
+	${OBJECTDIR}/Ponto.o \
 	${OBJECTDIR}/main.o
 
 
@@ -91,6 +92,11 @@ ${OBJECTDIR}/Pixel.o: Pixel.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Pixel.o Pixel.cpp
+
+${OBJECTDIR}/Ponto.o: Ponto.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Ponto.o Ponto.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
