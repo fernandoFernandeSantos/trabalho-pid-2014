@@ -444,7 +444,7 @@ int main() {
                     break;
                 }
                 
-                arquivo.houghTransformation(5, 100);
+                arquivo.houghTransformation(5, 100, 40, 80);
                 cout << "Hough aplicado\n";
                 continua();
                 break;

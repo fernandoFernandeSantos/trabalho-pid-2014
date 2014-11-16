@@ -14,7 +14,8 @@ Ponto::Ponto(const Ponto& orig) {
     this->x = orig.x;
     this->y = orig.y;
 }
-Ponto::Ponto(unsigned int x, unsigned int y){
+
+Ponto::Ponto(unsigned int x, unsigned int y) {
     this->x = x;
     this->y = y;
 }
@@ -35,5 +36,10 @@ unsigned int Ponto::GetY() const {
 }
 
 void Ponto::SetY(unsigned int y) {
+    this->y = y;
+}
+
+void Ponto::SetXY(unsigned int x, unsigned int y) {
+    this->x = x;
     this->y = y;
 }
