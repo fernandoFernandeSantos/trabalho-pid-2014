@@ -61,7 +61,8 @@ public:
     Vetor<u_char>* maskOrder(Matriz<Pixel> &orig);
     void printHistogram(bool fiftyShades);
     //hough
-    void houghTransformation(unsigned int min_r, unsigned int max_r);
+    void houghTransformation(unsigned int min_r = 5, unsigned int max_r = 0,
+            unsigned int min_dist = 0, unsigned max_dist = 0);
 
 
 private:
@@ -83,12 +84,15 @@ private:
     void acumulaPixel(Image &image, const Ponto point);
     void desenhaCirculo(Matriz<Pixel> &image, const Ponto point, unsigned int radius, const Pixel &color);
     void desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &color);
-    Matriz<Pixel> sobelPlusLimiar(Matriz<Pixel> &source);
-    
+    Matriz<Pixel> sobelPlusLimiar(Matriz<Pixel> &source, unsigned int limiar);
+
     //heuristicas para encontrar o olho
-    bool verificaDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned erro_max);
-    bool distanciaEproporcao(const Ponto p1, const Ponto p2);
-    
+    bool verificaAnguloDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned erro_max);
+    bool distanciaEntrePontos(const Ponto p1, const Ponto p2, double dis_min, double dis_max);
+    bool existeOutroCirculo(const Ponto point, const Image& hough,
+            unsigned int erro_min, unsigned int erro_max, unsigned int isCenter,
+            unsigned int dis_min, unsigned int dis_max);
+
 };
 
 

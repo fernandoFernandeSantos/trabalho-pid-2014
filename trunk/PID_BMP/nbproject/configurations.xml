@@ -10,6 +10,7 @@
       <itemPath>Header.h</itemPath>
       <itemPath>Matriz.h</itemPath>
       <itemPath>Pixel.h</itemPath>
+      <itemPath>Ponto.h</itemPath>
       <itemPath>Vetor.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -20,6 +21,7 @@
       <itemPath>CollorPallet.cpp</itemPath>
       <itemPath>Header.cpp</itemPath>
       <itemPath>Pixel.cpp</itemPath>
+      <itemPath>Ponto.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Arquivos de Recurso"
@@ -36,8 +38,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>Ponto.cpp</itemPath>
-    <itemPath>Ponto.h</itemPath>
     <itemPath>main.cpp</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

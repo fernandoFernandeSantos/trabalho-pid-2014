@@ -21,6 +21,7 @@ public:
     unsigned int GetY() const;
 
     void SetY(unsigned int y);
+    void SetXY(unsigned int x, unsigned int y);
 
     virtual ~Ponto();
 private:

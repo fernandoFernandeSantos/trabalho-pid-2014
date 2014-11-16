@@ -11,6 +11,7 @@
 #define SATURATION(a,b) ((a < 0) ? b = 0:((a > 255) ? b = 255:b = a));
 
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
+#define PI 3.14159265
 
 BMP::BMP() {
 }
@@ -931,19 +932,20 @@ void BMP::printHistogram(bool fifthShades) {
     }
 }
 
-void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
+void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
+        unsigned int min_dist, unsigned int max_dist) {
     BMP detection(*this);
-    Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels);
+    Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels, 80);
 
     //detecçao dos circulos
     uint width = this->matrizPixels.getColuna();
     uint height = this->matrizPixels.getLinha();
-    if (min_r == 0) {
-        min_r = 5;
-    }
 
     if (max_r == 0) {
         max_r = MIN(width, height) / 2;
+    }
+    if(max_dist == 0){
+        max_dist = MIN(width , height) / 4;
     }
 
     vector<Image> houghs(max_r - min_r);
@@ -972,19 +974,64 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r) {
                 }
             }
         }
-        /* loop through all the Hough-space images, searching for bright spots, which
-   indicate the center of a circle, then draw circles in image-space */
-        unsigned int threshold = 4.9 * i;
+        //busca nas imagens de marcaçao se e um centro de um circulo, assim desenha o circulo
+        unsigned int center = 4.9 * i;
+        Ponto point;
         for (unsigned int x = 0; x < hough.size(); x++) {
             for (unsigned int y = 0; y < hough[x].size(); y++) {
-                if (hough[x][y] > threshold) {
-                    desenhaCirculo(detection.matrizPixels, Ponto(x, y), i, p);
+                point.SetXY(x, y);
+                if (hough[x][y] > center && (existeOutroCirculo(point, hough, 5, 5, center,
+                        min_dist, max_dist))) {
+                    desenhaCirculo(detection.matrizPixels, point, i, p);
                 }
             }
         }
     }
     cout << "passou\n";
     detection.salvar("teste.bmp");
+}
+bool BMP::verificaAnguloDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned int erro_max) {
+    if(p2.GetX() == p1.GetX() && p2.GetY() == p1.GetY())
+        return false;
+    //produto escalar e modulo
+    uint vet1X = p2.GetX() - p1.GetX();
+    uint vet1Y = p2.GetY() - p1.GetY();
+    
+    uint pEscalar = vet1Y;
+    double moduloVet = sqrt((vet1X * vet1X) + (vet1Y * vet1Y));
+    double angulo = (double) pEscalar / moduloVet;
+
+    angulo = acos(angulo) * 180 / PI;
+    cout << angulo << endl;
+    if ((angulo <= (90 + erro_max)) && (angulo >= (90 - erro_min))) {
+        return true;
+    }
+    return false;
+}
+
+bool BMP::existeOutroCirculo(const Ponto point, const Image& hough,
+        unsigned int erro_min, unsigned int erro_max, unsigned int isCenter,
+        unsigned int dis_min, unsigned int dis_max) {
+    Ponto p;
+    for (unsigned int x = 0; x < hough.size(); x++) {
+        for (unsigned int y = 0; y < hough[x].size(); y++) {
+            p.SetXY(x, y);
+            if (hough[x][y] > isCenter && (verificaAnguloDoisPontos(point, p, erro_min, erro_max))
+                    && (distanciaEntrePontos(point, p, dis_min, dis_max))) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool BMP::distanciaEntrePontos(const Ponto p1, const Ponto p2, double dis_min, double dis_max) {
+    uint vet1X = p2.GetX() - p1.GetX();
+    uint vet1Y = p2.GetY() - p1.GetY();
+    double distancia = sqrt((vet1X * vet1X) + (vet1Y * vet1Y));
+    if (distancia >= dis_min && distancia <= dis_max)
+        return true;
+    return false;
 }
 
 void BMP::acumulaCirculo(Image &image, const Ponto point, unsigned int radius) {
@@ -1079,7 +1126,7 @@ void BMP::desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &col
     image.set(xval, yval, color);
 }
 
-Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source) {
+Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source, unsigned int limiar) {
     /* initialisation */
     BMP binary;
     binary.SetMatrizPixels(source);
@@ -1143,30 +1190,10 @@ Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source) {
             }
 
             /* using 128 as a threshold, decide if the steepness is sufficient (= edge = 1) */
-            int pixel = sqrt(pow(new_x, 2) + pow(new_y, 2)) > 128 ? 1 : 0;
+            int pixel = sqrt(pow(new_x, 2) + pow(new_y, 2)) > limiar ? 1 : 0;
             binary.matrizPixels.set(x, y, Pixel(pixel, pixel, pixel));
         }
     }
 
     return binary.matrizPixels;
-}
-
-bool BMP::verificaDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned erro_max) {
-    //produto escalar e modulo
-    uint vet1X = p2.GetX() - p1.GetX();
-    uint vet1Y = p2.GetY() - p1.GetY();
-
-    uint pEscalar = vet1Y;
-    uint modulo1 = (vet1X * vet1X) + (vet1Y * vet1Y);
-    double angulo = (double) pEscalar / (double) modulo1;
-
-    if ((angulo <= (90 + erro_max)) || (angulo <= (90 - erro_min))) {
-        return true;
-    }
-    return false;
-}
-
-bool BMP::distanciaEproporcao(const Ponto p1, const Ponto p2) {
-    uint vet1X = p2.GetX() - p1.GetX();
-    uint vet1Y = p2.GetY() - p1.GetY();
 }
