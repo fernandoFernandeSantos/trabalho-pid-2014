@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iostream>
 
+
+
 class BitMapHeader {
 private:
     unsigned int BiSize; //Tamanho do BitMadHeader

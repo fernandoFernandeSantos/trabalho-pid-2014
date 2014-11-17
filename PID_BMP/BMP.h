@@ -36,7 +36,7 @@ public:
     CollorPallet* GetPaletaCores() const;
     void SetPaletaCores(CollorPallet* paletaCores);
     Matriz<Pixel> GetMatrizPixels() const;
-    Matriz<uint> GetHistogram() const;
+    Matriz<unsigned int> GetHistogram() const;
     void SetMatrizPixels(Matriz<Pixel> matrizPixels);
     void read(std::ifstream *input);
     bool salvar(const char* nomeArquivo);
@@ -54,8 +54,8 @@ public:
     BMP imageToGray();
     void convolucao(Matriz<double> &orig);
     void sobel();
-    void media(uint ordem);
-    void mediana(uint ordem);
+    void media(unsigned int ordem);
+    void mediana(unsigned int ordem);
     void roberts(bool pos);
     bool histogramEqualizer();
     Vetor<u_char>* maskOrder(Matriz<Pixel> &orig);
@@ -71,14 +71,14 @@ private:
     Header cabecalhoImagem; //cabeçalho do arquivo
     //armazena os dados do bmp
     Matriz<Pixel> matrizPixels;
-    Matriz<uint> Histograma;
+    Matriz<unsigned int> Histograma;
 
     //métodos privados
     u_char findIndex(unsigned char r, unsigned char g, unsigned char b);
     //aloca o histograma de acordo com a imagem
     void mallocHistogram();
     void convolution(Matriz<double> &mask);
-    Matriz<uint> transformationFunction();
+    Matriz<unsigned int> transformationFunction();
 
     void acumulaCirculo(Image &image, const Ponto point, unsigned int radius);
     void acumulaPixel(Image &image, const Ponto point);

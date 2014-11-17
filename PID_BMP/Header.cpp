@@ -88,10 +88,10 @@ void Header::saveHeader(std::ofstream& arquivoSaida){
     //como em c só grava endereço tem que por para variavéis
     /*char BfType1 = out.GetBfType()[0];
     char BfType2 = out.GetBfType()[1];
-    uint BfSize = out.GetBfSize();
+    unsigned int BfSize = out.GetBfSize();
     u_short BfReser1 = out.GetBfReser1();
     u_short BfReser2 = out.GetBfReser2();
-    uint BfOffSetBits = out.GetBfOffSetBits();
+    unsigned int BfOffSetBits = out.GetBfOffSetBits();
 */
     //grava o header
     arquivoSaida.write((char*) & this->BfType[0], sizeof (this->BfType[0]));

@@ -80,7 +80,7 @@ Matriz<Pixel> BMP::GetMatrizPixels() const {
     return matrizPixels;
 }
 
-Matriz<uint> BMP::GetHistogram() const {
+Matriz<unsigned int> BMP::GetHistogram() const {
     return this->Histograma;
 }
 
@@ -113,13 +113,13 @@ void BMP::read(std::ifstream* input) {
     //aloca matriz de pixels
     this->matrizPixels.mAlloc(this->cabecalhoBitMap.GetBiHeigth(), this->cabecalhoBitMap.GetBiWidth());
     //tamanho imagem
-    uint lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
+    unsigned int lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
     u_char aux;
     //lê o arquivo para 8 bits
     if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
         u_char elemento;
-        uint linha = 0, coluna = 0;
-        uint aux = 0;
+        unsigned int linha = 0, coluna = 0;
+        unsigned int aux = 0;
         while (true) {
             input->read((char*) & elemento, sizeof (u_char));
             Pixel p(this->paletaCores[elemento].GetRed(),
@@ -128,7 +128,7 @@ void BMP::read(std::ifstream* input) {
             this->matrizPixels.set(linha, coluna, p);
             coluna++;
             if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
-                for (uint i = 0; i < lixo * 3; i++) {
+                for (unsigned int i = 0; i < lixo * 3; i++) {
                     input->read((char*) &aux, sizeof (u_char));
                 }
                 linha++;
@@ -142,7 +142,7 @@ void BMP::read(std::ifstream* input) {
     //lê o arquivo para 24 bits
     if (this->cabecalhoBitMap.GetBiBitCount() == 24) {
         u_char r, g, b;
-        uint linha = 0, coluna = 0;
+        unsigned int linha = 0, coluna = 0;
         while (true) {
             input->read((char*) & b, sizeof (u_char));
             input->read((char*) & g, sizeof (u_char));
@@ -152,7 +152,7 @@ void BMP::read(std::ifstream* input) {
             coluna++;
 
             if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
-                for (uint i = 0; i < lixo; i++) {
+                for (unsigned int i = 0; i < lixo; i++) {
                     input->read((char*) &aux, sizeof (u_char));
 
                 }
@@ -181,8 +181,8 @@ bool BMP::makeHistogram() {
         mallocHistogram();
         u_char r, g, b;
         Matriz<Pixel> aux(this->GetMatrizPixels());
-        for (uint i = 0; i < aux.getLinha(); i++) {
-            for (uint j = 0; j < aux.getColuna(); j++) {
+        for (unsigned int i = 0; i < aux.getLinha(); i++) {
+            for (unsigned int j = 0; j < aux.getColuna(); j++) {
                 r = aux.get(i, j).GetR();
                 g = aux.get(i, j).GetG();
                 b = aux.get(i, j).GetB();
@@ -200,12 +200,12 @@ long double* BMP::valorMedio() {
     u_int64_t somaR = 0;
     u_int64_t somaG = 0;
     u_int64_t somaB = 0;
-    uint altura = this->cabecalhoBitMap.GetBiHeigth();
-    uint largura = this->cabecalhoBitMap.GetBiWidth();
+    unsigned int altura = this->cabecalhoBitMap.GetBiHeigth();
+    unsigned int largura = this->cabecalhoBitMap.GetBiWidth();
     long double divisor = altura * largura;
     u_char r, g, b;
-    for (uint i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
-        for (uint j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
+    for (unsigned int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
+        for (unsigned int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
             r = (this->matrizPixels.get(i, j).GetR());
             g = (this->matrizPixels.get(i, j).GetG());
             b = (this->matrizPixels.get(i, j).GetB());
@@ -235,7 +235,7 @@ bool BMP::salvar(const char* nomeArquivo) {
             u_char aux;
             //se tem paleta de cores grava a paleta e a matriz
             if (this->cabecalhoBitMap.GetBiBitCount() == 8) {
-                uint lixo = (this->cabecalhoBitMap.GetBiWidth() * 3) % 4;
+                unsigned int lixo = (this->cabecalhoBitMap.GetBiWidth() * 3) % 4;
                 u_char r, g, b, t;
                 for (int i = 0; i < 256; i++) {
                     b = this->paletaCores[i].GetBlue();
@@ -251,7 +251,7 @@ bool BMP::salvar(const char* nomeArquivo) {
 
                 //grava a matriz para 8 bits
                 Pixel p;
-                uint linha = 0, coluna = 0;
+                unsigned int linha = 0, coluna = 0;
                 while (true) {
                     try {
                         p = this->matrizPixels.get(linha, coluna);
@@ -260,7 +260,7 @@ bool BMP::salvar(const char* nomeArquivo) {
                         coluna++;
                         if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                             linha++;
-                            for (uint i = 0; i < lixo; i++) {
+                            for (unsigned int i = 0; i < lixo; i++) {
                                 arquivoSaida.write((char*) & aux, sizeof (u_char));
                             }
                             coluna = 0;
@@ -277,8 +277,8 @@ bool BMP::salvar(const char* nomeArquivo) {
             //grava para 24 bits
             if (this->cabecalhoBitMap.GetBiBitCount() == 24) {
                 u_char r, g, b;
-                uint linha = 0, coluna = 0;
-                uint lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
+                unsigned int linha = 0, coluna = 0;
+                unsigned int lixo = (this->cabecalhoBitMap.GetBiWidth()) % 4;
                 while (true) {
                     r = this->matrizPixels.get(linha, coluna).GetR();
                     g = this->matrizPixels.get(linha, coluna).GetG();
@@ -289,7 +289,7 @@ bool BMP::salvar(const char* nomeArquivo) {
                     coluna++;
                     if (coluna == this->cabecalhoBitMap.GetBiWidth()) {
                         linha++;
-                        for (uint i = 0; i < lixo; i++) {
+                        for (unsigned int i = 0; i < lixo; i++) {
                             arquivoSaida.write((char*) & aux, sizeof (u_char));
 
                         }
@@ -330,8 +330,8 @@ long double * BMP::variancia(long double * valorMedio) {
     u_int64_t somaG = 0;
     u_int64_t somaB = 0;
     u_int64_t divisor = this->cabecalhoBitMap.GetBiHeigth() * this->cabecalhoBitMap.GetBiWidth();
-    for (uint i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
-        for (uint j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
+    for (unsigned int i = 0; i < this->cabecalhoBitMap.GetBiHeigth(); i++) {
+        for (unsigned int j = 0; j < this->cabecalhoBitMap.GetBiWidth(); j++) {
             somaR += pow(((int) (this->matrizPixels.get(i, j).GetR()) - valorMedio[0]), 2);
             somaG += pow(((int) (this->matrizPixels.get(i, j).GetG()) - valorMedio[1]), 2);
             somaB += pow(((int) (this->matrizPixels.get(i, j).GetB()) - valorMedio[2]), 2);
@@ -365,8 +365,8 @@ long double * BMP::covariancia(BMP g2) {
     long double *valorMedioG2 = g2.valorMedio();
 
     int64_t divisor = altura * largura;
-    for (uint i = 0; i < altura; i++) {
-        for (uint j = 0; j < largura; j++) {
+    for (unsigned int i = 0; i < altura; i++) {
+        for (unsigned int j = 0; j < largura; j++) {
             rThis = (this->matrizPixels.get(i, j).GetR() - valorMedioThis[0]);
             gThis = (this->matrizPixels.get(i, j).GetG() - valorMedioThis[1]);
             bThis = (this->matrizPixels.get(i, j).GetB() - valorMedioThis[2]);
@@ -402,11 +402,11 @@ void BMP::printCabecalhoImagem() {
 
 void BMP::limiarImagem(u_int32_t fator) {
 
-    uint lin = this->matrizPixels.getLinha();
-    uint col = this->matrizPixels.getColuna();
+    unsigned int lin = this->matrizPixels.getLinha();
+    unsigned int col = this->matrizPixels.getColuna();
     Pixel p;
-    for (uint i = 0; i < lin; i++) {
-        for (uint j = 0; j < col; j++) {
+    for (unsigned int i = 0; i < lin; i++) {
+        for (unsigned int j = 0; j < col; j++) {
             p = this->matrizPixels.get(i, j);
             p = p / 32;
             if (p.GetG() > fator) {
@@ -424,15 +424,15 @@ void BMP::limiarImagem(u_int32_t fator) {
 bool BMP::operations(const BMP& g2, u_char operacao) {
 
     Matriz<Pixel> matAux(g2.GetMatrizPixels());
-    uint lin = (this->matrizPixels.getLinha() < matAux.getLinha() ?
+    unsigned int lin = (this->matrizPixels.getLinha() < matAux.getLinha() ?
             this->matrizPixels.getLinha() : matAux.getLinha());
-    uint col = (this->matrizPixels.getColuna() < matAux.getColuna() ?
+    unsigned int col = (this->matrizPixels.getColuna() < matAux.getColuna() ?
             this->matrizPixels.getColuna() : matAux.getColuna());
 
     Pixel p, b;
     if (operacao == 1) { // &
-        for (uint i = 0; i < lin; i++) {
-            for (uint j = 0; j < col; j++) {
+        for (unsigned int i = 0; i < lin; i++) {
+            for (unsigned int j = 0; j < col; j++) {
                 p = this->matrizPixels.get(i, j);
                 b = matAux.get(i, j);
                 p = p & b;
@@ -441,8 +441,8 @@ bool BMP::operations(const BMP& g2, u_char operacao) {
         }
     }
     if (operacao == 2) { // |
-        for (uint i = 0; i < lin; i++) {
-            for (uint j = 0; j < col; j++) {
+        for (unsigned int i = 0; i < lin; i++) {
+            for (unsigned int j = 0; j < col; j++) {
                 p = this->matrizPixels.get(i, j);
                 b = matAux.get(i, j);
                 p = p | b;
@@ -451,8 +451,8 @@ bool BMP::operations(const BMP& g2, u_char operacao) {
         }
     }
     if (operacao == 3) { // +
-        for (uint i = 0; i < lin; i++) {
-            for (uint j = 0; j < col; j++) {
+        for (unsigned int i = 0; i < lin; i++) {
+            for (unsigned int j = 0; j < col; j++) {
                 p = this->matrizPixels.get(i, j);
                 b = matAux.get(i, j);
                 p = p + b;
@@ -461,8 +461,8 @@ bool BMP::operations(const BMP& g2, u_char operacao) {
         }
     }
     if (operacao == 4) { //-
-        for (uint i = 0; i < lin; i++) {
-            for (uint j = 0; j < col; j++) {
+        for (unsigned int i = 0; i < lin; i++) {
+            for (unsigned int j = 0; j < col; j++) {
                 p = this->matrizPixels.get(i, j);
                 b = matAux.get(i, j);
                 p = p - b;
@@ -471,8 +471,8 @@ bool BMP::operations(const BMP& g2, u_char operacao) {
         }
     }
     if (operacao == 5) { //~
-        for (uint i = 0; i < lin; i++) {
-            for (uint j = 0; j < col; j++) {
+        for (unsigned int i = 0; i < lin; i++) {
+            for (unsigned int j = 0; j < col; j++) {
                 p = this->matrizPixels.get(i, j);
                 ~p;
                 this->matrizPixels.set(i, j, p);
@@ -488,8 +488,8 @@ BMP BMP::imageToGray() {
     BitMapHeader novoBitHe;
     CollorPallet *novaPallet = new CollorPallet[256]();
 
-    uint lin = this->matrizPixels.getLinha();
-    uint col = this->matrizPixels.getColuna();
+    unsigned int lin = this->matrizPixels.getLinha();
+    unsigned int col = this->matrizPixels.getColuna();
     Matriz<Pixel> novaMat(lin, col);
 
     for (int i = 0; i < 256; i++) {
@@ -518,8 +518,8 @@ BMP BMP::imageToGray() {
     novoBitHe.SetBiSizeImage(0);
 
     Pixel p;
-    for (uint i = 0; i < lin; i++) {
-        for (uint j = 0; j < col; j++) {
+    for (unsigned int i = 0; i < lin; i++) {
+        for (unsigned int j = 0; j < col; j++) {
             p = this->matrizPixels.get(i, j);
             p = p / 32;
             novaMat.set(i, j, p);
@@ -637,8 +637,8 @@ void BMP::sobel() {
     Ly.set(2, 1, -2);
     Ly.set(2, 2, -1);
 
-    uint height = this->matrizPixels.getLinha();
-    uint width = this->matrizPixels.getColuna();
+    unsigned int height = this->matrizPixels.getLinha();
+    unsigned int width = this->matrizPixels.getColuna();
     Pixel p, Py, Px;
 
     //faz a convoluçao lx * g e ly * g
@@ -664,20 +664,20 @@ void BMP::sobel() {
     }
 }
 
-void BMP::media(uint ordem) {
+void BMP::media(unsigned int ordem) {
     Matriz<double> aux(ordem, ordem);
     float t = 1.0 / (ordem * ordem);
     aux.fill(t);
     this->convolution(aux);
 }
 
-void BMP::mediana(uint ordem) {
+void BMP::mediana(unsigned int ordem) {
     Vetor<u_char> *maskOrdered;
     Matriz<Pixel> mask(ordem, ordem);
     Matriz<Pixel> tempMat(this->GetMatrizPixels());
     long int maskCenterX, maskCenterY,
             maskRows, maskCols, rows, cols, ii, jj;
-    uint midle = (ordem * ordem) / 2;
+    unsigned int midle = (ordem * ordem) / 2;
 
     maskCols = ordem;
     maskRows = ordem;
@@ -750,11 +750,11 @@ void BMP::roberts(bool pos) {
     this->convolution(aux);
 }
 
-Matriz<uint> BMP::transformationFunction() {
+Matriz<unsigned int> BMP::transformationFunction() {
     if (!this->makeHistogram())
         return NULL;
 
-    Matriz<uint> soma(this->Histograma.getLinha(), this->Histograma.getColuna());
+    Matriz<unsigned int> soma(this->Histograma.getLinha(), this->Histograma.getColuna());
 
     soma.fill(0);
     long long int acumuladorR = 0;
@@ -764,30 +764,30 @@ Matriz<uint> BMP::transformationFunction() {
     //escala
     float scale = 255.0f / (float) (this->matrizPixels.getColuna() * this->matrizPixels.getLinha());
 
-    for (uint i = 0; i < this->Histograma.getColuna(); ++i) {
+    for (unsigned int i = 0; i < this->Histograma.getColuna(); ++i) {
         acumuladorR += this->Histograma.get(0, i);
         acumuladorG += this->Histograma.get(1, i);
         acumuladorB += this->Histograma.get(2, i);
         //coloca na matriz soma a função de probabilidades
-        soma.set(0, i, (uint) (acumuladorR * scale));
-        soma.set(1, i, (uint) (acumuladorG * scale));
-        soma.set(2, i, (uint) (acumuladorB * scale));
+        soma.set(0, i, (unsigned int) (acumuladorR * scale));
+        soma.set(1, i, (unsigned int) (acumuladorG * scale));
+        soma.set(2, i, (unsigned int) (acumuladorB * scale));
     }
     return soma;
 }
 
 bool BMP::histogramEqualizer() {
-    Matriz<uint> tabelaConsulta = this->transformationFunction();
+    Matriz<unsigned int> tabelaConsulta = this->transformationFunction();
     if (tabelaConsulta.isEmpty())
         return false;
     Matriz<Pixel> resultado(this->matrizPixels.getLinha(),
             this->matrizPixels.getColuna());
-    uint tempR = 0;
-    uint tempG = 0;
-    uint tempB = 0;
+    unsigned int tempR = 0;
+    unsigned int tempG = 0;
+    unsigned int tempB = 0;
     Pixel p;
-    for (uint i = 0; i < this->matrizPixels.getLinha(); ++i) {
-        for (uint j = 0; j < this->matrizPixels.getColuna(); ++j) {
+    for (unsigned int i = 0; i < this->matrizPixels.getLinha(); ++i) {
+        for (unsigned int j = 0; j < this->matrizPixels.getColuna(); ++j) {
             p = this->matrizPixels.get(i, j);
             tempR = tabelaConsulta.get(0, p.GetR());
             tempG = tabelaConsulta.get(1, p.GetG());
@@ -802,7 +802,7 @@ bool BMP::histogramEqualizer() {
 }
 
 Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig) {
-    uint size = orig.getColuna() * orig.getLinha();
+    unsigned int size = orig.getColuna() * orig.getLinha();
     Vetor<u_char> *ret;
     ret = new Vetor<u_char>[3];
     if (ret == NULL)
@@ -810,11 +810,11 @@ Vetor<u_char>* BMP::maskOrder(Matriz<Pixel> &orig) {
     for (int i = 0; i < 3; ++i) {
         ret[i] = Vetor<u_char>(size);
     }
-    uint k = 0;
+    unsigned int k = 0;
     Pixel p;
     //coloca nos vetores a matriz
-    for (uint i = 0; i < orig.getLinha(); ++i) {
-        for (uint j = 0; j < orig.getColuna(); ++j) {
+    for (unsigned int i = 0; i < orig.getLinha(); ++i) {
+        for (unsigned int j = 0; j < orig.getColuna(); ++j) {
             p = orig.get(i, j);
             ret[0][k] = p.GetR();
             ret[1][k] = p.GetG();
@@ -836,8 +836,8 @@ void BMP::printHistogram(bool fifthShades) {
     //nova imagem sem paleta
     newHeader.SetBfOffSetBits(54);
     //novo tamanho
-    uint altura = 0;
-    uint largura = 1024;
+    unsigned int altura = 0;
+    unsigned int largura = 1024;
     for (int i = 0; i < this->Histograma.getColuna(); i++) {
         if (altura < this->Histograma.get(0, i))
             altura = this->Histograma.get(0, i);
@@ -848,7 +848,7 @@ void BMP::printHistogram(bool fifthShades) {
         if (altura < this->Histograma.get(2, i))
             altura = this->Histograma.get(2, i);
     }
-    uint proporcao = 2;
+    unsigned int proporcao = 2;
     altura = (altura) / 10;
     newHeader.SetBfSize((largura * altura) + 54);
 
@@ -868,13 +868,13 @@ void BMP::printHistogram(bool fifthShades) {
 
     Matriz<Pixel> outR(altura, largura), outG(altura, largura), outB(altura, largura);
 
-    uint histR, histG, histB;
+    unsigned int histR, histG, histB;
     Pixel pRed(255, 0, 0), pGreen(0, 255, 0), pBlue(0, 0, 255);
     Pixel pGray(255, 255, 255);
-    uint incremento = (largura / 256);
+    unsigned int incremento = (largura / 256);
 
-    for (uint i = 0; i < altura; i++) {
-        for (uint j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++) {
+    for (unsigned int i = 0; i < altura; i++) {
+        for (unsigned int j = 0, jHist = 0; j < largura, jHist < 256; j += incremento, jHist++) {
             if (!fifthShades) {
                 histR = this->Histograma.get(0, jHist);
                 histG = this->Histograma.get(1, jHist);
@@ -887,7 +887,7 @@ void BMP::printHistogram(bool fifthShades) {
                 //para componente R
                 if (histR > i) {
                     //for para fazer a proporção
-                    for (uint k = 0; k < incremento; k++) {
+                    for (unsigned int k = 0; k < incremento; k++) {
                         outR.set(i, (j + k), pRed);
                     }
                 }
@@ -895,7 +895,7 @@ void BMP::printHistogram(bool fifthShades) {
                 //para componente G
                 if (histG > i) {
                     //for para fazer a proporção
-                    for (uint k = 0; k < incremento; k++) {
+                    for (unsigned int k = 0; k < incremento; k++) {
                         outG.set(i, (j + k), pGreen);
                     }
                 }
@@ -903,7 +903,7 @@ void BMP::printHistogram(bool fifthShades) {
                 //para componente B
                 if (histB > i) {
                     //for para fazer a proporção
-                    for (uint k = 0; k < incremento; k++) {
+                    for (unsigned int k = 0; k < incremento; k++) {
                         outB.set(i, (j + k), pBlue);
                     }
                 }
@@ -912,7 +912,7 @@ void BMP::printHistogram(bool fifthShades) {
                 histR = (histR * proporcao) / 10;
                 if (histR > i) {
                     //for para fazer a proporção
-                    for (uint k = 0; k < incremento; k++) {
+                    for (unsigned int k = 0; k < incremento; k++) {
                         outR.set(i, (j + k), pGray);
                     }
                 }
@@ -938,14 +938,14 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
     Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels, 100);
 
     //detecçao dos circulos
-    uint width = this->matrizPixels.getColuna();
-    uint height = this->matrizPixels.getLinha();
+    unsigned int width = this->matrizPixels.getColuna();
+    unsigned int height = this->matrizPixels.getLinha();
 
     if (max_r == 0) {
         max_r = MIN(width, height) / 2;
     }
-    if(max_dist == 0){
-        max_dist = MIN(width , height) / 4;
+    if (max_dist == 0) {
+        max_dist = MIN(width, height) / 4;
     }
 
     vector<Image> houghs(max_r - min_r);
@@ -955,7 +955,6 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
     }
 
     for (unsigned int i = min_r; i < max_r; i++) {
-        /* instantiate Hough-space for circles of radius i */
         Image &hough = houghs[i - min_r];
         hough.resize(height);
         for (unsigned int x = 0; x < hough.size(); x++) {
@@ -965,10 +964,8 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
             }
         }
 
-        /* find all the edges */
         for (unsigned int x = 0; x < height; x++) {
             for (unsigned int y = 0; y < width; y++) {
-                /* edge! */
                 if (binary.get(x, y).GetB() == 1) {
                     acumulaCirculo(hough, Ponto(x, y), i);
                 }
@@ -987,17 +984,17 @@ void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
             }
         }
     }
-    cout << "passou\n";
     detection.salvar("teste.bmp");
 }
+
 bool BMP::verificaAnguloDoisPontos(const Ponto p1, const Ponto p2, unsigned int erro_min, unsigned int erro_max) {
-    if(p2.GetX() == p1.GetX() && p2.GetY() == p1.GetY())
+    if (p2.GetX() == p1.GetX() && p2.GetY() == p1.GetY())
         return false;
     //produto escalar e modulo
-    uint vet1X = p2.GetX() - p1.GetX();
-    uint vet1Y = p2.GetY() - p1.GetY();
-    
-    uint pEscalar = vet1X;
+    unsigned int vet1X = p2.GetX() - p1.GetX();
+    unsigned int vet1Y = p2.GetY() - p1.GetY();
+
+    unsigned int pEscalar = vet1Y;
     double moduloVet = sqrt((vet1X * vet1X) + (vet1Y * vet1Y));
     double angulo = (double) pEscalar / moduloVet;
 
@@ -1026,8 +1023,8 @@ bool BMP::existeOutroCirculo(const Ponto point, const Image& hough,
 }
 
 bool BMP::distanciaEntrePontos(const Ponto p1, const Ponto p2, double dis_min, double dis_max) {
-    uint vet1X = p2.GetX() - p1.GetX();
-    uint vet1Y = p2.GetY() - p1.GetY();
+    unsigned int vet1X = p2.GetX() - p1.GetX();
+    unsigned int vet1Y = p2.GetY() - p1.GetY();
     double distancia = sqrt((vet1X * vet1X) + (vet1Y * vet1Y));
     if (distancia >= dis_min && distancia <= dis_max)
         return true;
@@ -1070,8 +1067,8 @@ void BMP::acumulaCirculo(Image &image, const Ponto point, unsigned int radius) {
 
 void BMP::acumulaPixel(Image &image, const Ponto point) {
     /* bounds checking */
-    uint xval = point.GetX();
-    uint yval = point.GetY();
+    unsigned int xval = point.GetX();
+    unsigned int yval = point.GetY();
     if (xval < 0 || xval >= image.size() ||
             yval < 0 || yval >= image[xval].size()) {
         return;
@@ -1116,8 +1113,8 @@ void BMP::desenhaCirculo(Matriz<Pixel> &image, const Ponto point, unsigned int r
 
 void BMP::desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &color) {
     /* bounds checking */
-    uint xval = point.GetX();
-    uint yval = point.GetY();
+    unsigned int xval = point.GetX();
+    unsigned int yval = point.GetY();
     if (xval < 0 || xval >= image.getLinha() ||
             yval < 0 || yval >= image.getColuna()) {
         return;
@@ -1127,13 +1124,9 @@ void BMP::desenhaPixel(Matriz<Pixel> &image, const Ponto point, const Pixel &col
 }
 
 Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source, unsigned int limiar) {
-    /* initialisation */
     BMP binary;
     binary.SetMatrizPixels(source);
     binary.limiarImagem(128);
-    /*** Sobel edge detection ***/
-
-    /* Set up Lx, Ly */
     Matriz<double> Lx(3, 3), Ly(3, 3);
 
     Lx.set(0, 0, -1);
@@ -1161,36 +1154,32 @@ Matriz<Pixel> BMP::sobelPlusLimiar(Matriz<Pixel> &source, unsigned int limiar) {
         for (unsigned int y = 0; y < source.getColuna(); y++) {
             double new_x = 0.0, new_y = 0.0;
 
-            /* gradient */
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    /* these are offset co-ords */
-                    int _x = x + i;
-                    int _y = y + j;
+                    int x_i = x + i;
+                    int y_i = y + j;
 
-                    /* bounds checking */
-                    if (_x < 0)
-                        _x = -_x;
+                    if (x_i < 0)
+                        x_i = -x_i;
                     else
-                        if (_x >= source.getLinha())
-                        _x = 2 * source.getLinha() - _x - 2;
+                        if (x_i >= source.getLinha())
+                        x_i = 2 * source.getLinha() - x_i - 2;
 
-                    if (_y < 0)
-                        _y = -_y;
+                    if (y_i < 0)
+                        y_i = -y_i;
                     else
-                        if (_y >= source.getColuna())
-                        _y = 2 * source.getColuna() - _y - 2;
+                        if (y_i >= source.getColuna())
+                        y_i = 2 * source.getColuna() - y_i - 2;
 
-                    p = source.get(_x, _y);
-                    /* accumulate */
+                    p = source.get(x_i, y_i);
+
                     int gray = p.pGray(p);
                     new_x += Lx.get(i + 1, j + 1) * gray;
                     new_y += Ly.get(i + 1, j + 1) * gray;
                 }
             }
 
-            /* using 128 as a threshold, decide if the steepness is sufficient (= edge = 1) */
-            int pixel = sqrt(pow(new_x, 2) + pow(new_y, 2)) > limiar ? 1 : 0;
+            int pixel = ((new_x * new_x) + (new_y * new_y)) > limiar ? 1 : 0;
             binary.matrizPixels.set(x, y, Pixel(pixel, pixel, pixel));
         }
     }

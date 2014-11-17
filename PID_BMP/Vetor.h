@@ -392,7 +392,7 @@ template <class T> int Vetor <T>::getSize() {
 
 template <class Ta>
 ostream &operator <<(ostream &output, const Vetor<Ta> &B) {
-    for (uint i = 0; i < B.n; i++) {
+    for (unsigned int i = 0; i < B.n; i++) {
         output << "Vet[" << i << "]= " << B.V[i]
                 << "\n";
     }
@@ -407,7 +407,7 @@ Vetor<T> &Vetor<T>::operator =(const Vetor<T> &B) {
         if (this->V) {
             try {
                 // o vetor existe. limpe-0
-                for (uint i = 0; i< this->n; i++) {
+                for (unsigned int i = 0; i< this->n; i++) {
                     delete [] this->V;
                 }
             } catch (std::exception &e) {
@@ -419,7 +419,7 @@ Vetor<T> &Vetor<T>::operator =(const Vetor<T> &B) {
         this->V = new T[this->n];
 
         //copia os valores para a matriz
-        for (uint i = 0; i < this->n; i++)
+        for (unsigned int i = 0; i < this->n; i++)
             this->V[i] = B.V[i];
     }
     return (*this);
