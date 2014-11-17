@@ -146,7 +146,7 @@ static void maskOperations(BMP& arquivo) {
         switch (opcao) {
             case 1:
             {
-                uint ordem = 0;
+                unsigned int ordem = 0;
                 cout << "Entre com a ordem da máscara: ";
                 cin >> ordem;
                 Matriz<double> mask(ordem, ordem);
