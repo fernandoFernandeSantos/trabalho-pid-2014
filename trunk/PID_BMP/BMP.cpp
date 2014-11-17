@@ -935,7 +935,7 @@ void BMP::printHistogram(bool fifthShades) {
 void BMP::houghTransformation(unsigned int min_r, unsigned int max_r,
         unsigned int min_dist, unsigned int max_dist) {
     BMP detection(*this);
-    Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels, 80);
+    Matriz<Pixel> binary = this->sobelPlusLimiar(detection.matrizPixels, 100);
 
     //detecçao dos circulos
     uint width = this->matrizPixels.getColuna();
@@ -997,12 +997,12 @@ bool BMP::verificaAnguloDoisPontos(const Ponto p1, const Ponto p2, unsigned int 
     uint vet1X = p2.GetX() - p1.GetX();
     uint vet1Y = p2.GetY() - p1.GetY();
     
-    uint pEscalar = vet1Y;
+    uint pEscalar = vet1X;
     double moduloVet = sqrt((vet1X * vet1X) + (vet1Y * vet1Y));
     double angulo = (double) pEscalar / moduloVet;
 
     angulo = acos(angulo) * 180 / PI;
-    cout << angulo << endl;
+    //cout << angulo << endl;
     if ((angulo <= (90 + erro_max)) && (angulo >= (90 - erro_min))) {
         return true;
     }
