@@ -20,6 +20,7 @@ private:
 public:
     Matriz(unsigned int l = 0, unsigned int c = 0); // Construtor default inicializavel
     Matriz(const Matriz &A);	    // Construtor de copia
+    Matriz(string file_name, char delimiter); //from a text file
     Matriz(T **m, int ml, int mc);
     ~Matriz();		    // destruidor
     void fill(T valor);	    // preenche a matriz com um valor
@@ -54,6 +55,52 @@ public:
     
 
 };
+
+template <class T> Matriz<T>::Matriz(string file_name, char delimiter){
+    list<string> file_data;
+    ifstream input_file(file_name.c_str());
+    if (!input_file.is_open()) {
+        exit(-1);
+       // throw runtime_error(string("can't open text file: " + file_name));
+    }
+
+    string line;
+    while( getline(input_file, line) ){
+        file_data.push_back(line);
+    }
+    list<string>::iterator list_iterator = file_data.begin();
+    int l = file_data.size();
+    vector<string> elem = split(*list_iterator, ',');
+    int c = elem.size();
+    this->lin = l;
+    this->col = c;
+    if ((l == 0) || (c == 0))
+    {
+        // cria uma estrutura nula
+        this->mat = NULL;
+    }
+    else
+    {
+        // cria a matriz com dimensoes validas
+        mat = new T*[l];
+        for (unsigned int i = 0; i < l; i++)
+            mat[i] = new T[c];
+
+        //put all file values in a matrix
+        for (int i = 0; i < l; i++){
+            for (int j = 0; j < c; j++){
+                stringstream ss;
+                ss << (elem[j].c_str());
+                ss >> mat[i][j];
+            }
+            list_iterator++;
+            elem = split(*list_iterator, delimiter);
+        }
+    }
+    return;
+
+}
+
 
 template <class T>
 void Matriz<T>::mAlloc(unsigned int l, unsigned int c)
